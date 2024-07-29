@@ -47,9 +47,10 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
     stop("Input files do not have a mutation type in the filename")
   }
 
+  path_file = system.file("SignatureAnalysis_Full.rmd", package = "sigstory")
   try(fs::dir_create(paste0('/results/', sample_of_interest)))
   rmarkdown::render(
-    input = '/vignettes/SignatureAnalysis_Full.Rmd',
+    input = path_file,
     output_format = 'html_document',
     output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
     params = list(
@@ -109,9 +110,10 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
 
   sample_of_interest <- sample_of_interest_cat
 
+  path_file = system.file("SignatureAnalysis_Summary.rmd", package = "sigstory")
   try(fs::dir_create(paste0('/results/', sample_of_interest)))
   rmarkdown::render(
-    input = '/vignettes/SignatureAnalysis_Summary.Rmd',
+    input = path_file,
     output_format = 'html_document',
     output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'),
     params = list(
