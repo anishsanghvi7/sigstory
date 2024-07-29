@@ -52,7 +52,7 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
-    output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
+    # output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
     params = list(
       sample_of_interest = sample_of_interest,
       sig_type = sig_type,
@@ -115,7 +115,7 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
-    output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'),
+    # output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'),
     params = list(
       sample_of_interest = sample_of_interest,
       cos_threshold = 0.9,
