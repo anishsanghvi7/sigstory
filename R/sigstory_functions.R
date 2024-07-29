@@ -143,16 +143,19 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
 #' @param catalogue SBS96 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally SBS96 .tally file path which contain the decompositions of the mutations
+#' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset the COSMIC signature dataset being used for SBS96
 #' @param paruqet_path the path to a paruqet database for SBS96
-#' @param catalogue2 DBS78 .expo file path which conntains the optimal contributions of signatures in the sample
+#' @param catalogue2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally2 DBS78 .tally file path which contain the decompositions of the mutations
+#' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
 #' @param paruqet_path2 the path to a paruqet database for DBS78
-#' @param catalogue3 ID83 .expo file path which conntains the optimal contributions of signatures in the sample
+#' @param catalogue3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
+#' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param paruqet_path3 the path to a paruqet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
