@@ -1,0 +1,1029 @@
+---
+title: "Mutational Signature Analysis - Summary"
+output: 
+  html_document:
+    theme:
+      bootswatch: "lumen"
+    toc: true
+params:
+  sample_of_interest:
+    label: "Sample"
+    value: ""
+    input: text
+  cos_threshold:
+    label: "Cosine Similarity Threshold"
+    value: 0.9
+    input: slider
+    min: 0
+    max: 1
+  sig_description_sbs96:
+      label: "Signature Dataset for SBS96"
+      value: 'COSMIC_v3.4_SBS_GRCh38'
+      input: select
+      choices: [
+      'COSMIC_v3.4_SBS_GRCh38',
+      'COSMIC_v3.3.1_SBS_GRCh38', 
+      'COSMIC_v3.3.1_SBS_GRCh37', 
+      'COSMIC_v2_SBS_GRCh38', 
+      'COSMIC_v2_SBS_GRCh37'
+      ]
+  sig_description_dbs78:
+      label: "Signature Dataset for DBS78"
+      value: 'COSMIC_v3.4_DBS_GRCh38'
+      input: select
+      choices: [
+      'COSMIC_v3.4_DBS_GRCh38',
+      'COSMIC_v3.3_DBS_GRCh38', 
+      'COSMIC_v3.3_DBS_GRCh37'
+      ]
+  sig_description_id83:
+      label: "Signature Dataset for ID83"
+      value: 'COSMIC_v3.4_ID_GRCh37'
+      input: select
+      choices: [
+      'COSMIC_v3.4_ID_GRCh37',
+      'COSMIC_v3.3_ID_GRCh37'
+      ]
+  catalogue_sbs96:
+    label: "Path to a .expo.csv file with the model contributions of SBS96 in the sample"
+    value: "Enter Here"
+    input: text
+  tally_sbs96:
+    label: "Path to a .tally.csv file with the raw mutation counts of SBS96 in the sample"
+    value: "Enter Here"
+    input: text
+  bootstraps_sbs96:
+    label: "Path to a .bootstrap_summary.csv file with the SBS96 signature level summary of the bootstraps (includes an experimental p-value) of the sample"
+    value: "Enter Here"
+    input: text
+  catalogue_dbs78:
+    label: "Path to a .expo.csv file with the model contributions of DBS78 in the sample"
+    value: "Enter Here"
+    input: text
+  tally_dbs78:
+    label: "Path to a .tally.csv file with the raw mutation counts of DBS78 in the sample"
+    value: "Enter Here"
+    input: text
+  bootstraps_dbs78:
+    label: "Path to a .bootstrap_summary.csv file with the DBS78 signature level summary of the bootstraps (includes an experimental p-value) of the sample of interest"
+    value: "Enter Here"
+    input: text
+  catalogue_id83:
+    label: "Path to a .expo.csv file with the model contributions of ID83 in the sample"
+    value: "Enter Here"
+    input: text
+  tally_id83:
+    label: "Path to a .tally.csv file with the raw mutation counts of ID83 in the sample"
+    value: "Enter Here"
+    input: text
+  bootstraps_id83:
+    label: "Path to a .bootstrap_summary.csv file with the ID83 signature level summary of the bootstraps (includes an experimental p-value) of the sample of interest"
+    value: "Enter Here"
+    input: text
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r params, include=FALSE}
+##############
+### Config ###
+##############
+sample_of_interest <- params$sample_of_interest
+cos_threshold <- params$cos_threshold
+mutation_types <- list('SBS96', 'DBS78', 'ID83')
+
+# SBS96
+sig_description_sbs <- params$sig_description_sbs96
+catalogue_param_sbs <- params$catalogue_sbs96
+tally_param_sbs <- params$tally_sbs96
+bootstraps_param_sbs <- params$bootstraps_sbs96
+threshold_num_mutations_SBS96 <- 150
+
+# DBS78
+sig_description_dbs <- params$sig_description_dbs78
+catalogue_param_dbs <- params$catalogue_dbs78
+tally_param_dbs <- params$tally_dbs78
+bootstraps_param_dbs <- params$bootstraps_dbs78
+threshold_num_mutations_DBS78 <- 15
+
+# ID83
+sig_description_id <- params$sig_description_id83
+catalogue_param_id <- params$catalogue_id83
+tally_param_id <- params$tally_id83
+bootstraps_param_id <- params$bootstraps_id83
+threshold_num_mutations_ID83 <- 2
+```
+
+```{r read_csv_file, include=FALSE}
+#############
+### SBS96 ###
+#############
+# Exposure
+if (file.exists(catalogue_param_sbs)) {
+  exposure_sbs96 <- readr::read_csv(catalogue_param_sbs)
+  fitting_method <- exposure_sbs96 |>
+    select(Method) |>
+    pull() |>
+    unique()
+} else {
+  exposure_sbs96 <- data.frame(Method = character(),
+                   Sig = character(),
+                   Type = character(),
+                   Contribution = numeric(),
+                   ContributionRelative = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Decomp
+if (file.exists(tally_param_sbs)) {
+  decomp_sbs96 <- readr::read_csv(tally_param_sbs)
+} else {
+  decomp_sbs96 <- data.frame(channel = character(),
+                   type = character(),
+                   fraction = numeric(),
+                   count = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Bootstrap
+if (file.exists(bootstraps_param_sbs)) {
+  bootstrap_df_sbs96 <- readr::read_csv(bootstraps_param_sbs)
+} else {
+  bootstrap_df_sbs96 <- data.frame(Sig = character(),
+                   min = numeric(),
+                   max = numeric(),
+                   q1 = numeric(),
+                   q3 = numeric(),
+                   iqr = numeric(),
+                   median = numeric(),
+                   outlier_low_threshold = numeric(),
+                   outlier_high_threshold = numeric(),
+                   outliers = numeric(),
+                   experimental_pval = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+#############
+### DBS78 ###
+#############
+# Exposure
+if (file.exists(catalogue_param_dbs)) {
+  exposure_dbs78 <- readr::read_csv(catalogue_param_dbs)
+  fitting_method <- exposure_sbs96 |>
+    select(Method) |>
+    pull() |>
+    unique()
+} else {
+  exposure_dbs78 <- data.frame(Method = character(),
+                   Sig = character(),
+                   Type = character(),
+                   Contribution = numeric(),
+                   ContributionRelative = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Decomp
+if (file.exists(tally_param_dbs)) {
+  decomp_dbs78 <- readr::read_csv(tally_param_dbs)
+} else {
+  decomp_dbs78 <- data.frame(channel = character(),
+                   type = character(),
+                   fraction = numeric(),
+                   count = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Bootstrap
+if (file.exists(bootstraps_param_dbs)) {
+  bootstrap_df_dbs78 <- readr::read_csv(bootstraps_param_dbs)
+} else {
+  bootstrap_df_dbs78 <- data.frame(Sig = character(),
+                   min = numeric(),
+                   max = numeric(),
+                   q1 = numeric(),
+                   q3 = numeric(),
+                   iqr = numeric(),
+                   median = numeric(),
+                   outlier_low_threshold = numeric(),
+                   outlier_high_threshold = numeric(),
+                   outliers = numeric(),
+                   experimental_pval = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+############
+### ID83 ###
+############
+# Exposure
+if (file.exists(catalogue_param_id)) {
+  exposure_id83 <- readr::read_csv(catalogue_param_id)
+  fitting_method <- exposure_sbs96 |>
+    select(Method) |>
+    pull() |>
+    unique()
+} else {
+  exposure_id83 <- data.frame(Method = character(),
+                   Sig = character(),
+                   Type = character(),
+                   Contribution = numeric(),
+                   ContributionRelative = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Decomp
+if (file.exists(tally_param_id)) {
+  decomp_id83 <- readr::read_csv(tally_param_id)
+} else {
+  decomp_id83 <- data.frame(channel = character(),
+                   type = character(),
+                   fraction = numeric(),
+                   count = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Bootstrap
+if (file.exists(bootstraps_param_id)) {
+  bootstrap_df_id83 <- readr::read_csv(bootstraps_param_id)
+} else {
+  bootstrap_df_id83 <- data.frame(Sig = character(),
+                   min = numeric(),
+                   max = numeric(),
+                   q1 = numeric(),
+                   q3 = numeric(),
+                   iqr = numeric(),
+                   median = numeric(),
+                   outlier_low_threshold = numeric(),
+                   outlier_high_threshold = numeric(),
+                   outliers = numeric(),
+                   experimental_pval = numeric(),
+                   stringsAsFactors = FALSE)
+}
+```
+
+```{r libraries, include=FALSE}
+###################
+#### Libraries ####
+###################
+library(shiny)
+library(easydb)
+library(sigstash)
+library(sigvis)
+library(sigstats)
+library(sigvis)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggiraph)
+library(htmltools)
+library(bslib)
+library(plotly)
+library(lsa)
+library(bsicons)
+library(glue)
+library(stringr)
+library(gganimate)
+library(patchwork)
+library(widyr)
+library(shinyWidgets)
+library(manipulate)
+library(stringr)
+library(jsonlite)
+library(shinyBS)
+library(knitr)
+library(Rtsne)
+```
+
+```{js toc_js, include=FALSE}
+// TOC column
+const TOC_col = document.querySelector('div.row>div:not(div+div)');
+TOC_col.classList.replace('col-sm-4', 'col-sm-2');
+TOC_col.classList.replace('col-md-3', 'col-md-2');
+
+// Main column
+const main_col = document.querySelector('div.row>div+div');
+main_col.classList.replace('col-sm-8', 'col-sm-10');
+main_col.classList.replace('col-md-9', 'col-md-10');
+main_col.classList.add('col-sm-offset-2', 'col-md-offset-2');
+```
+
+```{css toc_css, echo=FALSE}
+/* The Report */
+div.main-container {
+  max-width: 1200px !important;
+  width: calc(100% - 10px) !important;
+}
+
+div.row>div+div {
+  margin-left: 210px;
+  margin-right: 0px;
+  padding: 10px !important;
+}
+
+/* TOC column */
+div.row>div:not(div+div) {
+  position: fixed;
+  left: 23px;
+}
+
+#TOC {
+  max-width: 190px !important;
+  width: 190px !important;
+}
+
+/* Headings */
+.hidden {
+  visibility: hidden;
+}
+
+h3 {
+  font-size: 0px;
+}
+```
+
+```{css card_css, echo=FALSE}
+.sample_info_card {
+ width: 320px;
+ height: 150px;
+ border-radius: 10px;
+ background: #f5f5f5;
+ position: relative;
+ padding: 1rem;
+ border: 1px solid #c3c6ce;
+ transition: 0.5s ease-out;
+}
+
+.card-details {
+ color: black;
+ height: 100%;
+ display: grid;
+ place-content: left;
+ padding: 0;
+}
+
+.text-body {
+ color: rgb(134, 134, 134);
+}
+
+/*Text*/
+.text-title {
+ font-size: 1.5em;
+ font-weight: bold;
+}
+
+/*Hover*/
+.card {
+  transition: border-color 1s ease-out, box-shadow 1s ease-out;
+}
+
+.card:hover {
+ border-color: #01796f;
+ box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card:hover .card-button {
+ transform: translate(-50%, 50%);
+ opacity: 1;
+}
+```
+
+```{css scrollbar_css, echo=FALSE}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #a6a6a6;
+}
+```
+
+```{r config, include=FALSE}
+##############
+### Config ###
+##############
+sig_type <- params$sig_type
+
+box_plot_thresh <- 0.05
+prop_bad_bootstraps_allowed <- 0.05
+patient_id <- "000001"
+font_size <- "12px"
+
+snv_palette <- sigvis::sig_palette_snv_type()
+doublet_palette <- sigvis::sig_palette_doublet_type()
+indel_palette <- sigvis::sig_palette_indel_type()
+```
+
+```{r get_total_no_mutations, include=FALSE}
+#####################################
+##### Generate Total Mutations ######
+#####################################
+get_total_no_mutations <- function(decomp) {
+  total_mutations <- decomp |>
+    pull(count) |>
+    sum()
+  
+  return(total_mutations)
+}
+
+get_total_no_mutations_all_types <- function(x, y, z) {
+  return(x + y + z)
+}
+```
+
+```{r generate_observed, include=FALSE}
+######################################
+##### Generate Observed Profile ######
+######################################
+generate_observed <- function(sig_type, decomp) {
+  if (sig_type == 'SBS96') {
+    channel_order <-  sigvis:::levels_snv() %>% dput()
+    palette <- sigvis::sig_palette_snv_type()
+  } else if (sig_type == 'DBS78') {
+    channel_order <-  sigvis:::levels_dbs() %>% dput()
+    palette <- sigvis::sig_palette_doublet_type()
+  } else if (sig_type == 'ID83') {
+    channel_order <-  sigvis:::levels_indel() %>% dput()
+    palette <- sigvis::sig_palette_indel_type()
+  }
+  
+  decomposition_observed <- decomp |>
+    mutate(channel = fct_relevel(channel, channel_order))
+  
+  total_mutations <- get_total_no_mutations(decomp)
+  
+  # Create Plot
+  observed_plot <- decomposition_observed %>%
+    ggplot(
+         aes(x = channel, y = count, fill = type, 
+             tooltip = c(paste0(channel, ", ", count)))
+    ) + 
+    geom_col_interactive(width = 0.75,
+                         size = 3,
+                         hover_nearest = TRUE) +
+    scale_fill_manual(values = palette) +
+    xlab("Substitution") +
+    ylab("Mutation count") +
+    labs(fill = "Substitution",
+         title = "Observed Mutational Profile",
+         subtitle = label_interactive(
+           "Total Number of SBS Mutations",
+           tooltip = paste("Total Number of SBS Mutations: ", total_mutations),
+           hover_css = "fill:magenta;cursor:pointer;"
+         )) +
+    theme(
+      panel.background = element_blank(),
+      axis.text.x = element_text(size = 6, angle = 90, hjust = 1, vjust = 0.5),
+      panel.grid.major.y = element_line(colour = "#C1BDBE"),
+      axis.title.x = element_text(size = 16, vjust = -0.05),
+      axis.title.y = element_text(size = 15),
+      plot.title = element_text_interactive(hjust = 0.5, face = "bold", size = 16),
+      plot.subtitle = element_text_interactive(hjust = 0.5)
+    ) +
+    scale_y_continuous(expand =  expansion(mult = c(0, 0.05)))
+
+  observed_plot_interactive <- girafe(ggobj = observed_plot,
+              width_svg = 10.8,
+              height_svg = 5,
+              options = list(opts_sizing(rescale = FALSE))
+              )
+
+  return(observed_plot_interactive)
+}
+```
+
+```{r get_total_mutations_val_box, include=FALSE}
+get_total_mutations_val_box <- function(num_mutations, sig_type) {
+  if (sig_type == 'SBS96') {
+    threshold_num_mutations <- threshold_num_mutations_SBS96
+  } else if (sig_type == 'DBS78') {
+    threshold_num_mutations <- threshold_num_mutations_DBS78
+  } else if (sig_type == 'ID83') {
+    threshold_num_mutations <- threshold_num_mutations_ID83
+  }
+  
+  if (num_mutations == 0) {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "No mutations found, do not consider as a good sample\n"
+          ),
+          theme = "bg-gradient-orange-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  } else if (num_mutations >= threshold_num_mutations) {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations is acceptable\n"
+          ),
+          theme = "bg-gradient-teal-green",
+          showcase = bs_icon("hand-thumbs-up"),
+          style = "width: 100%; height: 120px;"
+      )
+  } else {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations are too low to be considered a good sample\n"
+          ),
+          theme = "bg-gradient-orange-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  }
+  
+  return(num_mutations_val_box)
+}
+```
+
+```{r get_cosine_similarity, include=FALSE}
+#######################################
+##### Generate Cosine Similarity ######
+#######################################
+get_cosine_similarity <- function(decomp, exposure, sig_type) {
+  if (sig_type == 'SBS96') {
+    channel_order <-  sigvis:::levels_snv() %>% dput()
+  } else if (sig_type == 'DBS78') {
+    channel_order <-  sigvis:::levels_dbs() %>% dput()
+  } else if (sig_type == 'ID83') {
+    channel_order <-  sigvis:::levels_indel() %>% dput()
+  }
+  
+  decomp_observed <- decomp |>
+    mutate(type = sigstash:::sig_convert_channel2type(Context, 
+                                                      sigclass = gsub(x=sig_type,
+                                                                      "[0-9]", ""))) |>
+    mutate(Context = fct_relevel(Context, channel_order)) |>
+    arrange(type) |>
+    rename(channel = Context, fraction = CountRelative, count = Count)
+
+  model_temp <- exposure |>
+    rename(signature = Sig, fraction = ContributionRelative) |>
+    filter(signature %in% c(good_sigs)) |>
+    select(signature, fraction)
+  
+  # Pull out fractions
+  model_temp_fracs <- model_temp |> pull()
+  model_temp_names <- model_temp |> select(signature) |> pull()
+  named_vector <- setNames(model_temp_fracs, model_temp_names)
+  model_signature <- sig_combine(cosmic_signatures, 
+                                 model = c(named_vector), 
+                                 format = 'signature')
+
+  decomp_cos <- decomp_observed |>
+    select(type, channel, fraction) |>
+    mutate(channel = as.character(channel)) |>
+    arrange(type)
+
+  model_cos <- model_signature |>
+    arrange(type)
+
+  cos_sim_temp <- sigstats::sig_cosine_similarity(model_cos, decomp_cos)
+  cos_sim <- round(cos_sim_temp, 9)
+  
+  return(cos_sim)
+}
+```
+
+```{r cosine_sim_thresh_check, include=FALSE}
+###########################################
+#### Cosine Similarity Threshold Check ####
+###########################################
+cosine_sim_thresh_check <- function(good_sigs, total_mutations, cosine_similarity) {
+  if (cosine_similarity == 1) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+          style = glue("font-size: {font_size};"),
+          "Identical Models - may or may not be reliable"
+        ),
+        theme = "bg-gradient-orange-yellow",
+        showcase = bs_icon("exclamation-triangle"),
+        style = "width: 100%; height: 120px;"
+    )
+  } else if (cosine_similarity >= cos_threshold && length(good_sigs) > 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "The similarity is great!"
+        ),
+        theme = "bg-gradient-teal-green",
+        showcase = bs_icon("check-square"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if (cosine_similarity == 0 && total_mutations == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "No matches, revise the signature selection"
+        ),
+        theme = "bg-gradient-yellow-orange",
+        showcase = bs_icon("question-lg"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if ((length(good_sigs) == 0 || total_mutations != 0) && cosine_similarity == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("0"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "Few mutations present but no significant signature contributions"
+        ),
+        theme = "bg-gradient-red-orange",
+        showcase = bs_icon("exclamation-octagon"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else {
+      ui <-  value_box(
+          title = "Cosine Similarity",
+          value = glue("{cosine_similarity}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Too low, revise the signature selection"
+          ),
+          theme = "bg-gradient-red-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  }
+  
+  return(ui)
+}
+```
+
+```{r get_good_sigs, include=FALSE}
+########################################
+##### Get Contributing Signatures ######
+########################################
+get_good_sigs <- function(exposure, sig_type) {
+  type_mut <- gsub('[0-9]+', '', sig_type)
+  exposure_boot <- exposure
+  passes_threshold <- exposure_boot |> 
+                summarise(
+                  cases_with_low_contributions = sum(ContributionRelative < 0.05),
+                  total_cases = n(), 
+                  .by = Sig
+                ) |>
+                mutate(proportion_bad = cases_with_low_contributions/total_cases) |>
+                mutate(pass_threshold = proportion_bad < 0.05)
+  
+  good_sigs <- passes_threshold |>
+    filter(pass_threshold == TRUE) |>
+    pull(Sig)
+  
+  return(good_sigs)
+}
+```
+
+```{r reconstructed_against_observed, include=FALSE}
+###########################################################
+#### Plot the Reconstructed against the Observed model ####
+###########################################################
+reconstructed_against_observed <- function(decomp) {
+  decomp_observed <- decomp |>
+                      filter_all(all_vars(!is.na(.)))
+  
+  string_cosine <-paste("Cosine Similarity: ", 
+                              get_cosine_similarity(sample_of_interest, sig_type))
+  
+  if (sig_type == 'SBS96') {
+    palette <- sbs_palette
+  } else if (sig_type == 'DBS78') {
+    palette <- doublet_palette
+  } else {
+    palette <- indel_palette
+  }
+  
+  plot_overlay <- ggplot() +
+    # Observed Profile - grey
+    geom_col(data = decomp_observed, 
+             aes(x = channel, 
+                 y = count, 
+                  width = 1.1,
+                  text = paste("Observed: ", channel, ", ", count)
+             ),
+             fill = "transparent",
+             color = "#3b3b3b",
+             size = 0.3
+             ) +
+    scale_fill_manual(values = palette) +
+    xlab("Substitution") +
+    ylab("Mutation count") +
+    labs(fill = "Substitution",
+         title = glue("Reconstructed against Observed model<br><sup>{string_cosine}</sup>")) +
+    theme(
+      plot.title = element_text_interactive(hjust = 0.5, 
+                                            face = "bold", 
+                                            size = 11, 
+                                            family = "Arial"),
+      plot.subtitle = element_text_interactive(hjust = 0.5, size = 8),
+      panel.background = element_blank(),
+      axis.text.x = element_text(size = 5, angle = 90, hjust = 1, vjust = 0.5, family = "Arial"),
+      axis.text.y = element_text(size = 5, family = "Arial"),
+      panel.grid.major.y = element_line(colour = "#C1BDBE"),
+      axis.title.x = element_text(size = 11, vjust = -0.05, family = "Arial"),
+      axis.title.y = element_text(size = 11, family = "Arial")
+    )
+  
+  # Creating an interactive version using plotly
+  plotly_overlay_interac <- ggplotly(plot_overlay, 
+                                     tooltip = "text",
+                                     width = 793,
+                                     height = 400)
+  
+  plotly_overlay_interac <- plotly_overlay_interac %>%
+    layout(
+      legend = list(
+        title = list(font = list(family = "Arial", size = 11)),
+        font = list(family = "Arial", size = 8),
+        y = 0.5,
+        yanchor = "middle",
+        x = 1.1,
+        xanchor = "right",
+        traceorder = "normal",
+        itemsizing = 'constant',
+        itemclick = 'toggleothers'
+      )
+  )
+  
+  plotly_overlay_interac <- plotly_overlay_interac %>%
+    config(displayModeBar = FALSE) %>%
+    layout(hovermode = 'x')
+  
+  return(plotly_overlay_interac)
+}
+```
+
+```{r create_summary_cards, include=FALSE}
+create_summary_card <- function(decomp, exposure, sig_type) {
+  ##################################
+  #### Create the reconstructed ####
+  ##################################
+  if (sig_type == 'SBS96') {
+    sig_description <- sig_description_sbs
+    channel_order <-  sigvis:::levels_snv() %>% dput()
+  } else if (sig_type == 'DBS78') {
+    sig_description <- sig_description_dbs
+    channel_order <-  sigvis:::levels_dbs() %>% dput()
+  } else if (sig_type == 'ID83') {
+    sig_description <- sig_description_id
+    channel_order <-  sigvis:::levels_indel() %>% dput()
+  }
+  
+  cosmic_signatures = sig_load(sig_description)
+  good_sigs <- get_good_sigs(exposure, sig_type)
+  total_mutations <- get_total_no_mutations(decomp)
+  
+  modify_channel <- function(df) {
+    df %>%
+      mutate(type = str_replace(type, ">(.*)$", ">NN"))
+  }
+  
+  if (sig_type == 'DBS78') {
+    cosmic_signatures <- lapply(cosmic_signatures, modify_channel)
+  }
+    
+  # Convert the sig of interest to only be the type of mutation 
+  # (i.e. substitution, indel, double base)
+  mutation_type <- gsub('[[:digit:]]+', '', sig_type)
+  
+  reconstructed_df_temp <- exposure |>
+                        collect()
+  
+  good_sigs <- get_good_sigs(exposure, sig_type)
+  
+  reconstructed_df <- reconstructed_df_temp |>
+    select(Sig, Contribution, ContributionRelative) |>
+    filter(Sig %in% c(good_sigs)) |>
+    mutate(percentage = round(ContributionRelative * 100, 2)) |>
+    arrange(desc(percentage))
+  
+  assigned <- reconstructed_df |>
+    pull() |>
+    sum()
+  
+  reconstructed_df <- reconstructed_df |> 
+    mutate(number_muts = round(ContributionRelative * total_mutations, 0))
+  
+  unassigned_percent <- round(100 - assigned, 0)
+  unassigned_count <- round((unassigned_percent / 100) * total_mutations, 0)
+  
+  decomp_observed <- decomp
+  
+  if (sig_type == 'SBS96') {
+    channel_order_df <- data.frame(channel_orders = channel_order, 
+                               total_reconstructed = 0)
+  }
+    
+  model_temp <- reconstructed_df |>
+    mutate(fraction = ContributionRelative) |>
+    select(Sig, fraction)
+  
+  # Pull out fractions
+  model_temp_fracs <- model_temp |> pull()
+  model_temp_names <- model_temp |> select(Sig) |> pull()
+  
+  named_vector <- setNames(model_temp_fracs, model_temp_names)
+
+  model_signature <- sig_combine(cosmic_signatures, model = c(named_vector), format = 'signature')
+
+  model_temp_one <- model_temp |>
+    mutate(equals = "\t-\t\t") |>
+    mutate(percent = paste0(round(fraction * 100, 2), "%")) |>
+    select(Sig, equals, percent)
+  
+  temporary <- paste(markdown("**Contributing Signatures:**"),
+        markdown(kable(model_temp_one, col.names = NULL)))
+    
+  if (length(good_sigs) != 0) {
+    text_string_title <- paste(model_temp_one$Sig,
+                         "=",
+                         model_temp_one$percent,
+                         collapse = ", ")
+  } else {
+    text_string_title <- 'No Contributing Signatures'
+  }
+    
+  recon_v_observed <- sigvis::sig_visualise_compare_reconstructed_to_observed(
+    signature = model_signature, 
+    catalogue = decomp_observed,
+    title = text_string_title
+  ) + theme (
+    plot.title = element_text(size = 8),
+    axis.title.y = element_text(size = 8)
+  )
+
+  if (sig_type == 'ID83') {
+    recon_v_observed <- recon_v_observed +
+      theme(
+        legend.key.height = unit(0.4, "cm"),
+        legend.key.width = unit(0.4, "cm")
+      )
+    
+    recon_interac <- sigvis::sig_make_interactive(recon_v_observed, 
+                                              width_svg = 6.9, 
+                                              height_svg = 2.7)
+  } else {
+    recon_interac <- sigvis::sig_make_interactive(recon_v_observed, 
+                                            width_svg = 6.9, 
+                                            height_svg = 2.7)
+  }
+    
+  decomp_cos <- decomp_observed |>
+    select(type, channel, fraction) |>
+    arrange(type)
+  
+  model_cos <- model_signature |>
+    arrange(type)
+  
+  cos_sim_temp <- sigstats::sig_cosine_similarity(model_cos, decomp_cos)
+  cos_sim <- round(cos_sim_temp, 9)
+  total_mutations <- get_total_no_mutations(decomp)
+  total_muts_box <- get_total_mutations_val_box(total_mutations, sig_type)
+  
+  # cos_sim <- get_cosine_similarity(sample_of_interest, sig_type)
+  cos_box <- cosine_sim_thresh_check(good_sigs, total_mutations, cos_sim)
+
+  summary_observed <- generate_observed(sig_type, decomp)
+  
+  if (sig_type == 'SBS96') {
+    threshold_num_mutations <- threshold_num_mutations_SBS96
+  } else if (sig_type == 'DBS78') {
+    threshold_num_mutations <- threshold_num_mutations_DBS78
+  } else if (sig_type == 'ID83') {
+    threshold_num_mutations <- threshold_num_mutations_ID83
+  }
+  
+  if (total_mutations < threshold_num_mutations) {
+    summary_string <- "The total number of mutations is too low, this analysis should be revised and further bootstraps should be performed. Do not use this analysis."
+    summary_colour <- "red"
+  } else if (cos_sim <= cos_threshold) {
+    summary_string <- "Although the total number of mutations is acceptable, the cosine similarity is too low for the analysis to be considered useful or reliable. Consult the Similar Samples section at the bottom of the report to help find a cause of the problem."
+    summary_colour <- "orange"
+  } else {
+    summary_string <- "Since both the total number of mutations and cosine similarity of the signature analysis are acceptable, the analysis can be considered useful. Take note of the discrepancies between the reconstructed and observed profiles, if any difference between the models lie within one mutation, then the sample should be flagged"
+    summary_colour <- "green"
+  }
+  
+  summary_markdown <- paste(
+      "**Summary**: ", summary_string, "\n",
+      sep = "\n"
+    )
+  
+  report_file <- glue('file:///Users/asanghvi/Desktop/Signature%20Reports/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
+
+  title_hyperlink_card <- glue('<a href="{report_file}" target="_blank">{sig_type}</a>')
+  
+  if (total_mutations == 0) {
+    navset_card_tab(
+      title = markdown(title_hyperlink_card),
+      height = "200px",
+      nav_panel(
+        shiny::icon("bar-chart"),
+        layout_column_wrap(
+            total_muts_box,
+            cos_box
+        )
+      ),
+      nav_panel(
+        shiny::icon("circle-info"),
+        markdown(summary_markdown)
+      )
+    )
+  } else {
+    navset_card_tab(
+      title = markdown(title_hyperlink_card),
+      height = "386px",
+      nav_panel(
+        shiny::icon("bar-chart"),
+        div(
+          layout_column_wrap(
+            style = css(grid_template_columns = "7fr 4fr"),
+            recon_interac,
+            div(
+              total_muts_box,
+              cos_box
+            )
+          )        
+        )
+      ),
+      nav_panel(
+        shiny::icon("circle-info"),
+        markdown(summary_markdown),
+        div(
+          markdown(temporary)
+        )
+      )
+    )
+  }
+  
+}
+```
+
+```{r summary_cards, include=FALSE}
+summary_cards <- map(mutation_types, function(i) {
+  sig_type <- i
+  
+  if (sig_type == "SBS96") {
+    decomp <- decomp_sbs96
+    exposure <- exposure_sbs96
+  } else if (sig_type == "DBS78") {
+    decomp <- decomp_dbs78
+    exposure <- exposure_dbs78
+  } else if (sig_type == "ID83") {
+    decomp <- decomp_id83
+    exposure <- exposure_id83
+  }
+  
+  create_summary_card(decomp, exposure, sig_type) 
+})
+```
+
+```{r summary_layer_cards, echo=FALSE}
+layout_column_wrap(
+  width = 1,
+  summary_cards
+)
+```
+
+```{r technical_details_card, echo=FALSE}
+#####################################################
+## Technical Details of Signature Analysis Methods ##
+#####################################################
+tech_spec_text <- paste("**Signature Databases**", "\n", "\n", "\t\t",
+                        "**SBS96:**",  sig_description_sbs, "\n", "\n", "\t\t",
+                        "**DBS78:**",  sig_description_dbs, "\n", "\n", "\t\t",
+                        "**ID83:**",  sig_description_id, "\n", "\n",
+  "**Fitting Method**", "\n", "\n", "Sigminer", fitting_method,
+  sep = "\n"
+)
+
+card(
+  card_header("Technical Details of Signature Analysis Methods"),
+  card_body(
+    markdown(tech_spec_text)
+  )
+)
+```

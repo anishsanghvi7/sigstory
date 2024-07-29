@@ -1,0 +1,2130 @@
+---
+title: "Mutational Signature Analysis"
+output: 
+  html_document:
+    theme:
+      bootswatch: "lumen"
+    toc: true
+    toc_float: 
+      collapsed: false
+    toc_depth: 3
+params:
+  sample_of_interest:
+    label: "Sample"
+    value: ""
+    input: text
+  sig_type:
+    label: "Type of Mutation"
+    value: "SBS96"
+    input: select
+    choices: ['SBS96', 'ID83', 'DBS78']
+  sig_description: 
+      label: "Signature Dataset"
+      value: ''
+      input: select
+      choices: [
+      'COSMIC_v3.4_SBS_GRCh38',
+      'COSMIC_v3.4_DBS_GRCh38',
+      'COSMIC_v3.4_ID_GRCh37',
+      'COSMIC_v3.3.1_SBS_GRCh38',
+      'COSMIC_v3.3_DBS_GRCh38', 
+      'COSMIC_v3.3_ID_GRCh37', 
+      'COSMIC_v3.3_CN_GRCh37', 
+      'COSMIC_v3.3.1_SBS_GRCh37', 
+      'COSMIC_v3.3_DBS_GRCh37',  
+      'COSMIC_v2_SBS_GRCh38', 
+      'COSMIC_v2_SBS_GRCh37'
+      ]
+  catalogue:
+    label: "Path to a .expo.csv file with the model contributions for the sample of interest"
+    value: "Enter Here"
+    input: text
+  tally:
+    label: "Path to a .tally.csv file with the raw mutation counts of the sample of interest"
+    value: "Enter Here"
+    input: text
+  bootstraps:
+    label: "Path to a .bootstrap_summary.csv file with the signature level summary of the bootstraps (includes an experimental p-value) of the sample of interest"
+    value: "Enter Here"
+    input: text
+  experimental_bootstraps:
+    label: "Path to a .expo_bootstraps.csv file with the signature level summary of the experimental bootstraps (includes an experimental p-value) of the sample of interest"
+    value: "Enter Here"
+    input: text
+  sample_similarity:
+    label: "Path to a .similarity.csv file with the similarities between each sample of the sample of interest"
+    value: "Enter Here"
+    input: text
+  parquet_file_path:
+    label: "Path to a parquet files with the catalogues of each sample in the database"
+    value: "Enter Here"
+    input: text
+  sample_information:
+    label: "Path to a .metadata.csv file which contains sample information of all samples in the database"
+    value: "Enter Here"
+    input: text
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r params, include=FALSE}
+##############
+### Config ###
+##############
+sample_of_interest <- params$sample_of_interest
+sig_type <- params$sig_type
+sig_description <- params$sig_description
+catalogue_param <- params$catalogue
+tally_param <- params$tally
+bootstraps_param <- params$bootstraps
+bootstraps_experimental_param <- params$bootstraps_experimental
+pairwise_sim_param <- params$sample_similarity
+parquet_file_path_param <- params$parquet_file_path
+sample_info_param <- params$sample_information
+```
+
+```{r css_divider, eval=FALSE, include=FALSE}
+#######################################
+#######   CSS for the report    #######
+#######################################
+```
+
+```{js toc_js, include=FALSE}
+// TOC column
+const TOC_col = document.querySelector('div.row>div:not(div+div)');
+TOC_col.classList.replace('col-sm-4', 'col-sm-2');
+TOC_col.classList.replace('col-md-3', 'col-md-2');
+
+// Main column
+const main_col = document.querySelector('div.row>div+div');
+main_col.classList.replace('col-sm-8', 'col-sm-10');
+main_col.classList.replace('col-md-9', 'col-md-10');
+main_col.classList.add('col-sm-offset-2', 'col-md-offset-2');
+```
+
+```{css toc_css, echo=FALSE}
+/* The Report */
+div.main-container {
+  max-width: 1500px !important;
+  width: calc(100% - 10px) !important;
+}
+
+div.row>div+div {
+  margin-left: 210px;
+  margin-right: 0px;
+  padding: 10px !important;
+}
+
+/* TOC column */
+div.row>div:not(div+div) {
+  position: fixed;
+  left: 23px;
+}
+
+#TOC {
+  max-width: 190px !important;
+  width: 190px !important;
+}
+
+/* Headings */
+.hidden {
+  visibility: hidden;
+}
+
+h3 {
+  font-size: 0px;
+}
+```
+
+```{css card_css, echo=FALSE}
+.sample_info_card {
+ width: 320px;
+ height: 150px;
+ border-radius: 10px;
+ background: #f5f5f5;
+ position: relative;
+ padding: 1rem;
+ border: 1px solid #c3c6ce;
+ transition: 0.5s ease-out;
+}
+
+.card-details {
+ color: black;
+ height: 100%;
+ display: grid;
+ place-content: left;
+}
+
+.text-body {
+ color: rgb(134, 134, 134);
+}
+
+/*Text*/
+.text-title {
+ font-size: 1.5em;
+ font-weight: bold;
+}
+
+/*Hover*/
+.card {
+  transition: border-color 1s ease-out, box-shadow 1s ease-out;
+}
+
+.card:hover {
+ border-color: #01796f;
+ box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card:hover .card-button {
+ transform: translate(-50%, 50%);
+ opacity: 1;
+}
+```
+
+```{css scrollbar_css, echo=FALSE}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #a6a6a6;
+}
+```
+
+```{r libraries, include=FALSE}
+###################
+#### Libraries ####
+###################
+library(shiny)
+library(easydb)
+library(sigstash)
+library(sigvis)
+library(sigstats)
+library(sigvis)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggiraph)
+library(htmltools)
+library(bslib)
+library(plotly)
+library(lsa)
+library(bsicons)
+library(glue)
+library(stringr)
+library(gganimate)
+library(patchwork)
+library(widyr)
+library(shinyWidgets)
+library(manipulate)
+library(stringr)
+library(jsonlite)
+library(shinyBS)
+library(Rtsne)
+library(knitr)
+library(arrow)
+```
+
+```{r config, include=FALSE}
+##############
+### Config ###
+##############
+if (sig_type == "SBS96") {
+  threshold_num_mutations <- 150
+} else if (sig_type == "DBS78") {
+  threshold_num_mutations <- 15
+} else if (sig_type == "ID83") {
+  threshold_num_mutations <- 3
+}
+
+cos_threshold <- 0.95
+box_plot_thresh <- 0.05
+prop_bad_bootstraps_allowed <- 0.05
+patient_id <- "000001"
+font_size <- "12px"
+
+if (sig_type == 'SBS96') {
+  channel_order <-  sigvis:::levels_snv() %>% dput()
+  snv_palette <- sigvis::sig_palette_snv_type()
+} else if (sig_type == 'DBS78') {
+  channel_order <-  sigvis:::levels_dbs() %>% dput()
+  snv_palette <- sigvis::sig_palette_doublet_type()
+} else if (sig_type == 'ID83') {
+  channel_order <-  sigvis:::levels_indel() %>% dput()
+  snv_palette <- sigvis::sig_palette_indel_type()
+}
+
+cosmic_signatures <- sigstash::sig_load(sig_description)
+channel_order_df <- data.frame(channel_orders = channel_order, 
+                               total_reconstructed = 0)
+```
+
+```{r reading_csv_file_inputs, include=FALSE}
+# Exposure
+if (file.exists(catalogue_param)) {
+  exposure <- readr::read_csv(catalogue_param)
+} else {
+  exposure <- data.frame(Method = character(),
+                   Sig = character(),
+                   Type = character(),
+                   Contribution = numeric(),
+                   ContributionRelative = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Decomp
+if (file.exists(tally_param)) {
+  decomp <- readr::read_csv(tally_param)
+} else {
+  decomp <- data.frame(channel = character(),
+                   type = character(),
+                   fraction = numeric(),
+                   count = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Bootstrap
+if (file.exists(bootstraps_param)) {
+  bootstrap_df <- readr::read_csv(bootstraps_param)
+} else {
+  bootstrap_df <- data.frame(Sig = character(),
+                   min = numeric(),
+                   max = numeric(),
+                   q1 = numeric(),
+                   q3 = numeric(),
+                   iqr = numeric(),
+                   median = numeric(),
+                   outlier_low_threshold = numeric(),
+                   outlier_high_threshold = numeric(),
+                   outliers = numeric(),
+                   experimental_pval = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Bootstrap Experimental
+if (file.exists(bootstraps_param)) {
+  bootstrap_exp_df <- readr::read_csv(bootstraps_experimental)
+} else {
+  bootstrap_exp_df <- data.frame(Method = character(),
+                   Sig = character(),
+                   Type = character(),
+                   Contribution = numeric(),
+                   ContributionRelative = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+# Pairwise Similarity
+string_col <- glue('cosine_similarity_', sig_type)
+if (file.exists(pairwise_sim_param)) {
+  pairwise_sim <- readr::read_csv(pairwise_sim_param)
+} else {
+  pairwise_sim <- data.frame(sample = character(),
+                   string_col = numeric(),
+                   stringsAsFactors = FALSE)
+}
+
+if (length(parquet_file_path_param) != 0) {
+  parquet_db <- arrow::open_dataset(parquet_file_path_param) |> 
+    dplyr::collect()
+} else {
+  parquet_db <- tibble(
+    Method = character(),
+    Sig = character(),
+    Type = character(),
+    Contribution = numeric(),
+    ContributionRelative = numeric(),
+    sample = character()
+  )
+}
+
+# Sample Information
+if (file.exists(sample_info_param)) {
+  sample_info <- readr::read_csv(sample_info_param)
+} else {
+  sample_info <- data.frame(sample = character(),
+                            disease = character(),
+                            description = character())
+}
+```
+
+```{r get_total_no_mutations, include=FALSE}
+#####################################
+##### Generate Total Mutations ######
+#####################################
+get_total_no_mutations <- function() {
+  total_mutations <- decomp |>
+    select(count) |>
+    pull(count) |>
+    sum()
+  
+  return(total_mutations)
+}
+```
+
+```{r generate_observed, include=FALSE}
+######################################
+##### Generate Observed Profile ######
+######################################
+generate_observed <- function(sample_id) {
+  decomposition_observed <- decomp |>
+    mutate(channel = fct_relevel(channel, channel_order)) |>
+    arrange(channel)
+  
+  total_mutations <- get_total_no_mutations()
+  
+  # Create Plot
+  observed_plot <- decomposition_observed %>%
+    ggplot(
+         aes(x = channel, y = count, fill = type, 
+             tooltip = c(paste0(channel, ", ", count)))
+    ) + 
+    geom_col_interactive(width = 0.75,
+                         size = 3,
+                         hover_nearest = TRUE) +
+    scale_fill_manual(values = snv_palette) +
+    xlab("Substitution") +
+    ylab("Mutation count") +
+    labs(fill = "Substitution",
+         title = "Observed Mutational Profile",
+         subtitle = label_interactive(
+           "Total Number of SBS Mutations",
+           tooltip = paste("Total Number of SBS Mutations: ", total_mutations),
+           hover_css = "fill:magenta;cursor:pointer;"
+         )) +
+    theme(
+      panel.background = element_blank(),
+      axis.text.x = element_text(size = 6, angle = 90, hjust = 1, vjust = 0.5),
+      panel.grid.major.y = element_line(colour = "#C1BDBE"),
+      axis.title.x = element_text(size = 16, vjust = -0.05),
+      axis.title.y = element_text(size = 15),
+      plot.title = element_text_interactive(hjust = 0.5, face = "bold", size = 16),
+      plot.subtitle = element_text_interactive(hjust = 0.5)
+    ) +
+    scale_y_continuous(expand =  expansion(mult = c(0, 0.05)))
+
+  observed_plot_interactive <- girafe(ggobj = observed_plot,
+              width_svg = 10,
+              height_svg = 5,
+              options = list(opts_sizing(rescale = FALSE))
+              )
+
+  return(observed_plot_interactive)
+}
+```
+
+```{r generate_observed_proportion_zero_contribution, include=FALSE}
+#################################################
+##### Generate Observed Profile Proportion ######
+#################################################
+generate_observed_zero_contribution <- function() {
+  decomposition_observed <- decomp |>
+    mutate(channel = fct_relevel(channel, channel_order)) |>
+    arrange(channel)
+  
+  # Create Plot
+  observed_plot <- decomposition_observed %>%
+    ggplot(
+         aes(x = channel, y = count, fill = type, 
+             tooltip = c(paste0(channel, ", ", count)))
+    ) + 
+    geom_col_interactive(width = 0.75,
+                         size = 3,
+                         hover_nearest = TRUE) +
+    scale_fill_manual(values = snv_palette) +
+    xlab("Substitution") +
+    ylab("Mutation count") +
+    labs(fill = "Substitution",
+         title = "No Signatures Contributed Significantly to the Observed Profile"
+    ) +
+    theme_minimal() + 
+    theme(plot.title = element_text_interactive(hjust = 0.5, size = 8),
+                 plot.subtitle = element_text(hjust = 0.5),
+                 axis.title.y = element_blank(),
+                 axis.title.x = element_blank(),
+                 axis.text.x = element_blank(),
+                 axis.ticks.x = element_blank(),
+                 axis.line.x = element_line(colour = "black"),
+                 panel.background = element_blank(),
+                 plot.background = element_blank(),
+                 panel.grid.major = element_blank(),
+                 panel.grid.minor = element_blank(),
+                 legend.key.size = unit(0.5, "lines"),
+                 legend.text = element_text(size = 8),
+                 legend.title = element_blank(),
+                 legend.position = "bottom"
+          ) +
+    scale_y_continuous(expand =  expansion(mult = c(0, 0.05)))
+
+  observed_plot_interactive <- girafe(ggobj = observed_plot,
+              width_svg = 5,
+              height_svg = 1.98,
+              options = list(opts_sizing(rescale = FALSE))
+              )
+
+  return(observed_plot_interactive)
+}
+```
+
+```{r get_total_mutations_val_box, include=FALSE}
+get_total_mutations_val_box <- function(num_mutations) {
+  if (num_mutations == 0) {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "No mutations found, do not consider as a good sample\n"
+          ),
+          theme = "bg-gradient-orange-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  } else if (num_mutations >= threshold_num_mutations) {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations is acceptable\n"
+          ),
+          theme = "bg-gradient-teal-green",
+          showcase = bs_icon("hand-thumbs-up"),
+          style = "width: 100%; height: 120px;"
+      )
+  } else {
+    num_mutations_val_box <- value_box(
+          title = glue("Total number of {sig_type} Mutations"),
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations are too low to be considered a good sample\n"
+          ),
+          theme = "bg-gradient-orange-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  }
+  
+  return(num_mutations_val_box)
+}
+
+get_total_mutations_val_box_summary <- function(num_mutations) {
+  if (num_mutations >= threshold_num_mutations) {
+    num_mutations_val_box <- value_box(
+          title = "Total number of SBS Mutations",
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations is acceptable\n"
+          ),
+          theme = "bg-gradient-teal-green",
+          showcase = bs_icon("hand-thumbs-up"),
+          style = "width: 90%; height: 100px;"
+      )
+  } else {
+    num_mutations_val_box <- value_box(
+          title = "Total number of SBS Mutations",
+          value = glue("{num_mutations}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Total number of mutations are too low to be considered a good sample\n"
+          ),
+          theme = "bg-gradient-orange-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 90%; height: 100px;"
+      )
+  }
+  
+  return(num_mutations_val_box)
+}
+```
+
+```{r get_good_sigs, include=FALSE}
+########################################
+##### Get Contributing Signatures ######
+########################################
+get_good_sigs <- function() {
+  type_mut <- gsub('[0-9]+', '', sig_type)
+  exposure_boot <- exposure
+  
+  passes_threshold <- exposure_boot |> 
+                summarise(
+                  cases_with_low_contributions = sum(ContributionRelative < 0.05),
+                  total_cases = n(), 
+                  .by = Sig
+                ) |>
+                mutate(proportion_bad = cases_with_low_contributions/total_cases) |>
+                mutate(pass_threshold = proportion_bad < 0.05)
+  
+  good_sigs <- passes_threshold |>
+    filter(pass_threshold == TRUE) |>
+    pull(Sig)
+  
+  return(good_sigs)
+}
+```
+
+```{r get_cosine_similarity, include=FALSE}
+#######################################
+##### Generate Cosine Similarity ######
+#######################################
+get_cosine_similarity <- function() {
+    decomp_observed <- decomp |>
+      mutate(channel = fct_relevel(channel, channel_order)) |>
+      arrange(type)
+
+    model_temp <- exposure |>
+      rename(signature = Sig, fraction = ContributionRelative) |>
+      filter(signature %in% c(good_sigs)) |>
+      select(signature, fraction)
+    
+    # Pull out fractions
+    model_temp_fracs <- model_temp |> pull()
+    model_temp_names <- model_temp |> select(signature) |> pull()
+    named_vector <- setNames(model_temp_fracs, model_temp_names)
+    model_signature <- sig_combine(cosmic_signatures, 
+                                   model = c(named_vector), 
+                                   format = 'signature')
+  
+    decomp_cos <- decomp_observed |>
+      select(type, channel, fraction) |>
+      mutate(channel = as.character(channel)) |>
+      arrange(type)
+  
+    model_cos <- model_signature |>
+      arrange(type)
+  
+    cos_sim_temp <- sigstats::sig_cosine_similarity(model_cos, decomp_cos)
+    cos_sim <- round(cos_sim_temp, 9)
+    
+    return(cos_sim)
+}
+```
+
+```{r cosine_sim_thresh_check, include=FALSE}
+###########################################
+#### Cosine Similarity Threshold Check ####
+###########################################
+cosine_sim_thresh_check <- function(good_sigs, total_mutations, cosine_similarity) {
+  if (cosine_similarity == 1) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+          style = glue("font-size: {font_size};"),
+          "Identical Models - may or may not be reliable"
+        ),
+        theme = "bg-gradient-orange-yellow",
+        showcase = bs_icon("exclamation-triangle"),
+        style = "width: 100%; height: 120px;"
+    )
+  } else if (cosine_similarity >= cos_threshold && length(good_sigs) > 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "The similarity is great!"
+        ),
+        theme = "bg-gradient-teal-green",
+        showcase = bs_icon("check-square"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if (cosine_similarity == 0 && total_mutations == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "No matches, revise the signature selection"
+        ),
+        theme = "bg-gradient-yellow-orange",
+        showcase = bs_icon("question-lg"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if ((length(good_sigs) == 0 || total_mutations != 0) && cosine_similarity == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("0"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "Few mutations present but no significant signature contributions"
+        ),
+        theme = "bg-gradient-red-orange",
+        showcase = bs_icon("exclamation-octagon"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else {
+      ui <-  value_box(
+          title = "Cosine Similarity",
+          value = glue("{cosine_similarity}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Too low, revise the signature selection"
+          ),
+          theme = "bg-gradient-red-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  }
+  
+  return(ui)
+}
+
+cosine_sim_thresh_check_summary <- function(good_sigs, total_mutations, cosine_similarity) {
+  if (cosine_similarity == 1) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+          style = glue("font-size: {font_size};"),
+          "Identical Models - may or may not be reliable"
+        ),
+        theme = "bg-gradient-orange-yellow",
+        showcase = bs_icon("exclamation-triangle"),
+        style = "width: 100%; height: 120px;"
+    )
+  } else if (cosine_similarity >= cos_threshold && length(good_sigs) > 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "The similarity is great!"
+        ),
+        theme = "bg-gradient-teal-green",
+        showcase = bs_icon("check-square"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if (cosine_similarity == 0 && total_mutations == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("{cosine_similarity}"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "No matches, revise the signature selection"
+        ),
+        theme = "bg-gradient-yellow-orange",
+        showcase = bs_icon("question-lg"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else if ((length(good_sigs) == 0 || total_mutations != 0) && cosine_similarity == 0) {
+      ui <-  value_box(
+        title = "Cosine Similarity",
+        value = glue("0"),
+        tags$p(
+            style = glue("font-size: {font_size};"),
+            "Few mutations present but no significant signature contributions"
+        ),
+        theme = "bg-gradient-red-orange",
+        showcase = bs_icon("exclamation-octagon"),
+        style = "width: 100%; height: 120px;"
+      )
+  } else {
+      ui <-  value_box(
+          title = "Cosine Similarity",
+          value = glue("{cosine_similarity}"),
+          tags$p(
+            style = glue("font-size: {font_size};"),
+            "Too low, revise the signature selection"
+          ),
+          theme = "bg-gradient-red-yellow",
+          showcase = bs_icon("exclamation-diamond"),
+          style = "width: 100%; height: 120px;"
+      )
+  }
+  
+  return(ui)
+}
+```
+
+```{r create_box_and_heatmap, include=FALSE}
+########################################
+##### Create Box Plot and Heatmap ######
+########################################
+create_box_and_heatmap <- function() {
+  good_sigs <- get_good_sigs()
+  type_mut <- gsub('[0-9]+', '', sig_type)
+  
+  exposure_boot <- exposure
+  
+  if (dim(exposure_boot)[1] == 0) {
+    bad_sample_box <- value_box(
+        title = "Error",
+        value = "No optimal model contributions for the sample of interest",
+        theme = "danger",
+        showcase = bs_icon("exclamation-triangle-fill"),
+        style = "width: 80%; height: 160px;"
+      )
+    advanced_list <- list("box_plot" = bad_sample_box, 
+                          "heatmap" = bad_sample_box)
+    
+    return(advanced_list)
+  } else {
+    bootstraps <- bootstrap_df |>
+      mutate(tooltip = c(paste0(Sig, ", ", round(median, 3)))) |>
+      mutate(Sig = fct_reorder(.f = Sig, 
+                              .x = parse_number(as.character(Sig))))
+    
+    box_plot <- ggplot(bootstraps,
+                       aes(x = Sig, 
+                           y = median,
+                           tooltip = tooltip,
+                           fill = Sig %in% good_sigs,
+                           color = Sig %in% good_sigs
+                           )
+                       ) +
+                scale_y_continuous(labels = scales::label_percent()) +
+                stat_boxplot(geom ='errorbar') + 
+                geom_boxplot_interactive(aes(ymin = min, 
+                                             lower = q1, 
+                                             middle = median, 
+                                             upper = q3, 
+                                             ymax = max), 
+                                         stat = "identity", 
+                                         hover_nearest = TRUE) +
+                geom_hline(yintercept = box_plot_thresh, 
+                           color = "#D3494E", 
+                           linetype = "dashed") +
+                ylab("Fraction")  +
+                scale_color_manual(values = c("FALSE" = "#A9A9A9", 
+                                              "TRUE" = "#097969")) +
+                scale_fill_manual(values = c("FALSE" = "grey", 
+                                             "TRUE" = "#AFE1AF")) +
+                theme(
+                  panel.background = element_blank(),
+                  legend.position = "none",
+                  axis.text.x = element_text(size = 6, 
+                                             angle = 90, 
+                                             hjust = 1, 
+                                             vjust = 0.5),
+                  panel.grid.major.y = element_line(colour = "#C1BDBE"),
+                  axis.title.y = element_text(size = 15)
+                )
+    
+    box_plot_interac <- girafe(ggobj = box_plot,
+                  width_svg = 10,
+                  height_svg = 3.5,
+                  options = list(opts_sizing(rescale = FALSE))
+                  )
+    
+    bootstrap_box <- bootstrap_df |>
+      filter(experimental_pval != 1) |>
+      pull(Sig)
+    
+    # HeatMap
+    exposure_boot <- bootstrap_exp_df |>
+      mutate(Sig = fct_reorder(.f = Sig, 
+                                   .x = parse_number(as.character(Sig)))) |>
+      mutate(med = median(ContributionRelative), .by = Sig) |>
+      mutate(tooltip = c(paste0(Sig, ", ", round(med, 2)))) |>
+      select(Sig, Contribution, Type)
+  
+    exposure_boot_heat <- exposure_boot |>
+                mutate(Contribution = ifelse(Contribution == 0, NaN, Contribution))
+    
+    exposure_boot_heat_temporary <- exposure_boot_heat %>%
+      widyr::pairwise_cor(Sig,
+                          Type,
+                          Contribution,
+                          method = 'spearman')
+    
+    exposure_boot_heat_temporary <- exposure_boot_heat_temporary |>
+      mutate(correlation = ifelse(is.na(correlation), NaN, correlation)) |>
+      filter(!is.nan(correlation))
+    
+    # Create the heatmap using ggplot2
+    heatmap_exposure <- ggplot(exposure_boot_heat_temporary, 
+                               aes(x = item2, y = item1, fill = correlation)) +
+      geom_raster() +
+      scale_fill_gradient2(low = "red", 
+                           mid = "white", 
+                           high = "blue", 
+                           midpoint = 0, 
+                           limits = c(-1, 1)) +  
+      theme(
+        panel.background = element_blank(),
+        axis.text.y = element_text(size = 6, family = "Arial"),
+        axis.text.x = element_text(size = 6, 
+                                   angle = 45, 
+                                   hjust = 1, 
+                                   vjust = 0.5, 
+                                   family = "Arial"),
+        panel.grid.major.y = element_line(colour = "#F2F2F2"),
+        panel.grid.major.x = element_line(colour = "#F2F2F2"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.text = element_text(family = "Arial"),
+        legend.title = element_blank()
+      )
+    
+    heatmap_exposure_interac <- ggplotly(heatmap_exposure,
+                                 width = 550,
+                                 height = 500)
+    
+    advanced_list <- list("box_plot" = box_plot_interac, 
+                          "heatmap" = heatmap_exposure_interac)
+    return(advanced_list)
+  }
+}
+```
+
+```{r generate_tsne_colour_pal, include=FALSE}
+color_distance <- function(color1, color2) {
+  sum((as.integer(col2rgb(color1)) - as.integer(col2rgb(color2)))^2)^0.5
+}
+
+generate_distinct_colors <- function(num_colors) {
+  colors <- colors()
+  white_threshold <- 80
+  exclude_colors <- function(color) {
+    color == "red" || color_distance(color, "white") < white_threshold
+  }
+  
+  valid_colors <- colors[!sapply(colors, exclude_colors)]
+  sampled_colors <- sample(valid_colors, num_colors)
+  
+  for (i in seq_along(sampled_colors)) {
+    while (any(color_distance(sampled_colors[i], sampled_colors[-i]) < 100)) {
+      sampled_colors[i] <- sample(valid_colors, 1)
+    }
+  }
+  return(sampled_colors)
+}
+```
+
+```{r reconstructed_against_observed, include=FALSE}
+###########################################################
+#### Plot the Reconstructed against the Observed model ####
+###########################################################
+reconstructed_against_observed <- function() {
+  decomp_observed <- decomp |>
+    mutate(channel = fct_relevel(channel, channel_order)) |>
+    arrange(type) |>
+    mutate(channel = as.character(channel))
+
+  model_temp <- exposure |>
+    rename(signature = Sig, fraction = ContributionRelative) |>
+    filter(signature %in% c(good_sigs)) |>
+    select(signature, fraction) |>
+    arrange(desc(fraction))
+  
+  # Pull out fractions
+  model_temp_fracs <- model_temp |> pull()
+  model_temp_names <- model_temp |> select(signature) |> pull()
+  
+  named_vector <- setNames(model_temp_fracs, model_temp_names)
+
+  model_signature <- sig_combine(cosmic_signatures, model = c(named_vector), format = 'signature')
+
+  model_temp_one <- model_temp |>
+    mutate(equals = "\t-\t\t") |>
+    mutate(percent = paste0(round(fraction * 100, 2), "%")) |>
+    select(signature, equals, percent)
+  
+  temporary <- paste(markdown("**Contributing Signatures:**"),
+        markdown(kable(model_temp_one, col.names = NULL)))
+  
+  if (length(good_sigs) != 0) {
+    text_string_title <- paste(model_temp_one$signature,
+                         "=",
+                         model_temp_one$percent,
+                         collapse = ", ")
+  } else {
+    text_string_title <- 'No Contributing Signatures'
+  }
+  
+  recon_v_observed <- sig_visualise_compare_reconstructed_to_observed(
+    signature = model_signature, 
+    catalogue = decomp_observed,
+    title = text_string_title
+  ) + theme (
+    plot.title = element_text(size = 8),
+    axis.title.y = element_text(size = 8)
+  )
+  
+  recon_interac <- sig_make_interactive(recon_v_observed, 
+                                        width_svg = 6.9, 
+                                        height_svg = 2.7)
+  
+  return(recon_v_observed)
+}
+```
+
+```{r create_reconstructed, include=FALSE}
+##################################
+#### Create the reconstructed ####
+##################################
+good_sigs <- get_good_sigs()
+total_mutations <- get_total_no_mutations()
+
+modify_channel <- function(df) {
+  df %>%
+    mutate(type = str_replace(type, ">(.*)$", ">NN"))
+}
+
+if (sig_type == 'DBS78') {
+  cosmic_signatures <- lapply(cosmic_signatures, modify_channel)
+}
+
+# Convert the sig of interest to only be the type of mutation (i.e. substitution, indel, double base)
+mutation_type <- gsub('[[:digit:]]+', '', sig_type)
+
+reconstructed_df_temp <- exposure |>
+                      collect()
+
+reconstructed_df <- reconstructed_df_temp |>
+  select(Sig, Contribution, ContributionRelative) |>
+  filter(Sig %in% c(good_sigs)) |>
+  mutate(percentage = round(ContributionRelative * 100, 2)) |>
+  arrange(desc(percentage))
+
+assigned <- reconstructed_df |>
+  pull() |>
+  sum()
+
+reconstructed_df <- reconstructed_df |> 
+  mutate(number_muts = round(ContributionRelative * total_mutations, 0))
+
+unassigned_percent <- round(100 - assigned, 2)
+unassigned_count <- round((unassigned_percent / 100) * total_mutations, 0)
+```
+
+```{r create_cohort_contribution, include=FALSE}
+create_cohort_contribution <- function() {
+  dataframe <- parquet_db |> 
+    filter(Sig %in% good_sigs) |>
+    select(sample, Sig, ContributionRelative) |>
+    mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
+  
+  proporiton_exposure_plot <- ggplot(dataframe, 
+                                     aes(x = ContributionRelative,
+                                         y = Sig,
+                                         color = factor(is_sample_of_interest),
+                                         tooltip = c(paste0(sample, ": ",
+                                                            round(ContributionRelative, 4))), 
+                                         data_id = sample,
+                                         onclick = paste0('navigator.clipboard.writeText("',sample,'")'))) +
+    geom_jitter_interactive(data = subset(dataframe,
+                                          is_sample_of_interest == 0),
+                            size = 2, 
+                            color = "black",
+                            hover_nearest = TRUE, 
+                            width = 0, 
+                            height = 0.2) +
+    geom_point_interactive(data = subset(dataframe,
+                                         is_sample_of_interest == 1),
+                           size = 4, 
+                           color = "red", 
+                           hover_nearest = TRUE) +
+    scale_color_manual(values = c("0" = "black", 
+                                  "1" = "red")) +
+    theme(legend.position = "none",
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          panel.background = element_blank(),
+          panel.grid.major = element_line(
+            color = "gray", linewidth = 0.2
+          ),
+          plot.title = element_text_interactive(hjust = 0.5)
+    )
+  
+  proporiton_exposure_plot_interac <- girafe(ggobj = proporiton_exposure_plot,
+                                             width_svg = 9,
+                                             height_svg = 4,
+                                             options = list(opts_sizing(rescale = FALSE))
+  )
+  
+  return(proporiton_exposure_plot_interac)
+}
+```
+
+```{r create_card_sig, include=FALSE}
+####################################
+#### Create reconstructed cards ####
+####################################
+generate_horizontal_bar <- function(percentage, number) {
+  data <- data.frame(
+    category = "Percentage",
+    value = percentage,
+    text1 = paste(percentage, "% or ", number, "/", total_mutations, " mutations")
+  )
+
+  gg <- ggplot(data, aes(x = "", y = value, text = text1)) +
+    geom_bar(stat = "identity", fill = "#6082B6") +
+    geom_text(aes(label = paste(value, "%"), x = 1, y = 100),
+                hjust = 1,
+                size = 3,
+                color = "black"
+              ) +
+    theme_void() +
+    coord_flip() +
+    scale_y_continuous(limits = c(0, 120), expand = c(0, 0)) +
+    theme(axis.line = element_blank(),
+          panel.background = element_blank(),
+          panel.grid = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_blank())
+  
+  if (nrow(parquet_db) != 0) {
+    gg_anim <- ggplotly(gg, width = 335, height = 30) %>%
+      config(displayModeBar = FALSE)
+  } else {
+    gg_anim <- ggplotly(gg, width = 510, height = 30) %>%
+      config(displayModeBar = FALSE)
+  }
+
+  gg_anim <- gg_anim %>%
+    layout(xaxis = list(title = "", 
+                        showticklabels = FALSE),
+           yaxis = list(title = "", 
+                        showticklabels = FALSE)
+    )
+
+  # Remove default hoverinfo and add custom text
+  gg_anim$x$data[[1]]$hoverinfo <- "text"
+  gg_anim$x$data[[1]]$text <- data$text1
+  
+  gg_anim$x$layout$xaxis$fixedrange <- TRUE
+  gg_anim$x$layout$yaxis$fixedrange <- TRUE
+
+  return(gg_anim)
+}
+
+
+create_contribution_plot_single <- function(sig_name) {
+  proportion_exposure <- parquet_db |>
+    filter(Sig == sig_name) |>
+    select(Sig, sample, ContributionRelative) |>
+    mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
+
+  proporiton_exposure_plot <- ggplot(proportion_exposure, 
+                                         aes(x = Sig,
+                                             y = ContributionRelative,
+                                             color = factor(is_sample_of_interest),
+                                             tooltip = c(paste0(
+                                                    sample, ": ",
+                                                    round(ContributionRelative, 4)
+                                                  )
+                                               ),
+                                               data_id = sample,
+                                               onclick = paste0('navigator.clipboard.writeText("',sample,'")')
+                                             )) +
+                          geom_jitter_interactive(data = subset(
+                              proportion_exposure,
+                              is_sample_of_interest == 0),
+                                         size = 1, 
+                                         color = "grey",
+                                         hover_nearest = TRUE, 
+                                         width = 0.2, 
+                                         height = 0.0) +
+                          geom_point_interactive(data = subset(proportion_exposure,
+                                                       is_sample_of_interest == 1),
+                                         size = 3, 
+                                         color = "#FF0000", 
+                                         hover_nearest = TRUE) +
+                          scale_color_manual(values = c("0" = "grey", 
+                                                        "1" = "#FF0000")) +
+                          theme(element_blank()) +
+                          theme(legend.position = "none",
+                                axis.title.y = element_blank(),
+                                axis.title.x = element_blank(),
+                                panel.background = element_blank(),
+                                panel.grid.major = element_line(
+                                  color = "lightgray", size = 0.2
+                                  ),
+                                plot.title = element_text_interactive(hjust = 0.5)
+                                )
+  
+  proporiton_exposure_plot_interac <- girafe(ggobj = proporiton_exposure_plot,
+                width_svg = 1,
+                height_svg = 1.7,
+                options = list(opts_sizing(rescale = FALSE))
+                )
+  
+  return(proporiton_exposure_plot_interac)
+}
+
+
+create_card_sig <- function(sig_name, percentage, number) {
+  plot <- sig_visualise(cosmic_signatures[[sig_name]]) +
+      theme(legend.position = "none", 
+            axis.title.y = element_blank(),
+            axis.text.x = element_text(color = alpha("black", 0)),
+            axis.line.x = element_line(colour = "black"),
+            axis.text=element_text(size=1))
+  
+  if (nrow(parquet_db) != 0) {
+    plot_interac <- girafe(ggobj = plot,
+                                   width_svg = 3.3,
+                                   height_svg = 1.1,
+                                   options = list(opts_sizing(rescale = FALSE)))
+  } else {
+    plot_interac <- girafe(ggobj = plot,
+                                   width_svg = 5.2,
+                                   height_svg = 1.4,
+                                   options = list(opts_sizing(rescale = FALSE)))
+  }
+  
+  data <- data.frame(Category = "Percentage", Percentage = percentage)
+  
+  percentage_contrib_bar <- generate_horizontal_bar(percentage, number)
+  
+  annotations <- sigstash::sig_load_annotations(sig_description) |>
+  filter(signature == sig_name)
+  
+  source_page <- glue('<a href="{annotations$source.page}" target="_blank">{annotations$source.page}</a>')
+  
+  if (grepl('3.4', sig_description)) {
+  # experimentalnot working
+    annotations_string <- paste(
+      annotations$comment, "\n",
+      "**Class**: ", annotations$class, "\n",
+      "**Subclass**: ", annotations$subclass, "\n",
+      "**Aetiology**: ", annotations$aetiology, "\n",
+      "**Proposed Aetiology Support**: ", annotations$aetiology_support, "\n",
+      "**Validated in Orthogonal Techniques?:** ", annotations$replicated_in_additional_studies, "\n",
+      "**Signature Version**: ", annotations$signature_version, "\n",
+      "**Identification Study:** ", annotations$identification_study, "\n",
+      # "**Experimental Validation Study:** ", annotations$experimental_study, "\n",
+      "**Source:** ", annotations$source_page, "\n",
+      sep = "\n"
+    )
+  } else if (grepl('3.3', sig_description)) {
+    annotations_string <- paste(
+      annotations$comment, "\n",
+      "**Class**: ", annotations$class, "\n",
+      "**Subclass**: ", annotations$subclass, "\n",
+      "**Aetiology**: ", annotations$aetiology, "\n",
+      "**Proposed Aetiology Support**: ", annotations$ProposedAetiologySupport, "\n",
+      "**Validated in Orthogonal Techniques?:** ", annotations$ValidatedInOrthogonalTechniques, "\n",
+      "**Signature Version**: ", annotations$SignatureVersion, "\n",
+      "**Identification Study:** ", annotations$IdentificationStudy, "\n",
+      "**Experimental Validation Study:** ", annotations$ExperimentalValidationStudy, "\n",
+      "**Source:** ", source_page, "\n",
+      sep = "\n"
+    )
+  }
+  
+  annotations$aetiology <- ifelse(grepl("artifact", 
+                                        annotations$aetiology, 
+                                        ignore.case = TRUE), 
+                                  "Sequencing artifact", annotations$aetiology)
+  
+  title_string <- paste0(sig_name, " -", annotations$aetiology, " (", percentage ,"%)")
+  
+  if (nrow(parquet_db) != 0) {
+    indiv_contrib <- create_contribution_plot_single(sig_name)
+    x <- card(plot_interac, percentage_contrib_bar)
+    
+    navset_card_tab (
+      full_screen = TRUE,
+      title = title_string,
+      height = 240,
+      nav_panel(
+        shiny::icon("bar-chart"),
+        layout_column_wrap(
+          style = css(grid_template_columns = "1fr 3fr"),
+          indiv_contrib,
+          x
+        )
+      ),
+      nav_panel(
+        shiny::icon("circle-info"),
+        markdown(annotations_string)
+      ),
+      footer = percentage_contrib_bar
+    )
+  } else {
+    x <- plot_interac
+    navset_card_tab (
+      full_screen = TRUE,
+      title = title_string,
+      height = 240,
+      nav_panel(
+        shiny::icon("bar-chart"),
+        plot_interac, 
+        percentage_contrib_bar
+      ),
+      nav_panel(
+        shiny::icon("circle-info"),
+        markdown(annotations_string)
+      ),
+      footer = percentage_contrib_bar
+    )
+  }
+}
+
+# Create the cards
+if (nrow(reconstructed_df) != 0) {
+  sig_cards <- map(1:nrow(reconstructed_df), function(i) {
+    signature_name <- reconstructed_df$Sig[i]
+    percent <- reconstructed_df$percentage[i]
+    number_mutations <- reconstructed_df$Contribution[i]
+    
+    create_card_sig(signature_name, percent, number_mutations)
+  })
+}
+```
+
+```{r generate_horizontal_bar_cosine, include=FALSE}
+generate_horizontal_bar_cosine <- function(cosine) {
+  percentage <- cosine * 100
+  rounded <- round(cosine, 3)
+  
+  data <- data.frame(
+    category = "Percentage",
+    value = percentage,
+    text1 = paste("Cosine Similarity:", rounded)
+  )
+
+  gg <- ggplot(data, aes(x = "", y = value, text = text1)) +
+    geom_bar(stat = "identity", fill = "#6082B6") +
+    geom_text(aes(label = rounded, x = 1, y = 110), 
+                hjust = 1, 
+                size = 3, 
+                color = "black"
+              ) +
+    theme_void() +
+    coord_flip() +
+    scale_y_continuous(limits = c(0, 120), expand = c(0, 0)) +
+    theme(axis.line = element_blank(),
+          panel.background = element_blank(),
+          panel.grid = element_blank())
+  
+  gg_anim <- ggplotly(gg, width = 310, height = 30) %>%
+    config(displayModeBar = FALSE)
+
+  # Remove default hoverinfo and add custom text
+  gg_anim$x$data[[1]]$hoverinfo <- "text"
+  gg_anim$x$data[[1]]$text <- data$text1
+  
+  gg_anim$x$layout$xaxis$fixedrange <- TRUE
+  gg_anim$x$layout$yaxis$fixedrange <- TRUE
+  
+  return(gg_anim)
+}
+```
+
+```{r create_reconstructed_graph_prop, include=FALSE}
+########################################
+#### Create The Reconstructed Graph ####
+########################################
+create_reconstructed_graph_prop <- function() {
+  model_temp <- reconstructed_df |>
+      mutate(fraction = ContributionRelative) |>
+      select(Sig, fraction)
+    
+    # Pull out fractions
+    model_temp_fracs <- model_temp |> pull()
+    model_temp_names <- model_temp |> select(Sig) |> pull()
+    
+    named_vector <- setNames(model_temp_fracs, model_temp_names)
+  
+  model_signature_combine <- sig_combine(cosmic_signatures, model = c(named_vector), format = 'combined')
+  
+  plot_prop_reconstructed <- sig_visualise(model_signature_combine, class = 'model') + 
+    theme_minimal() + 
+    theme(plot.title = element_text_interactive(hjust = 0.5),
+                 plot.subtitle = element_text(hjust = 0.5),
+                 axis.title.y = element_blank(),
+                 axis.title.x = element_blank(),
+                 axis.text.x = element_blank(),
+                 axis.ticks.x = element_blank(),
+                 axis.line.x = element_line(colour = "black"),
+                 panel.background = element_blank(),
+                 plot.background = element_blank(),
+                 panel.grid.major = element_blank(),
+                 panel.grid.minor = element_blank(),
+                 legend.key.size = unit(0.5, "lines"),
+                 legend.text = element_text(size = 8),
+                 legend.title = element_text(size = 8),
+                 legend.position = "bottom"
+          )
+  
+  plot_prop_reconstructed_interac <- girafe(ggobj = plot_prop_reconstructed,
+                                            width_svg = 5,
+                                            height_svg = 1.98,
+                                            options = list(opts_sizing(
+                                              rescale = FALSE)
+                                              )
+                                            )
+  return(plot_prop_reconstructed_interac)
+}
+```
+
+```{r channel_order_df, include=FALSE}
+channel_order_df$total_reconstructed <- 0
+reconstructed_df_vector <- setNames(reconstructed_df$number_muts, reconstructed_df$Sig)
+
+channel_order_df <- channel_order_df |>
+  mutate(channel_orders = fct_relevel(channel_orders, channel_order)) |>
+  arrange(channel_orders)
+
+i <- 1
+while (i <= length(reconstructed_df_vector)) {
+  signature_name <- names(reconstructed_df_vector)[i]
+  
+  cosmic_sigs_stats <- cosmic_signatures[[signature_name]] |>
+                        mutate(channel = fct_relevel(channel, channel_order)) |>
+                        arrange(channel) |> 
+                        mutate(total_muts = fraction * reconstructed_df_vector[[signature_name]]) |>
+                        select(total_muts)
+  
+  channel_order_df$total_reconstructed <- channel_order_df$total_reconstructed + cosmic_sigs_stats$total_muts
+  i <- i + 1
+}
+
+# Round the reconstructed values to the nearest whole number
+channel_order_df <- channel_order_df |>
+                      mutate(total_reconstructed = round(total_reconstructed)) |>
+                      mutate(type = str_sub(channel_orders, 3,5))
+
+channel_order_df$channel_orders <- factor(channel_order_df$channel_orders, levels = channel_order)
+```
+
+```{r create_residual_model, include=FALSE}
+#############################
+#### Residual Model Plot ####
+#############################
+create_residual_model <- function() {
+  residual_thresh <- round(0.075 * total_mutations)
+  
+  decomp_observed_temp <- decomp |>
+                      filter_all(all_vars(!is.na(.))) |>
+                      select(channel, count, type)
+  
+  decomp_observed_temp$channel <- factor(decomp_observed_temp$channel, 
+                                         levels = channel_order)
+  
+  decomp_observed_temp <- decomp_observed_temp |>
+    arrange(channel)
+  
+  channel_order_df_temp <- channel_order_df |>
+    select(channel_orders, total_reconstructed) |>
+    arrange(channel_orders)
+  
+  combined_data <- cbind(channel_order_df_temp, 
+                         decomp_observed_temp[, c("count", "channel", "type")])
+  
+  combined_data <- combined_data |>
+                    mutate(residual = count - total_reconstructed) |>
+                    select(channel_orders, residual, type)
+  
+  string_title <- glue("Note: If a few discrepancies exceed the threshold, being 7.5% of total mutations (±{residual_thresh}) the data may be unreliable. Also if the cosine similarity is not close to 1, then the analysis is most likely invalid.")
+  
+  residual_plot <- combined_data %>%
+    ggplot(
+         aes(x = channel_orders, y = residual, fill = type, 
+             tooltip = c(paste0(channel_orders, ", ", residual)))
+    ) +
+    geom_col_interactive(width = 0.75,
+                         size = 5,
+                         hover_nearest = TRUE) +
+    scale_fill_manual(values = snv_palette) +
+    xlab("Substitution") +
+    ylab("Mutation count") +
+    labs(fill = "Substitution", 
+         title = label_interactive("Discrepancies between model and observed profile",
+                                   tooltip = string_title,
+             hover_css = "fill:magenta;cursor:pointer;"
+           )) +
+    theme(
+      plot.title = element_text_interactive(hjust = 0.5, face = "bold", size = 16),
+      panel.background = element_blank(),
+      axis.text.x = element_text(size = 5, angle = 90, hjust = 1, vjust = 0.5),
+      panel.grid.major.y = element_line(colour = "#C1BDBE"),
+      axis.title.x = element_text(size = 11, vjust = -0.05),
+      axis.title.y = element_text(size = 11)
+    )
+  
+  
+  residual_plot_interac <- girafe(ggobj = residual_plot,
+                width_svg = 10,
+                height_svg = 4.5,
+                options = list(opts_sizing(rescale = FALSE))
+                )
+  
+  return(residual_plot_interac)
+}
+```
+
+```{r similar_cards, include=FALSE}
+###################################
+#### Get Top 5 similar samples ####
+###################################
+generate_observed_similar <- function(sample_id) {
+  file <- paste0('/Users/asanghvi/Downloads/new_sigs/', sig_type, '_catalogue.', sample_id, '.hg19.tally.csv')
+  
+  if(!file.exists(file)) {
+    observed_plot <- ggplot() +
+      annotate("text", x = 0.5, y = 0, label = "No mutations found for this sample", size = 2) +
+      theme_void()
+    
+    gg_text <- girafe(ggobj = observed_plot, 
+                      width_svg = 3.3,
+                      height_svg = 1.05)
+    return(gg_text)
+  }
+  
+  decomposition_observed <- readr::read_csv(file)
+  
+  decomposition_observed <- decomposition_observed |>
+    mutate(channel = fct_relevel(channel, channel_order)) |>
+    arrange(channel)
+  
+  total_mutations <- get_total_no_mutations()
+  
+  # Create Plot
+  observed_plot <- decomposition_observed %>%
+    ggplot(
+         aes(x = channel, y = count, fill = type, 
+             tooltip = c(paste0(channel, ", ", count)))
+    ) + 
+    geom_col_interactive(width = 0.75,
+                         size = 3,
+                         hover_nearest = TRUE) +
+    scale_fill_manual(values = snv_palette) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      panel.background = element_blank(),
+      axis.line.x = element_line(colour = "black"),
+      axis.ticks = element_blank(),
+      legend.position = "none"
+    ) +
+    scale_y_continuous(expand =  expansion(mult = c(0, 0.05)))
+
+  observed_plot_interactive <- girafe(ggobj = observed_plot,
+              width_svg = 3.3,
+              height_svg = 1.05,
+              options = list(opts_sizing(rescale = FALSE))
+              )
+
+  return(observed_plot_interactive)
+}
+
+create_similar_cards <- function(sample_id, cosine) {
+  annotations_string <- get_sample_info(sample_id)
+  plot <- generate_observed_similar(sample_id)
+  plot + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+  
+  percentage_bar <- generate_horizontal_bar_cosine(cosine)
+
+  navset_card_tab (
+    full_screen = TRUE,
+    title = sample_id,
+    nav_panel(
+      "Plot",
+      plot,
+      percentage_bar
+    ), 
+    nav_panel(
+     shiny::icon("circle-info"),
+     markdown(annotations_string)
+    )
+  )
+}
+
+string_col <- paste0("cosine_similarity_", sig_type)
+pairwise_sim_top <- pairwise_sim |>
+  head(5) |>
+  filter_at(vars(all_of(string_col)), all_vars(. != 0))
+
+if (nrow(pairwise_sim_top) != 0) {
+  similar_cards <- map(1:nrow(pairwise_sim_top), function(i) {
+  sample_id <- as.character(pairwise_sim_top[i, "sample"])
+  string_col <- glue('cosine_similarity_', sig_type)
+  cosine_similarity_samples <- as.numeric(pairwise_sim_top[i, string_col])
+
+  create_similar_cards(sample_id, cosine_similarity_samples)
+  })
+}
+```
+
+```{r get_sample_info, include=FALSE}
+#########################################
+##### Get Information about Sample ######
+######################################### THIS ISNT WORKING FOR SOME REASON FOR SAMPLE_ID
+# get_sample_info <- function(sample_id) {
+#   sample_type_interest <- sample_info |>
+#     filter(sample == sample_id)
+#   
+#   sample_type_interest$disease = str_to_title(sample_type_interest$disease)
+# 
+#   sample_string_temp <- paste("**Disease** ", 
+#                               "\n", sample_type_interest$disease, 
+#                               "\n", "**Sample** ", "\n", sample_id, "\n",
+#                               "**Description** ", 
+#                               "\n", sample_type_interest$description, "\n",
+#                               sep = "\n"
+#                         )
+#   return(sample_string_temp)
+# }
+```
+
+```{r make_pie_chart, include=FALSE}
+######################
+### Make Pie Chart ###
+######################
+make_pie_chart <- function(cosine_allowed) {
+  if (nrow(sample_info) == 0) {
+    pie_chart <- ggplot() +
+      annotate("text", x = 0.5, y = 0, label = "No samples were found", size = 10) +
+      theme_void()
+    gg_text <- girafe(ggobj = pie_chart, 
+                      width_svg = 5,
+                      height_svg = 1.7)
+    return(gg_text)
+  }
+  
+  string_col <- glue('cosine_similarity_', sig_type)
+  pairwise_sim_temp <- pairwise_sim |> arrange(sample) 
+  
+  sample_info_cos <- sample_info |> 
+    arrange(sample) |>
+    inner_join(pairwise_sim_temp, by = 'sample')
+  
+  sample_info_cos <- sample_info_cos |>
+    filter(.data[[string_col]] > cosine_allowed)
+  
+  sample_info_temp <- sample_info_cos |>
+    group_by(disease) |>
+    mutate(percentage_share = n() / nrow(sample_info_cos) * 100) |>
+    ungroup() |>
+    select(disease, percentage_share) |>
+    distinct()
+  
+  num_included <- nrow(sample_info_temp)
+  num_string <- paste("Number of samples included: ", num_included)
+  
+  if (num_included == 0) {
+    pie_chart <- ggplot() +
+      annotate("text", x = 0.5, y = 0, label = "No samples were found", size = 10) +
+      theme_void()
+    gg_text <- girafe(ggobj = pie_chart, 
+                      width_svg = 5,
+                      height_svg = 1.7)
+    return(gg_text)
+  } else {
+    pie_chart <- ggplot(sample_info_temp, 
+                        aes(x = "", 
+                            y = percentage_share, 
+                            fill = disease, 
+                            tooltip = paste(disease, ": ", 
+                                            percentage_share, "% ", "-", 
+                                            (percentage_share / 100) * num_included, 
+                                            "sample(s)"))) +
+      geom_bar_interactive(stat = "identity", width = 1) +
+      ggtitle(num_string) +
+      geom_text(aes(label = paste(percentage_share, "%")),
+                color = "white",
+                position = position_stack(vjust = 0.5)) +
+      coord_polar("y") +
+      theme_void() +
+      theme(legend.title = element_blank(),
+            plot.title = element_blank(),
+            legend.position = "right")
+    
+    pie_chart_interac <- girafe(ggobj = pie_chart,
+                                width_svg = 5,
+                                height_svg = 1.7,
+                                options = list(opts_sizing(rescale = FALSE)))
+    return(pie_chart_interac)
+  }
+}
+```
+
+```{r technical_specifcation_card, echo=FALSE}
+####################################
+## Patient and Sample Information ##
+####################################
+string_info_sample <- get_sample_info(sample_of_interest)
+
+sample_info_card_sample <- card(
+  div(class = "card-details",
+      p(class = "text-body", markdown(string_info_sample))
+      ))
+
+##################################
+## Technical Specification Card ##
+##################################
+tech_spec_text <- paste("**Signature Database**", "\n", "\n", sig_description, "\n", "\n",
+  "**Fitting Method**", "\n", "\n", "Sigminer QP",
+  sep = "\n"
+)
+
+tech_spec_card_init <- card(
+  div(class = "card-details",
+      p(class = "text-body", markdown(tech_spec_text))),
+)
+
+info_card_frontend <- layout_column_wrap(
+  tech_spec_card_init,
+  sample_info_card_sample
+)
+```
+
+```{r echo=FALSE}
+info_card_frontend
+```
+
+```{r summarisation_layer_header, echo=FALSE}
+layer_frontend <- div(
+  class = "hidden",
+  markdown("### Summary")
+)
+
+layer_frontend
+```
+
+```{r summary_setup, include=FALSE}
+plotly_overlay <- reconstructed_against_observed() 
+plotly_overlay_copy <- reconstructed_against_observed() + 
+  labs(title = "Reconstructed against Observed Model") +
+  theme(
+    plot.title = element_text(size = 12)
+  )
+
+if (sig_type == 'ID83') {
+  plotly_overlay <- plotly_overlay +
+    theme(
+      legend.key.height = unit(0.4, "cm"),
+      legend.key.width = unit(0.4, "cm")
+    )
+  
+  plotly_overlay_interac <- sig_make_interactive(plotly_overlay, 
+                                            width_svg = 6.9, 
+                                            height_svg = 2.7)
+  
+  plotly_overlay_copy <- plotly_overlay_copy +
+    theme(
+      legend.key.height = unit(0.4, "cm"),
+      legend.key.width = unit(0.4, "cm")
+    )
+  
+  plotly_overlay_interac_copy <- sig_make_interactive(plotly_overlay_copy, 
+                                            width_svg = 10, 
+                                            height_svg = 4.6)
+} else {
+  plotly_overlay_interac <- sig_make_interactive(plotly_overlay, 
+                                          width_svg = 6.9, 
+                                          height_svg = 2.7)
+  
+  plotly_overlay_interac_copy <- sig_make_interactive(plotly_overlay_copy, 
+                                          width_svg = 10, 
+                                          height_svg = 4.6)
+}
+
+total_mutations <- get_total_no_mutations()
+val_box <- get_total_mutations_val_box(total_mutations)
+val_box_summary <- get_total_mutations_val_box_summary(total_mutations)
+
+sigs_included <- get_good_sigs()
+cos_sim <- get_cosine_similarity()
+ui <- cosine_sim_thresh_check(sigs_included, total_mutations, cos_sim)
+ui_summary <- cosine_sim_thresh_check_summary(sigs_included, total_mutations, cos_sim)
+summary_observed <- generate_observed()
+
+if (total_mutations == 0) {
+    summary_string <- "No mutations found, this analysis should be revised and further bootstraps should be performed. Do not use this analysis."
+    summary_colour <- "red"
+} else if (total_mutations < threshold_num_mutations) {
+    summary_string <- "The total number of mutations is too low, this analysis should be revised and further bootstraps should be performed. Do not use this analysis."
+    summary_colour <- "red"
+} else if (cos_sim <= cos_threshold) {
+    summary_string <- "Although the total number of mutations is acceptable, the cosine similarity is too low for the analysis to be considered useful or reliable. Consult the Similar Samples section at the bottom of the report to help find a cause of the problem."
+    summary_colour <- "orange"
+} else {
+    summary_string <- "Since both the total number of mutations and cosine similarity of the signature analysis are acceptable, the analysis can be considered useful. Take note of the discrepancies between the reconstructed and observed profiles, if any difference between the models lie within one mutation, then the sample should be flagged"
+    summary_colour <- "green"
+}
+
+summary_markdown <- paste(
+    "**Summary**: ", summary_string, "\n",
+    "**Significant Signatures**: ", toJSON(sigs_included), "\n",
+    sep = "\n"
+  )
+
+how_to_read <- paste(
+    "**Substitution Catalogue, Reconstructed Profiles and Signatures**: ", "\n",  'The total number of mutations of a certain type ("SBS96", "ID83", "DBS78") can be found in the sample. If the total is too low then the sample may not have significant information to be considered reliable.
+    	
+The reconstructed model shows the observed profile and the a model based on the significant signatures present in the sample. The cosine similarity ranges from 0 to 1 and is a measure of the likeness of the two plots and determines how well the observed model relates to the reconstruction. A low cosine similarity would mean that the observed plot may not be accurate as a result of a poor sample, few mutations or improper analysis. The discrepancy model also shows the differences between the two plots. If a single mutation has a significant proportion of the discrepancies then the sample analysis may not be reliable.', "As well as this, the report has a set of signatures that contribute to the sample's substitution profile. If there is a significant proportion of unassigned mutations (over 40%) then the sample provided may either be too small or that the signature may be unknown. Look at the information in the cards to confirm that the signatures are correct based on context, for example a lung cancer sample would most likely contain SBS4 which is associated with tobacco smoking.", "\n",
+    "**Supplementary Details**: ", "\n", "The supplementary details section show a box plot which shows significant data for all mutations that were tested for in the sample. The algorithm that was used to estimate the signatures contributing to this sample generated multiple solutions via bootstrapping. Signatures that had a median above a 5% threshold for a significant p-value would be considered as being part of the sample, and those signatures that were below were disregarded.
+
+As well as this, the heatmap provides the Spearman's rank correlation coefficients between signatures across all bootstrapped solutions. This represents the signatures' contributions for the particular sample and how they correlate to each other.", "\n",
+    sep = "\n"
+  )
+```
+
+```{r summ_layer_card, echo=FALSE}
+navset_card_tab(
+  title = HTML(paste0('<span style="color: ', summary_colour, ';">Summary of ', sig_type, '</span>')),
+  height = "360px",
+  nav_panel(
+    shiny::icon("bar-chart"),
+    layout_column_wrap(
+      style = css(grid_template_columns = "7fr 4fr"),
+      plotly_overlay_interac,
+      div(
+        val_box,
+        ui
+      )
+    )
+  ),
+  nav_panel(
+    shiny::icon("circle-info"),
+    markdown(summary_markdown)
+  ),
+  nav_panel(
+    shiny::icon("question-circle"),
+    markdown(how_to_read)
+  )
+)
+```
+
+```{r signature_catalogue_card_creator, include=FALSE}
+# Change defualt font size
+if (nrow(reconstructed_df) != 0) {
+    signatures_cards <- layout_column_wrap(
+    width = 1/2,
+    heights_equal = "row", fixed_width = TRUE, fill = TRUE,
+    !!!sig_cards,
+    )
+}
+
+#################################################################
+### Create Value Boxes for Number of mutations and unassigned ###
+#################################################################
+if (total_mutations < threshold_num_mutations) {
+  val_box_sub_total <- value_box(
+        title = glue("Total Number of {sig_type} Mutations"),
+        value = glue("{total_mutations}"),
+        theme = "bg-gradient-yellow-red",
+        showcase = bs_icon("fingerprint"),
+        style = "width: 100%; height: 100px;"
+      )
+} else {
+  val_box_sub_total <- value_box(
+        title = glue("Total Number of {sig_type} Mutations"),
+        value = glue("{total_mutations}"),
+        theme = "bg-gradient-teal-indigo",
+        showcase = bs_icon("fingerprint"),
+        style = "width: 100%; height: 100px;"
+      )
+}
+
+if (unassigned_percent > 50) {
+  val_box_sub_unassigned <- value_box(
+        title = "Unassigned",
+        value = glue("{unassigned_count} ({unassigned_percent}%)"),
+        theme = "bg-gradient-red-orange",
+        showcase = bs_icon("align-start"),
+        style = "width: 100%; height: 10px;"
+      )
+} else if (unassigned_percent > 40 && unassigned_percent <= 50) {
+  val_box_sub_unassigned <- value_box(
+        title = "Unassigned",
+        value = glue("{unassigned_count} ({unassigned_percent}%)"),
+        theme = "bg-gradient-yellow-red",
+        showcase = bs_icon("align-start"),
+        style = "width: 100%; height: 90px;"
+      )
+} else {
+  val_box_sub_unassigned <- value_box(
+        title = "Unassigned",
+        value = glue("{unassigned_count} ({unassigned_percent}%)"),
+        theme = "bg-gradient-teal-indigo",
+        showcase = bs_icon("align-start"),
+        style = "width: 100%; height: 90px;"
+      )
+}
+
+value_boxes <- layout_column_wrap(
+  width = 1,
+  heights_equal = "all", fill = TRUE,
+  val_box_sub_total,
+  val_box_sub_unassigned
+)
+
+if (nrow(reconstructed_df) != 0) {
+  plot_prop_reconstructed_interac <- create_reconstructed_graph_prop()
+} else {
+  plot_prop_reconstructed_interac <- generate_observed_zero_contribution()
+}
+
+sig_contribution_card <- card(
+  height = 250,
+  full_screen = TRUE,
+  card_header("Signature Contribution to Model"),
+  plot_prop_reconstructed_interac
+)
+```
+
+```{r substitution_catalogue_card_creation, include=FALSE}
+observed_frontend <- generate_observed()
+if (length(good_sigs) != 0) {
+  residual_plot_interac <- create_residual_model()
+
+  catalogue_card <- card(
+      height = 550,
+      full_screen = TRUE,
+      card_header("Substitution Catalogue"),
+      div(
+        card_body(
+          min_height = 500,
+          div(
+            class = "d-flex justify-content-center",
+            plotly_overlay_interac_copy
+          )
+        ),
+        card_body(
+          min_height = 510,
+          div(
+            class = "d-flex justify-content-center",
+            residual_plot_interac,
+          ),
+          div(
+            class = "d-flex justify-content-center",
+            observed_frontend
+          )
+        )
+      )
+    )
+} else {
+  catalogue_card <- card(
+    height = 575,
+    full_screen = TRUE,
+    card_header("Substitution Catalogue"),
+    card_body(
+      min_height = 500,
+      div(
+        class = "d-flex justify-content-center",
+        observed_frontend
+      )
+    )
+  )
+}
+
+```
+
+```{r catalogue_cards, echo=FALSE}
+if (total_mutations != 0) {
+  contrib_header <- div(
+      class = "hidden",
+      markdown("### Contributing Signatures")
+  )
+} else {
+  contrib_header <- div(
+    class="hidden",
+    markdown("")
+  )
+}
+
+contrib_header
+
+if (nrow(reconstructed_df) != 0) {
+    signatures_cards
+}
+  
+if (total_mutations > 0) {
+    card(
+      layout_column_wrap(
+        sig_contribution_card,
+        value_boxes
+      )
+    )
+}
+```
+
+```{r pie_chart_card, echo=FALSE}
+div(
+  class = "hidden",
+  markdown("### Similar Samples")
+)
+
+pi_chart <- navset_card_tab(
+  height = 150,
+  full_screen = TRUE,
+  title = "",
+  nav_panel(
+    "0.98",
+    make_pie_chart(0.98)
+  ),
+  nav_panel(
+    "0.95",
+    make_pie_chart(0.95)
+  ),
+  nav_panel(
+    "0.9",
+    make_pie_chart(0.9)
+  ),
+  nav_panel(
+    "0.85",
+    make_pie_chart(0.85)
+  )
+)
+
+similar_samples_val_box <- value_box(
+    title = " ", value = "Similar Samples", shiny::markdown("The pie chart represents all of the cancer sample profiles in Signal's database (broken down by organ) that have a cosine similarity with this sample's profile that is greater than or equal to the given threshold. Lower threshold values are typically less meaningful. Below are the top 5 similar samples compared to the sample."),
+    theme = "bg-gradient-teal-indigo", showcase = NULL, showcase_layout = "left center",
+    full_screen = FALSE, fill = TRUE, height = NULL
+  )
+
+layout_column_wrap(similar_samples_val_box, pi_chart)
+```
+
+```{r similar_sample_card_creation, include=FALSE}
+if (nrow(pairwise_sim_top) != 0) {
+  num_cards <- length(similar_cards)
+  
+  if (num_cards <= 3) {
+    top5 <- layout_column_wrap(
+      width = 1/3,
+      height = 250,
+      heights_equal = "row", fixed_width = TRUE, fill = TRUE,
+      !!!similar_cards
+    )
+  } else {
+    top5 <- layout_column_wrap(
+      width = 1/3,
+      height = 500,
+      heights_equal = "row", fixed_width = TRUE, fill = TRUE,
+      !!!similar_cards
+    )
+  }
+}
+
+if (nrow(parquet_db) != 0) {
+  proporiton_exposure_plot_interac <- create_cohort_contribution()
+}
+```
+
+```{r similar_sample_output, echo=FALSE}
+if (nrow(pairwise_sim_top) != 0) {
+  top5
+} else {
+  card(
+    card_header("Top 5 Similar Samples"),
+    card_body("No similar samples found")
+  )
+}
+```
+
+```{r supplementary_details_creator, include=FALSE}
+supplementary_details <- create_box_and_heatmap()
+```
+
+```{r supplementary_details_card, echo=FALSE}
+if (total_mutations != 0) {
+  contrib_headers <- div(
+    class = "hidden",
+    markdown("### Supplementary Details")
+  )
+} else {
+  contrib_headers <- div(
+    class="hidden",
+    markdown("")
+  )
+}
+
+contrib_headers
+
+if (total_mutations > 0 && length(good_sigs) != 0) {
+    if (nrow(parquet_db) != 0) {
+      card(
+        card_header('Supplementary Details'),
+        div(
+          class = "d-flex justify-content-center",
+          catalogue_card
+        ),
+        "The algorithm that was used to estimate the signatures contributing to this sample generated multiple solutions via bootstrapping. The solution given above corresponds to the median contribution estimate for each signature excluding those whose contribution estimate fell below the sparsity filter threshold (5%) for a significant fraction (p-value) of the solutions (grey boxes). The box plot below provides the contribution estimate distribution for each signature (dashed red line represents sparsity filter threshold).",
+        div(
+            class = "d-flex justify-content-center",
+            supplementary_details$box_plot
+        ),
+        "The heatmap below provides the Spearman's rank correlation coefficients between signatures across all bootstrapped solutions. Clicking on a cell in the heatmap reveals a scatterplot for the given pair of signatures, in which each point represents the signatures' contributions for a particular solution.",
+        div(
+            class = "d-flex justify-content-center",
+            supplementary_details$heatmap
+        ),
+        "The plot compares the contribution for each of the significant signautres in the sample of interest with other samples within the database. The sample of interest is represented by a red dot and you can see the contribution of each signautre in a sample by hovering over any dot.",
+        div(
+          class = "d-flex justify-content-center",
+          proporiton_exposure_plot_interac
+        )
+        
+      )
+    } else {
+      card(
+        card_header('Supplementary Details'),
+        div(
+          class = "d-flex justify-content-center",
+          catalogue_card
+        ),
+        "The algorithm that was used to estimate the signatures contributing to this sample generated multiple solutions via bootstrapping. The solution given above corresponds to the median contribution estimate for each signature excluding those whose contribution estimate fell below the sparsity filter threshold (5%) for a significant fraction (p-value) of the solutions (grey boxes). The box plot below provides the contribution estimate distribution for each signature (dashed red line represents sparsity filter threshold).",
+        div(
+            class = "d-flex justify-content-center",
+            supplementary_details$box_plot
+        ),
+        "The heatmap below provides the Spearman's rank correlation coefficients between signatures across all bootstrapped solutions. Clicking on a cell in the heatmap reveals a scatterplot for the given pair of signatures, in which each point represents the signatures' contributions for a particular solution.",
+        div(
+            class = "d-flex justify-content-center",
+            supplementary_details$heatmap
+        )
+      )
+    }
+} else if (total_mutations > 0 && length(good_sigs) == 0) {
+    card(
+      card_header('Supplementary Details'),
+      div(
+        class = "d-flex justify-content-center",
+        catalogue_card
+      ),
+      "The algorithm that was used to estimate the signatures contributing to this sample generated multiple solutions via bootstrapping. The solution given above corresponds to the median contribution estimate for each signature excluding those whose contribution estimate fell below the sparsity filter threshold (5%) for a significant fraction (p-value) of the solutions (grey boxes). The box plot below provides the contribution estimate distribution for each signature (dashed red line represents sparsity filter threshold).",
+      div(
+          class = "d-flex justify-content-center",
+          supplementary_details$box_plot
+      ),
+      "The heatmap below provides the Spearman's rank correlation coefficients between signatures across all bootstrapped solutions. Clicking on a cell in the heatmap reveals a scatterplot for the given pair of signatures, in which each point represents the signatures' contributions for a particular solution.",
+      div(
+          class = "d-flex justify-content-center",
+          supplementary_details$heatmap
+      )
+    )
+  }
+```
+
+```{r technical_details_card, echo=FALSE}
+#####################################################
+## Technical Details of Signature Analysis Methods ##
+#####################################################
+technical_details <- 'This is where technical details of the mutational signature run will be added ...'
+
+markdown("### Technical Details")
+
+card(
+  card_header("Technical Details of Signature Analysis Methods"),
+  card_body(
+    technical_details
+  )
+)
+```
+
+```{=html}
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+```
