@@ -52,10 +52,7 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
 
   output_directory <- file.path(outdir, sample_of_interest)
   if (!dir.exists(output_directory)) {
-    success <- dir.create(output_directory, recursive = TRUE)
-    if (!success) {
-      stop("Failed to create the directory: ", output_directory)
-    }
+    fs::dir_create(output_directory)
   }
 
   output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'))
