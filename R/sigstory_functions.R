@@ -9,9 +9,10 @@
 #' @param dataset the COSMIC signature dataset being used
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
 #' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
+#' @param outdir the output directory you want to save reports in
 #' @returns full signature html report
 #' @export
-generate_single_report <- function(catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, parquet_path = NULL, sample_information = NULL) {
+generate_single_report <- function(catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, parquet_path = NULL, sample_information = NULL, outdir) {
   expo_file <- catalogue
   bootstrap_file <- bootstraps
   bootstraps_experimental_file <- bootstraps_experimental
@@ -48,11 +49,10 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
   }
 
   path_file = system.file("SignatureAnalysis_Full.rmd", package = "sigstory")
-  try(fs::dir_create(paste0('/results/', sample_of_interest)))
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
-    # output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
+    output_file = paste0('/', outdir, '/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
     params = list(
       sample_of_interest = sample_of_interest,
       sig_type = sig_type,
@@ -87,11 +87,12 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
 #' @param bootstraps3 ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
+#' @param outdir the output directory you want to save reports in
 #' @returns full signature html reports
 #' @export
 generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
                      catalogue2, bootstraps2, tally2, dataset2,
-                     catalogue3, bootstraps3, tally3, dataset3) {
+                     catalogue3, bootstraps3, tally3, dataset3, outdir) {
 
   split_catalogue <- stringr::str_split(catalogue, "\\.")[[1]]
   sample_of_interest_cat <- split_catalogue[2]
@@ -111,11 +112,10 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
   sample_of_interest <- sample_of_interest_cat
 
   path_file = system.file("SignatureAnalysis_Summary.rmd", package = "sigstory")
-  try(fs::dir_create(paste0('/results/', sample_of_interest)))
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
-    # output_file = paste0('/results/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'),
+    output_file = paste0('/', outdir, '/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'),
     params = list(
       sample_of_interest = sample_of_interest,
       cos_threshold = 0.9,
@@ -161,12 +161,13 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param paruqet_path3 the path to a paruqet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
+#' @param outdir the output directory you want to save reports in
 #' @returns full signature html reports
 #' @export
 sigstory <- function(catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, parquet_path = NULL,
                      catalogue2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, similarity2 = NULL, tally2 = NULL, dataset2 = NULL, parquet_path2 = NULL,
                      catalogue3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, similarity3 = NULL, tally3 = NULL, dataset3 = NULL, parquet_path3 = NULL,
-                     sample_information = NULL) {
+                     sample_information = NULL, outidr) {
 
   ######################
   ### Error Checking ###
@@ -213,7 +214,7 @@ sigstory <- function(catalogue, bootstraps, bootstraps_experimental, similarity,
     tally_file <- tally
     sample_file <- sample_information
 
-    generate_single_report(expo_file, bootstrap_file, bootstraps_experimental_file, similarity, tally_file, dataset, parquet_path, sample_file)
+    generate_single_report(expo_file, bootstrap_file, bootstraps_experimental_file, similarity, tally_file, dataset, parquet_path, sample_file, outdir)
 
   } else if (!is.null(catalogue2) && !is.null(bootstraps2) && !is.null(tally2) && !is.null(dataset2) &&
               !is.null(catalogue3) && !is.null(bootstraps3) && !is.null(tally3) && !is.null(dataset3)) {
@@ -224,24 +225,24 @@ sigstory <- function(catalogue, bootstraps, bootstraps_experimental, similarity,
     bootstrap_file <- bootstraps
     bootstraps_experimental_file <- bootstraps_experimental
     tally_file <- tally
-    generate_single_report(expo_file, bootstrap_file, bootstraps_experimental_file, similarity, tally_file, dataset, parquet_path, sample_file)
+    generate_single_report(expo_file, bootstrap_file, bootstraps_experimental_file, similarity, tally_file, dataset, parquet_path, sample_file, outdir)
 
     expo_file2 <- catalogue2
     bootstrap_file2 <- bootstraps2
     bootstraps_experimental_file2 <- bootstraps_experimental2
     tally_file2 <- tally2
-    generate_single_report(expo_file2, bootstrap_file2, bootstraps_experimental_file2, similarity2, tally_file2, dataset2, parquet_path2, sample_file)
+    generate_single_report(expo_file2, bootstrap_file2, bootstraps_experimental_file2, similarity2, tally_file2, dataset2, parquet_path2, sample_file, outdir)
 
     expo_file3 <- catalogue3
     bootstrap_file3 <- bootstraps3
     bootstraps_experimental_file3 <- bootstraps_experimental3
     tally_file3 <- tally3
-    generate_single_report(expo_file3, bootstrap_file3, bootstraps_experimental_file3, similarity3, tally_file3, dataset3, parquet_path3, sample_file)
+    generate_single_report(expo_file3, bootstrap_file3, bootstraps_experimental_file3, similarity3, tally_file3, dataset3, parquet_path3, sample_file, outdir)
 
     # Summary Layer
     generate_summary_layer(catalogue, bootstraps, tally, dataset,
                            catalogue2, bootstraps2, tally2, dataset2,
-                           catalogue3, bootstraps3, tally3, dataset3)
+                           catalogue3, bootstraps3, tally3, dataset3, outdir)
 
   } else {
     stop("No files were created, ensure no NULL values are being passed in")
