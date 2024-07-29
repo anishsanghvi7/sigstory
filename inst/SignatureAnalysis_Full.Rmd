@@ -1461,6 +1461,27 @@ create_residual_model <- function() {
 }
 ```
 
+```{r get_sample_info, include=FALSE}
+#########################################
+##### Get Information about Sample ######
+#########################################
+get_sample_info <- function(sample_id) {
+  sample_type_interest <- sample_info |>
+    filter(sample == sample_id)
+
+  sample_type_interest$disease = str_to_title(sample_type_interest$disease)
+
+  sample_string_temp <- paste("**Disease** ",
+                              "\n", sample_type_interest$disease,
+                              "\n", "**Sample** ", "\n", sample_id, "\n",
+                              "**Description** ",
+                              "\n", sample_type_interest$description, "\n",
+                              sep = "\n"
+                        )
+  return(sample_string_temp)
+}
+```
+
 ```{r similar_cards, include=FALSE}
 ###################################
 #### Get Top 5 similar samples ####
@@ -1554,27 +1575,6 @@ if (nrow(pairwise_sim_top) != 0) {
   create_similar_cards(sample_id, cosine_similarity_samples)
   })
 }
-```
-
-```{r get_sample_info, include=FALSE}
-#########################################
-##### Get Information about Sample ######
-######################################### THIS ISNT WORKING FOR SOME REASON FOR SAMPLE_ID
-# get_sample_info <- function(sample_id) {
-#   sample_type_interest <- sample_info |>
-#     filter(sample == sample_id)
-#   
-#   sample_type_interest$disease = str_to_title(sample_type_interest$disease)
-# 
-#   sample_string_temp <- paste("**Disease** ", 
-#                               "\n", sample_type_interest$disease, 
-#                               "\n", "**Sample** ", "\n", sample_id, "\n",
-#                               "**Description** ", 
-#                               "\n", sample_type_interest$description, "\n",
-#                               sep = "\n"
-#                         )
-#   return(sample_string_temp)
-# }
 ```
 
 ```{r make_pie_chart, include=FALSE}
@@ -2128,3 +2128,4 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
+
