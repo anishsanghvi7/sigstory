@@ -5,6 +5,7 @@
 \title{Sigstory}
 \usage{
 sigstory(
+  outdir,
   catalogue,
   bootstraps,
   bootstraps_experimental,
@@ -30,6 +31,8 @@ sigstory(
 )
 }
 \arguments{
+\item{outdir}{the output directory you want to save reports in}
+
 \item{catalogue}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps}{SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature}

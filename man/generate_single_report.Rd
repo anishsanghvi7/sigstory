@@ -12,7 +12,8 @@ generate_single_report(
   tally,
   dataset,
   parquet_path = NULL,
-  sample_information = NULL
+  sample_information = NULL,
+  outdir
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ generate_single_report(
 \item{parquet_path}{a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)}
 
 \item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
+
+\item{outdir}{the output directory you want to save reports in}
 
 \item{bootstraps_experimenal}{.expo_bootstraps file path which contain the experimental bootstrap statistics for each signature}
 }

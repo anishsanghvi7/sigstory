@@ -5,6 +5,7 @@
 \title{Generate Summary Layer}
 \usage{
 generate_summary_layer(
+  outdir,
   catalogue,
   bootstraps,
   tally,
@@ -20,6 +21,8 @@ generate_summary_layer(
 )
 }
 \arguments{
+\item{outdir}{the output directory you want to save reports in}
+
 \item{catalogue}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps}{SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
@@ -28,7 +31,7 @@ generate_summary_layer(
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
-\item{catalogue2}{DBS78 .expo file path which conntains the optimal contributions of signatures in the sample}
+\item{catalogue2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps2}{DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
@@ -36,7 +39,7 @@ generate_summary_layer(
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
-\item{catalogue3}{ID83 .expo file path which conntains the optimal contributions of signatures in the sample}
+\item{catalogue3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps3}{ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
 

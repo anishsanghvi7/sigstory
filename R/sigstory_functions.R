@@ -49,10 +49,20 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
   }
 
   path_file = system.file("SignatureAnalysis_Full.rmd", package = "sigstory")
+
+  output_directory <- file.path(outdir, sample_of_interest)
+  if (!dir.exists(output_directory)) {
+    success <- dir.create(output_directory, recursive = TRUE)
+    if (!success) {
+      stop("Failed to create the directory: ", output_directory)
+    }
+  }
+
+  output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'))
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
-    output_file = paste0('/', outdir, '/', sample_of_interest, '/MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'),
+    output_file = output_file,
     params = list(
       sample_of_interest = sample_of_interest,
       sig_type = sig_type,
@@ -75,24 +85,24 @@ generate_single_report <- function(catalogue, bootstraps, bootstraps_experimenta
 #' DBS78.expo file, DBS78.bootstrap file, DBS78.tally file, DBS78.dataset, ID83.expo file,
 #' ID83.bootstrap file, ID83.tally file, ID83.dataset).
 #'
+#' @param outdir the output directory you want to save reports in
 #' @param catalogue SBS96 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally SBS96 .tally file path which contain the decompositions of the mutations
 #' @param dataset the COSMIC signature dataset being used for SBS96
-#' @param catalogue2 DBS78 .expo file path which conntains the optimal contributions of signatures in the sample
+#' @param catalogue2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally2 DBS78 .tally file path which contain the decompositions of the mutations
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
-#' @param catalogue3 ID83 .expo file path which conntains the optimal contributions of signatures in the sample
+#' @param catalogue3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
-#' @param outdir the output directory you want to save reports in
 #' @returns full signature html reports
 #' @export
-generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
+generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset,
                      catalogue2, bootstraps2, tally2, dataset2,
-                     catalogue3, bootstraps3, tally3, dataset3, outdir) {
+                     catalogue3, bootstraps3, tally3, dataset3) {
 
   split_catalogue <- stringr::str_split(catalogue, "\\.")[[1]]
   sample_of_interest_cat <- split_catalogue[2]
@@ -112,6 +122,7 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
   sample_of_interest <- sample_of_interest_cat
 
   path_file = system.file("SignatureAnalysis_Summary.rmd", package = "sigstory")
+  try(fs::dir_create(paste0('/', outdir, '/' ,sample_of_interest)))
   rmarkdown::render(
     input = path_file,
     output_format = 'html_document',
@@ -142,6 +153,7 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
 #' DBS78.expo file, DBS78.bootstrap file, DBS78.tally file, DBS78.dataset, DBS78 parquet path, ID83.expo file,
 #' ID83.bootstrap file, ID83.tally file, ID83.dataset, ID83 parquet path).
 #'
+#' @param outdir the output directory you want to save reports in
 #' @param catalogue SBS96 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally SBS96 .tally file path which contain the decompositions of the mutations
@@ -161,13 +173,12 @@ generate_summary_layer <- function(catalogue, bootstraps, tally, dataset,
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param paruqet_path3 the path to a paruqet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
-#' @param outdir the output directory you want to save reports in
 #' @returns full signature html reports
 #' @export
-sigstory <- function(catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, parquet_path = NULL,
+sigstory <- function(outdir, catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, parquet_path = NULL,
                      catalogue2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, similarity2 = NULL, tally2 = NULL, dataset2 = NULL, parquet_path2 = NULL,
                      catalogue3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, similarity3 = NULL, tally3 = NULL, dataset3 = NULL, parquet_path3 = NULL,
-                     sample_information = NULL, outidr) {
+                     sample_information = NULL) {
 
   ######################
   ### Error Checking ###
