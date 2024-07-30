@@ -17,7 +17,9 @@ generate_summary_layer(
   catalogue3,
   bootstraps3,
   tally3,
-  dataset3
+  dataset3,
+  sample_information,
+  dimensionality_reduction_overall
 )
 }
 \arguments{
@@ -47,7 +49,9 @@ generate_summary_layer(
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
-\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database}
+\item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
+
+\item{dimensionality_reduction_overall}{the dimensionality reduction of all samples in the database}
 }
 \value{
 full signature html reports

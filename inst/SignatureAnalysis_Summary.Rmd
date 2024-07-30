@@ -84,6 +84,10 @@ params:
     label: "Path to where the files should be saved to"
     value: "results"
     input: text
+  sample_information:
+    label: "Path to a .metadata.csv file which contains sample information of all samples in the database"
+    value: "Enter Here"
+    input: text
   dimensionality_reduction:
     label: "Path to a .csv file which contains the dimensionality reduction for samples in the database"
     value: "Enter here"
@@ -126,6 +130,7 @@ threshold_num_mutations_ID83 <- 2
 # Output Directory + TSNE
 output_dir <- params$outdir
 dimensionality_reduction <- params$dimensionality_reduction
+sample_info_file <- params$sample_information
 ```
 
 ```{r read_csv_file, include=FALSE}
@@ -271,6 +276,15 @@ if (file.exists(bootstraps_param_id)) {
                    outliers = numeric(),
                    experimental_pval = numeric(),
                    stringsAsFactors = FALSE)
+}
+
+# Sample Information
+if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
+  sample_info <- readr::read_csv(sample_info_param)
+} else {
+  sample_info <- data.frame(sample = character(),
+                            disease = character(),
+                            description = character())
 }
 
 # TSNE Dimensionality Reduction
@@ -1150,3 +1164,4 @@ card(
   )
 )
 ```
+

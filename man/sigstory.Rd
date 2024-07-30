@@ -30,7 +30,8 @@ sigstory(
   dataset3 = NULL,
   dimensionality_reduction3 = NULL,
   parquet_path3 = NULL,
-  sample_information = NULL
+  sample_information = NULL,
+  dimensionality_reduction_overall = NULL
 )
 }
 \arguments{
