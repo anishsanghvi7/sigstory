@@ -55,9 +55,9 @@ generate_single_report <- function(outdir, catalogue, bootstraps, bootstraps_exp
     fs::dir_create(output_directory,  recurse = TRUE)
   }
 
-  output_directory <- normalizePath(output_directory)
+  output_directory <- suppressMessages(normalizePath(output_directory))
   output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'))
-  output_file <-  normalizePath(output_file)
+  output_file <-  suppressMessages(normalizePath(output_file))
 
   rmarkdown::render(
     input = path_file,
@@ -128,9 +128,9 @@ generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset
     fs::dir_create(output_directory,  recurse = TRUE)
   }
 
-  output_directory <- normalizePath(output_directory)
+  output_directory <- suppressMessages(normalizePath(output_directory))
   output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'))
-  output_file <-  normalizePath(output_file)
+  output_file <-  suppressMessages(normalizePath(output_file))
 
   rmarkdown::render(
     input = path_file,
