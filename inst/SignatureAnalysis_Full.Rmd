@@ -2086,8 +2086,6 @@ similar_samples_val_box <- value_box(
     full_screen = FALSE, fill = TRUE, height = NULL
   )
 
-tnse_temporary <- create_tsne()
-
 layout_column_wrap(similar_samples_val_box, pi_chart)
 ```
 
@@ -2127,7 +2125,12 @@ if (nrow(pairwise_sim_top) != 0) {
   )
 }
 
-tnse_temporary
+tsne_plotly <- create_tsne()
+
+tsne_frontend <- card(
+  card_header("T-SNE Plot - Sample Similarity"),
+  tsne_plotly
+)
 ```
 
 ```{r supplementary_details_creator, include=FALSE}
