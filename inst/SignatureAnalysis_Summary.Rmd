@@ -80,6 +80,10 @@ params:
     label: "Path to a .bootstrap_summary.csv file with the ID83 signature level summary of the bootstraps (includes an experimental p-value) of the sample of interest"
     value: "Enter Here"
     input: text
+  outdir:
+    label: "Path to where the files should be saved to"
+    value: "results"
+    input: text
 ---
 
 ```{r setup, include=FALSE}
@@ -114,6 +118,9 @@ catalogue_param_id <- params$catalogue_id83
 tally_param_id <- params$tally_id83
 bootstraps_param_id <- params$bootstraps_id83
 threshold_num_mutations_ID83 <- 2
+
+# Output Directory
+output_dir <- params$outdir
 ```
 
 ```{r read_csv_file, include=FALSE}
@@ -932,7 +939,7 @@ create_summary_card <- function(decomp, exposure, sig_type) {
       sep = "\n"
     )
   
-  report_file <- glue('file:///Users/asanghvi/Desktop/Signature%20Reports/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
+  report_file <- glue('file://{output_dir}/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
 
   title_hyperlink_card <- glue('<a href="{report_file}" target="_blank">{sig_type}</a>')
   

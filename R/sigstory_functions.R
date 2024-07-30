@@ -150,7 +150,8 @@ generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset
       bootstraps_dbs78 = bootstraps2,
       catalogue_id83 = catalogue3,
       tally_id83 = tally3,
-      bootstraps_id83 = bootstraps3
+      bootstraps_id83 = bootstraps3,
+      outdir = outdir
     )
   )
 }
