@@ -2131,6 +2131,8 @@ tsne_frontend <- card(
   card_header("T-SNE Plot - Sample Similarity"),
   tsne_plotly
 )
+
+tsne_frontend
 ```
 
 ```{r supplementary_details_creator, include=FALSE}
@@ -2236,3 +2238,4 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
+
