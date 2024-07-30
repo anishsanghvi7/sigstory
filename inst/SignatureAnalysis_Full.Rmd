@@ -1487,11 +1487,14 @@ get_sample_info <- function(sample_id) {
 #### Get Top 5 similar samples ####
 ###################################
 generate_observed_similar <- function(sample_id) {
-  file <- paste0('/Users/asanghvi/Downloads/new_sigs/', sig_type, '_catalogue.', sample_id, '.hg19.tally.csv')
+  file <- gsub(sample_of_interest, sample_id, tally_param)
   
   if(!file.exists(file)) {
     observed_plot <- ggplot() +
-      annotate("text", x = 0.5, y = 0, label = "No mutations found for this sample", size = 2) +
+      annotate("text", x = 0.5, 
+               y = 0, 
+               label = "No mutations found for this sample", 
+               size = 2) +
       theme_void()
     
     gg_text <- girafe(ggobj = observed_plot, 
@@ -1669,7 +1672,12 @@ tech_spec_text_sig <- paste("**Signature Database**", "\n", "\n", sig_descriptio
   sep = "\n"
 )
 
-tech_spec_text_fitting <- paste("**Fitting Method**", "\n", "\n", "Sigminer QP",
+fitting_method <- exposure |>
+  select(Method) |>
+  distinct() |>
+  pull()
+
+tech_spec_text_fitting <- paste("**Fitting Method**", "\n", "\n", "Sigminer", fitting_method,
   sep = "\n"
 )
 
