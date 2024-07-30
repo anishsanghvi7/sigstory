@@ -45,7 +45,7 @@ sigstory(
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
-\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database for ID83}
+\item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database for SBS96}
 
 \item{catalogue2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
@@ -57,7 +57,7 @@ sigstory(
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
-\item{dimensionality_reduction2}{the dimensionality reduction of the samples in the database for DBS78}
+\item{dimensionality_reduction2}{the dimensionality reduction .csv file of the samples in the database for DBS78}
 
 \item{catalogue3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 
@@ -69,7 +69,11 @@ sigstory(
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
+\item{dimensionality_reduction3}{the dimensionality reduction .csv file of the samples in the database for ID83}
+
 \item{sample_information}{a .metadata.tsv. file which contains sample information}
+
+\item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of the samples in the database across all types}
 
 \item{outdir}{the output directory you want to save reports in}
 

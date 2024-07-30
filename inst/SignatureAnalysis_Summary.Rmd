@@ -288,7 +288,7 @@ if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
 }
 
 # TSNE Dimensionality Reduction
-if (file.exists(dimensionality_reduction)) {
+if (!is.null(dimensionality_reduction) && file.exists(dimensionality_reduction)) {
   tnse_df <- readr::read_csv(dimensionality_reduction)
 } else {
   tsne_df <- data.frame(sample = character(),

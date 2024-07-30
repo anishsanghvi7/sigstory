@@ -28,7 +28,7 @@ generate_single_report(
 
 \item{dataset}{the COSMIC signature dataset being used}
 
-\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database}
+\item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database}
 
 \item{parquet_path}{a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)}
 

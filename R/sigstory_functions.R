@@ -7,7 +7,7 @@
 #' @param bootstraps_experimenal .expo_bootstraps file path which contain the experimental bootstrap statistics for each signature
 #' @param tally .tally file path which contain the decomposition of mutations in the sample
 #' @param dataset the COSMIC signature dataset being used
-#' @param dimensionality_reduction the dimensionality reduction of the samples in the database
+#' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
 #' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
 #' @param outdir the output directory you want to save reports in
@@ -101,7 +101,7 @@ generate_single_report <- function(outdir, catalogue, bootstraps, bootstraps_exp
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
-#' @param dimensionality_reduction_overall the dimensionality reduction of all samples in the database
+#' @param dimensionality_reduction_overall the dimensionality reduction .csv file of all samples in the database across all mutation types
 #' @returns full signature html reports
 #' @export
 generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset,
@@ -176,23 +176,24 @@ generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset
 #' @param tally SBS96 .tally file path which contain the decompositions of the mutations
 #' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset the COSMIC signature dataset being used for SBS96
-#' @param dimensionality_reduction the dimensionality reduction of the samples in the database for SBS96
+#' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database for SBS96
 #' @param paruqet_path the path to a paruqet database for SBS96
 #' @param catalogue2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally2 DBS78 .tally file path which contain the decompositions of the mutations
 #' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
-#' @param dimensionality_reduction2 the dimensionality reduction of the samples in the database for DBS78
+#' @param dimensionality_reduction2 the dimensionality reduction .csv file of the samples in the database for DBS78
 #' @param paruqet_path2 the path to a paruqet database for DBS78
 #' @param catalogue3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
 #' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
-#' @param dimensionality_reduction the dimensionality reduction of the samples in the database for ID83
+#' @param dimensionality_reduction3 the dimensionality reduction .csv file of the samples in the database for ID83
 #' @param paruqet_path3 the path to a paruqet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
+#' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
 #' @returns full signature html reports
 #' @export
 sigstory <- function(outidr, catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, dimensionality_reduction, parquet_path = NULL,

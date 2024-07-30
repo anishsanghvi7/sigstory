@@ -51,7 +51,7 @@ generate_summary_layer(
 
 \item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
 
-\item{dimensionality_reduction_overall}{the dimensionality reduction of all samples in the database}
+\item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of all samples in the database across all mutation types}
 }
 \value{
 full signature html reports
