@@ -949,8 +949,8 @@ create_tsne <- function() {
   
   tsne_plotly <- plot_ly() %>%
     add_trace(data = other_samples,
-              x = ~x,
-              y = ~y,
+              x = ~dim1,
+              y = ~dim2,
               text = ~paste(sample, "-", disease),
               hoverinfo = "text",
               type = "scatter",
@@ -959,8 +959,8 @@ create_tsne <- function() {
               colors = color_palette
     ) %>%
     add_trace(data = sample_of_interest_matrix,
-              x = ~x,
-              y = ~y,
+              x = ~dim1,
+              y = ~dim2,
               text = ~paste(sample, "-", disease),
               hoverinfo = "text",
               type = "scatter",
