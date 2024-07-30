@@ -1157,9 +1157,14 @@ tech_spec_text <- paste("**Signature Databases**", "\n", "\n", "\t\t",
   sep = "\n"
 )
 
+string_info_sample <- paste('**Sample:** ', "\n", "\n", sample_of_interest,
+  sep = "\n"
+)
+
 card(
   card_header("Technical Details of Signature Analysis Methods"),
   card_body(
+    markdown(string_info_sample),
     markdown(tech_spec_text)
   )
 )
