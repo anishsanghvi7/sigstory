@@ -5,7 +5,7 @@
 \title{Sigstory}
 \usage{
 sigstory(
-  outdir,
+  outidr,
   catalogue,
   bootstraps,
   bootstraps_experimental,
@@ -31,8 +31,6 @@ sigstory(
 )
 }
 \arguments{
-\item{outdir}{the output directory you want to save reports in}
-
 \item{catalogue}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps}{SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
@@ -64,6 +62,8 @@ sigstory(
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
 \item{sample_information}{a .metadata.tsv. file which contains sample information}
+
+\item{outdir}{the output directory you want to save reports in}
 
 \item{paruqet_path}{the path to a paruqet database for SBS96}
 

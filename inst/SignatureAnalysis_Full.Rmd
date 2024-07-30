@@ -349,7 +349,7 @@ if (length(parquet_file_path_param) != 0) {
 }
 
 # Sample Information
-if (file.exists(sample_info_param)) {
+if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
   sample_info <- readr::read_csv(sample_info_param)
 } else {
   sample_info <- data.frame(sample = character(),
