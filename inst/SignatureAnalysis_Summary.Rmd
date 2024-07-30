@@ -941,7 +941,7 @@ create_summary_card <- function(decomp, exposure, sig_type) {
   
   current_dir <- getwd()
   
-  report_file <- glue('file://current_dir/{output_dir}/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
+  report_file <- glue('file://{current_dir}/{output_dir}/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
 
   title_hyperlink_card <- glue('<a href="{report_file}" target="_blank">{sig_type}</a>')
   
