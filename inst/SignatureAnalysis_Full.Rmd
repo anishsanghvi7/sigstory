@@ -1653,29 +1653,40 @@ make_pie_chart <- function(cosine_allowed) {
 ####################################
 ## Patient and Sample Information ##
 ####################################
-string_info_sample <- get_sample_info(sample_of_interest)
+string_info_sample <- paste('**Sample:** ', "\n", "\n", sample_of_interest,
+  sep = "\n"
+)
 
 sample_info_card_sample <- card(
   div(class = "card-details",
       p(class = "text-body", markdown(string_info_sample))
       ))
 
-##################################
-## Technical Specification Card ##
-##################################
-tech_spec_text <- paste("**Signature Database**", "\n", "\n", sig_description, "\n", "\n",
-  "**Fitting Method**", "\n", "\n", "Sigminer QP",
+###################################
+## Technical Specification Cards ##
+###################################
+tech_spec_text_sig <- paste("**Signature Database**", "\n", "\n", sig_description,
   sep = "\n"
 )
 
-tech_spec_card_init <- card(
+tech_spec_text_fitting <- paste("**Fitting Method**", "\n", "\n", "Sigminer QP",
+  sep = "\n"
+)
+
+tech_spec_card_init_sig <- card(
   div(class = "card-details",
-      p(class = "text-body", markdown(tech_spec_text))),
+      p(class = "text-body", markdown(tech_spec_text_sig))),
+)
+
+tech_spec_card_init_fit <- card(
+  div(class = "card-details",
+      p(class = "text-body", markdown(tech_spec_text_fitting))),
 )
 
 info_card_frontend <- layout_column_wrap(
-  tech_spec_card_init,
-  sample_info_card_sample
+  sample_info_card_sample,
+  tech_spec_card_init_sig,
+  tech_spec_card_init_fit
 )
 ```
 
