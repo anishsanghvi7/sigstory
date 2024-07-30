@@ -12,6 +12,7 @@ sigstory(
   similarity,
   tally,
   dataset,
+  dimensionality_reduction,
   parquet_path = NULL,
   catalogue2 = NULL,
   bootstraps2 = NULL,
@@ -19,6 +20,7 @@ sigstory(
   similarity2 = NULL,
   tally2 = NULL,
   dataset2 = NULL,
+  dimensionality_reduction2 = NULL,
   parquet_path2 = NULL,
   catalogue3 = NULL,
   bootstraps3 = NULL,
@@ -26,6 +28,7 @@ sigstory(
   similarity3 = NULL,
   tally3 = NULL,
   dataset3 = NULL,
+  dimensionality_reduction3 = NULL,
   parquet_path3 = NULL,
   sample_information = NULL
 )
@@ -41,6 +44,8 @@ sigstory(
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
+\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database for ID83}
+
 \item{catalogue2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps2}{DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
@@ -50,6 +55,8 @@ sigstory(
 \item{tally2}{DBS78 .tally file path which contain the decompositions of the mutations}
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
+
+\item{dimensionality_reduction2}{the dimensionality reduction of the samples in the database for DBS78}
 
 \item{catalogue3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 

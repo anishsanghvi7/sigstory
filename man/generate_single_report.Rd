@@ -12,6 +12,7 @@ generate_single_report(
   similarity,
   tally,
   dataset,
+  dimensionality_reduction,
   parquet_path = NULL,
   sample_information = NULL
 )
@@ -26,6 +27,8 @@ generate_single_report(
 \item{tally}{.tally file path which contain the decomposition of mutations in the sample}
 
 \item{dataset}{the COSMIC signature dataset being used}
+
+\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database}
 
 \item{parquet_path}{a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)}
 

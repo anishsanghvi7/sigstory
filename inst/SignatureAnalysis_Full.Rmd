@@ -63,6 +63,10 @@ params:
     label: "Path to a .metadata.csv file which contains sample information of all samples in the database"
     value: "Enter Here"
     input: text
+  dimensionality_reduction:
+    label: "Path to a .csv file which contains the dimensionality reduction for samples in the database"
+    value: "Enter here"
+    input: text
 ---
 
 ```{r setup, include=FALSE}
@@ -83,6 +87,7 @@ bootstraps_experimental_param <- params$bootstraps_experimental
 pairwise_sim_param <- params$sample_similarity
 parquet_file_path_param <- params$parquet_file_path
 sample_info_param <- params$sample_information
+dimensionality_reduction <- params$dimensionality_reduction
 ```
 
 ```{r css_divider, eval=FALSE, include=FALSE}
@@ -356,6 +361,15 @@ if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
   sample_info <- data.frame(sample = character(),
                             disease = character(),
                             description = character())
+}
+
+# TSNE Dimensionality Reduction
+if (file.exists(dimensionality_reduction)) {
+  tnse_df <- readr::read_csv(dimensionality_reduction)
+} else {
+  tsne_df <- data.frame(sample = character(),
+                        dim1 = numeric(),
+                        dim2 = numeric())
 }
 ```
 
@@ -902,6 +916,97 @@ generate_distinct_colors <- function(num_colors) {
     }
   }
   return(sampled_colors)
+}
+```
+
+```{r create_tsne, include=FALSE}
+########################
+### Create TSNE Plot ###
+########################
+create_tsne <- function() {
+  tsne_df_temp <- tnse_df |>
+    inner_join(sample_info, by = join_by(sample)) |>
+    select(sample, dim1, dim2, disease)
+  
+  return(tsne_df_temp)
+  
+  # contrib_tsne_df <- decomp |>
+  #   filter(class == 'SBS96', count != 0) |>
+  #   select(sampleId, channel, fraction)
+  # 
+  # wide_tsne <- contrib_tsne_df |>
+  #   pivot_wider(names_from = channel,
+  #               values_from = fraction,
+  #               values_fill = 0)
+  # 
+  # wide_tsne_matrix <- as.matrix(wide_tsne[2:ncol(wide_tsne)])
+  # 
+  # set.seed(1)
+  # tsne_out <- Rtsne(wide_tsne_matrix, perplexity = 30)
+  # 
+  # tsne_plot <- data.frame(x = tsne_out$Y[,1], 
+  #                         y = tsne_out$Y[,2])
+  # 
+  # tsne_plot <- tsne_plot |>
+  #   mutate(sampleId = wide_tsne$sampleId) |>
+  #   mutate(is_sample_of_interest = ifelse(sample_of_interest == sampleId, 1, 0))
+  #   
+  # colour_disease <- tsne_plot |>
+  #   left_join(sample_type_of_interest)
+  # 
+  # colour_disease$disease <- str_to_title(colour_disease$disease)
+  # 
+  # ######################
+  # ## Generate colours ##
+  # ######################
+  # 
+  # num_categories <- length(unique(colour_disease$disease))
+  # color_palette <- generate_distinct_colors(num_categories)
+  # 
+  # ##########################
+  # ## Create the TSNE Plot ##
+  # ##########################
+  # tsne_tooltip <- paste(colour_disease$sampleId, "-", colour_disease$disease)
+  # 
+  # sample_of_interest_matrix <- subset(colour_disease, is_sample_of_interest == 1)
+  # other_samples <- subset(colour_disease, is_sample_of_interest == 0)
+  # 
+  # tsne_plotly <- plot_ly() %>%
+  #   add_trace(data = other_samples,
+  #             x = ~x, 
+  #             y = ~y, 
+  #             text = ~paste(sampleId, "-", disease),
+  #             hoverinfo = "text",
+  #             type = "scatter",
+  #             mode = "markers",
+  #             color = ~disease,
+  #             colors = color_palette
+  #   ) %>%
+  #   add_trace(data = sample_of_interest_matrix,
+  #             x = ~x, 
+  #             y = ~y, 
+  #             text = ~paste(sampleId, "-", disease),
+  #             hoverinfo = "text",
+  #             type = "scatter",
+  #             mode = "markers",
+  #             marker = list(color = "red"),
+  #             name = paste("This Sample", 
+  #                          sample_of_interest_matrix$sampleId, sep="\n")
+  #   ) %>%
+  #   layout(xaxis = list(title = "X"),
+  #          yaxis = list(title = "Y"),
+  #          showlegend = TRUE,
+  #          legend = list(
+  #            x = 1.02,
+  #            y = 0.5,
+  #            xanchor = "left",
+  #            yanchor = "middle",
+  #            font = list(size = 8)
+  #          )
+  #   ) %>%
+  #   config(displayModeBar = FALSE)
+  # 
+  # return(tsne_plotly)
 }
 ```
 
@@ -2005,6 +2110,8 @@ similar_samples_val_box <- value_box(
     full_screen = FALSE, fill = TRUE, height = NULL
   )
 
+tnse_temporary <- create_tsne()
+
 layout_column_wrap(similar_samples_val_box, pi_chart)
 ```
 
@@ -2043,6 +2150,8 @@ if (nrow(pairwise_sim_top) != 0) {
     card_body("No similar samples found")
   )
 }
+
+tnse_temporary
 ```
 
 ```{r supplementary_details_creator, include=FALSE}
@@ -2148,3 +2257,4 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
+

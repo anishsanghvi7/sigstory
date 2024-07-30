@@ -46,6 +46,8 @@ generate_summary_layer(
 \item{tally3}{ID83 .tally file path which contain the decompositions of the mutations}
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
+
+\item{dimensionality_reduction}{the dimensionality reduction of the samples in the database}
 }
 \value{
 full signature html reports
