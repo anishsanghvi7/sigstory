@@ -100,12 +100,12 @@ generate_single_report <- function(outdir, catalogue, bootstraps, bootstraps_exp
 #' @param bootstraps3 ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
-#' @param dimensionality_reduction the dimensionality reduction of the samples in the database
+#' @param dimensionality_reduction_overall the dimensionality reduction of all samples in the database
 #' @returns full signature html reports
 #' @export
 generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset,
                      catalogue2, bootstraps2, tally2, dataset2,
-                     catalogue3, bootstraps3, tally3, dataset3) {
+                     catalogue3, bootstraps3, tally3, dataset3, dimensionality_reduction_overall) {
 
   split_catalogue <- stringr::str_split(catalogue, "\\.")[[1]]
   sample_of_interest_cat <- split_catalogue[2]
@@ -154,7 +154,8 @@ generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset
       catalogue_id83 = catalogue3,
       tally_id83 = tally3,
       bootstraps_id83 = bootstraps3,
-      outdir = outdir
+      outdir = outdir,
+      dimensionality_reduction = dimensionality_reduction_overall
     )
   )
 }
@@ -194,7 +195,7 @@ generate_summary_layer <- function(outdir, catalogue, bootstraps, tally, dataset
 sigstory <- function(outidr, catalogue, bootstraps, bootstraps_experimental, similarity, tally, dataset, dimensionality_reduction, parquet_path = NULL,
                      catalogue2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, similarity2 = NULL, tally2 = NULL, dataset2 = NULL, dimensionality_reduction2 = NULL, parquet_path2 = NULL,
                      catalogue3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, similarity3 = NULL, tally3 = NULL, dataset3 = NULL, dimensionality_reduction3 = NULL, parquet_path3 = NULL,
-                     sample_information = NULL) {
+                     sample_information = NULL, dimensionality_reduction_overall = NULL) {
 
   ######################
   ### Error Checking ###
@@ -269,7 +270,7 @@ sigstory <- function(outidr, catalogue, bootstraps, bootstraps_experimental, sim
     # Summary Layer
     generate_summary_layer(outdir, catalogue, bootstraps, tally, dataset,
                            catalogue2, bootstraps2, tally2, dataset2,
-                           catalogue3, bootstraps3, tally3, dataset3)
+                           catalogue3, bootstraps3, tally3, dataset3, dimensionality_reduction_overall)
 
   } else {
     stop("No files were created, ensure no NULL values are being passed in")

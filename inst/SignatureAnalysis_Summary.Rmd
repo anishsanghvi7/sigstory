@@ -84,6 +84,10 @@ params:
     label: "Path to where the files should be saved to"
     value: "results"
     input: text
+  dimensionality_reduction:
+    label: "Path to a .csv file which contains the dimensionality reduction for samples in the database"
+    value: "Enter here"
+    input: text
 ---
 
 ```{r setup, include=FALSE}
@@ -119,8 +123,9 @@ tally_param_id <- params$tally_id83
 bootstraps_param_id <- params$bootstraps_id83
 threshold_num_mutations_ID83 <- 2
 
-# Output Directory
+# Output Directory + TSNE
 output_dir <- params$outdir
+dimensionality_reduction <- params$dimensionality_reduction
 ```
 
 ```{r read_csv_file, include=FALSE}
@@ -266,6 +271,15 @@ if (file.exists(bootstraps_param_id)) {
                    outliers = numeric(),
                    experimental_pval = numeric(),
                    stringsAsFactors = FALSE)
+}
+
+# TSNE Dimensionality Reduction
+if (file.exists(dimensionality_reduction)) {
+  tnse_df <- readr::read_csv(dimensionality_reduction)
+} else {
+  tsne_df <- data.frame(sample = character(),
+                        dim1 = numeric(),
+                        dim2 = numeric())
 }
 ```
 
@@ -784,6 +798,97 @@ reconstructed_against_observed <- function(decomp) {
 }
 ```
 
+```{r generate_tsne_colour_pal, include=FALSE}
+color_distance <- function(color1, color2) {
+  sum((as.integer(col2rgb(color1)) - as.integer(col2rgb(color2)))^2)^0.5
+}
+
+generate_distinct_colors <- function(num_colors) {
+  colors <- colors()
+  white_threshold <- 80
+  exclude_colors <- function(color) {
+    color == "red" || color_distance(color, "white") < white_threshold
+  }
+  
+  valid_colors <- colors[!sapply(colors, exclude_colors)]
+  sampled_colors <- sample(valid_colors, num_colors)
+  
+  for (i in seq_along(sampled_colors)) {
+    while (any(color_distance(sampled_colors[i], sampled_colors[-i]) < 100)) {
+      sampled_colors[i] <- sample(valid_colors, 1)
+    }
+  }
+  return(sampled_colors)
+}
+```
+
+```{r create_tsne, include=FALSE}
+########################
+### Create TSNE Plot ###
+########################
+create_tsne <- function() {
+  tsne_df_temp <- tnse_df |>
+    inner_join(sample_info, by = join_by(sample)) |>
+    select(sample, dim1, dim2, disease)
+  
+  tsne_plot <- tsne_df_temp |>
+    mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
+
+  tsne_plot$disease <- str_to_title(tsne_plot$disease)
+
+  ######################
+  ## Generate colours ##
+  ######################
+  num_categories <- length(unique(tsne_plot$disease))
+  color_palette <- generate_distinct_colors(num_categories)
+
+  ##########################
+  ## Create the TSNE Plot ##
+  ##########################
+  tsne_tooltip <- paste(tsne_plot$sample, "-", tsne_plot$disease)
+
+  sample_of_interest_matrix <- subset(tsne_plot, is_sample_of_interest == 1)
+  other_samples <- subset(tsne_plot, is_sample_of_interest == 0)
+  
+  tsne_plotly <- plot_ly() %>%
+    add_trace(data = other_samples,
+              x = ~dim1,
+              y = ~dim2,
+              text = ~paste(sample, "-", disease),
+              hoverinfo = "text",
+              type = "scatter",
+              mode = "markers",
+              color = ~disease,
+              colors = color_palette
+    ) %>%
+    add_trace(data = sample_of_interest_matrix,
+              x = ~dim1,
+              y = ~dim2,
+              text = ~paste(sample, "-", disease),
+              hoverinfo = "text",
+              type = "scatter",
+              mode = "markers",
+              marker = list(color = "red"),
+              name = paste("This Sample",
+                           sample_of_interest_matrix$sample, sep="\n")
+    ) %>%
+    layout(xaxis = list(title = "X"),
+           yaxis = list(title = "Y"),
+           showlegend = TRUE,
+           legend = list(
+             x = 1.02,
+             y = 0.5,
+             xanchor = "left",
+             yanchor = "middle",
+             font = list(size = 8)
+           )
+    ) %>%
+    config(displayModeBar = FALSE)
+
+  return(tsne_plotly)
+}
+```
+
 ```{r create_summary_cards, include=FALSE}
 create_summary_card <- function(decomp, exposure, sig_type) {
   ##################################
@@ -1015,6 +1120,15 @@ layout_column_wrap(
   width = 1,
   summary_cards
 )
+
+tsne_plotly <- create_tsne()
+
+tsne_frontend <- card(
+  card_header("T-SNE Plot - Sample Similarity"),
+  tsne_plotly
+)
+
+tsne_frontend
 ```
 
 ```{r technical_details_card, echo=FALSE}
