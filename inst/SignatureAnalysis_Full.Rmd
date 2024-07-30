@@ -930,9 +930,6 @@ create_tsne <- function() {
   
   tsne_plot <- tsne_df_temp |>
     mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
-  
-  colour_disease <- tsne_plot |>
-    left_join(sample_type_of_interest)
 
   tsne_plot$disease <- str_to_title(tsne_plot$disease)
 
