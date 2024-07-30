@@ -940,9 +940,7 @@ create_summary_card <- function(decomp, exposure, sig_type) {
       sep = "\n"
     )
   
-  # output_directory <- normalizePath(output_dir)
-  output_directory <- file.path(here::here(), output_dir)
-  
+  output_directory <- normalizePath(output_dir)
   report_file <- glue('file://{output_directory}/{sample_of_interest}/MutationalSignatureAnalysis_{sample_of_interest}_{sig_type}.html')
 
   title_hyperlink_card <- glue('<a href="{report_file}" target="_blank">{sig_type}</a>')
@@ -1038,4 +1036,3 @@ card(
   )
 )
 ```
-
