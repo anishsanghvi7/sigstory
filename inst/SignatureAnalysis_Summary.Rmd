@@ -130,7 +130,7 @@ threshold_num_mutations_ID83 <- 2
 # Output Directory + TSNE
 output_dir <- params$outdir
 dimensionality_reduction <- params$dimensionality_reduction
-sample_info_file <- params$sample_information
+sample_info_param <- params$sample_information
 ```
 
 ```{r read_csv_file, include=FALSE}
@@ -1164,4 +1164,3 @@ card(
   )
 )
 ```
-
