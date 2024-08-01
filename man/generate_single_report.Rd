@@ -6,7 +6,7 @@
 \usage{
 generate_single_report(
   outdir,
-  catalogue,
+  exposures,
   bootstraps,
   bootstraps_experimental,
   similarity,
@@ -20,9 +20,11 @@ generate_single_report(
 \arguments{
 \item{outdir}{the output directory you want to save reports in}
 
-\item{catalogue}{.expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures}{.expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps}{.bootstrap_summary file path which contains the optimal bootstrap statistics for each signature}
+
+\item{bootstraps_experimental}{.expo_bootstraps file path which contain the experimental bootstrap statistics for each signature}
 
 \item{tally}{.tally file path which contain the decomposition of mutations in the sample}
 
@@ -33,8 +35,6 @@ generate_single_report(
 \item{parquet_path}{a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)}
 
 \item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
-
-\item{bootstraps_experimenal}{.expo_bootstraps file path which contain the experimental bootstrap statistics for each signature}
 }
 \value{
 full signature html report

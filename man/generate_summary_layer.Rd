@@ -6,15 +6,15 @@
 \usage{
 generate_summary_layer(
   outdir,
-  catalogue,
+  exposures,
   bootstraps,
   tally,
   dataset,
-  catalogue2,
+  exposures2,
   bootstraps2,
   tally2,
   dataset2,
-  catalogue3,
+  exposures3,
   bootstraps3,
   tally3,
   dataset3,
@@ -25,25 +25,25 @@ generate_summary_layer(
 \arguments{
 \item{outdir}{the output directory you want to save reports in}
 
-\item{catalogue}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps}{SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps}{SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
 \item{tally}{SBS96 .tally file path which contain the decompositions of the mutations}
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
-\item{catalogue2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps2}{DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps2}{DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
 \item{tally2}{DBS78 .tally file path which contain the decompositions of the mutations}
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
-\item{catalogue3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps3}{ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps3}{ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
 \item{tally3}{ID83 .tally file path which contain the decompositions of the mutations}
 

@@ -35,7 +35,7 @@ params:
       'COSMIC_v2_SBS_GRCh38', 
       'COSMIC_v2_SBS_GRCh37'
       ]
-  catalogue:
+  exposures:
     label: "Path to a .expo.csv file with the model contributions for the sample of interest"
     value: "Enter Here"
     input: text
@@ -80,7 +80,7 @@ knitr::opts_chunk$set(echo = TRUE)
 sample_of_interest <- params$sample_of_interest
 sig_type <- params$sig_type
 sig_description <- params$sig_description
-catalogue_param <- params$catalogue
+exposures_param <- params$exposures
 tally_param <- params$tally
 bootstraps_param <- params$bootstraps
 bootstraps_experimental_param <- params$bootstraps_experimental
@@ -278,8 +278,8 @@ channel_order_df <- data.frame(channel_orders = channel_order,
 
 ```{r reading_csv_file_inputs, include=FALSE}
 # Exposure
-if (file.exists(catalogue_param)) {
-  exposure <- readr::read_csv(catalogue_param)
+if (file.exists(exposures_param)) {
+  exposure <- readr::read_csv(exposures_param)
 } else {
   exposure <- data.frame(Method = character(),
                    Sig = character(),
@@ -988,9 +988,14 @@ create_tsne <- function() {
 
 ```{r reconstructed_against_observed, include=FALSE}
 ###########################################################
-#### Plot the Reconstructed against the Observed model ####
+#### Plot the Reconstructed against the Observed Model ####
 ###########################################################
 reconstructed_against_observed <- function() {
+  if (nrow(decomp) == 0 || nrow(exposure) == 0) {
+    
+  }
+  
+  
   decomp_observed <- decomp |>
     mutate(channel = fct_relevel(channel, channel_order)) |>
     arrange(type) |>

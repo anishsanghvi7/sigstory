@@ -44,7 +44,7 @@ params:
       'COSMIC_v3.4_ID_GRCh37',
       'COSMIC_v3.3_ID_GRCh37'
       ]
-  catalogue_sbs96:
+  exposures_sbs96:
     label: "Path to a .expo.csv file with the model contributions of SBS96 in the sample"
     value: "Enter Here"
     input: text
@@ -56,7 +56,7 @@ params:
     label: "Path to a .bootstrap_summary.csv file with the SBS96 signature level summary of the bootstraps (includes an experimental p-value) of the sample"
     value: "Enter Here"
     input: text
-  catalogue_dbs78:
+  exposures_dbs78:
     label: "Path to a .expo.csv file with the model contributions of DBS78 in the sample"
     value: "Enter Here"
     input: text
@@ -68,7 +68,7 @@ params:
     label: "Path to a .bootstrap_summary.csv file with the DBS78 signature level summary of the bootstraps (includes an experimental p-value) of the sample of interest"
     value: "Enter Here"
     input: text
-  catalogue_id83:
+  exposures_id83:
     label: "Path to a .expo.csv file with the model contributions of ID83 in the sample"
     value: "Enter Here"
     input: text
@@ -108,21 +108,21 @@ mutation_types <- list('SBS96', 'DBS78', 'ID83')
 
 # SBS96
 sig_description_sbs <- params$sig_description_sbs96
-catalogue_param_sbs <- params$catalogue_sbs96
+exposures_param_sbs <- params$exposures_sbs96
 tally_param_sbs <- params$tally_sbs96
 bootstraps_param_sbs <- params$bootstraps_sbs96
 threshold_num_mutations_SBS96 <- 150
 
 # DBS78
 sig_description_dbs <- params$sig_description_dbs78
-catalogue_param_dbs <- params$catalogue_dbs78
+exposures_param_dbs <- params$exposures_dbs78
 tally_param_dbs <- params$tally_dbs78
 bootstraps_param_dbs <- params$bootstraps_dbs78
 threshold_num_mutations_DBS78 <- 15
 
 # ID83
 sig_description_id <- params$sig_description_id83
-catalogue_param_id <- params$catalogue_id83
+exposures_param_id <- params$exposures_id83
 tally_param_id <- params$tally_id83
 bootstraps_param_id <- params$bootstraps_id83
 threshold_num_mutations_ID83 <- 2
@@ -138,8 +138,8 @@ sample_info_param <- params$sample_information
 ### SBS96 ###
 #############
 # Exposure
-if (file.exists(catalogue_param_sbs)) {
-  exposure_sbs96 <- readr::read_csv(catalogue_param_sbs)
+if (file.exists(exposures_param_sbs)) {
+  exposure_sbs96 <- readr::read_csv(exposures_param_sbs)
   fitting_method <- exposure_sbs96 |>
     select(Method) |>
     pull() |>
@@ -186,9 +186,9 @@ if (file.exists(bootstraps_param_sbs)) {
 ### DBS78 ###
 #############
 # Exposure
-if (file.exists(catalogue_param_dbs)) {
-  exposure_dbs78 <- readr::read_csv(catalogue_param_dbs)
-  fitting_method <- exposure_sbs96 |>
+if (file.exists(exposures_param_dbs)) {
+  exposure_dbs78 <- readr::read_csv(exposures_param_dbs)
+  fitting_method <- exposure_dbs78 |>
     select(Method) |>
     pull() |>
     unique()
@@ -234,9 +234,9 @@ if (file.exists(bootstraps_param_dbs)) {
 ### ID83 ###
 ############
 # Exposure
-if (file.exists(catalogue_param_id)) {
-  exposure_id83 <- readr::read_csv(catalogue_param_id)
-  fitting_method <- exposure_sbs96 |>
+if (file.exists(exposures_param_id)) {
+  exposure_id83 <- readr::read_csv(exposures_param_id)
+  fitting_method <- exposure_id83 |>
     select(Method) |>
     pull() |>
     unique()

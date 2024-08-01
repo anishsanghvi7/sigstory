@@ -6,7 +6,7 @@
 \usage{
 sigstory(
   outidr,
-  catalogue,
+  exposures,
   bootstraps,
   bootstraps_experimental,
   similarity,
@@ -14,7 +14,7 @@ sigstory(
   dataset,
   dimensionality_reduction,
   parquet_path = NULL,
-  catalogue2 = NULL,
+  exposures2 = NULL,
   bootstraps2 = NULL,
   bootstraps_experimental2 = NULL,
   similarity2 = NULL,
@@ -22,7 +22,7 @@ sigstory(
   dataset2 = NULL,
   dimensionality_reduction2 = NULL,
   parquet_path2 = NULL,
-  catalogue3 = NULL,
+  exposures3 = NULL,
   bootstraps3 = NULL,
   bootstraps_experimental3 = NULL,
   similarity3 = NULL,
@@ -35,9 +35,11 @@ sigstory(
 )
 }
 \arguments{
-\item{catalogue}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps}{SBS96 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps}{SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
+
+\item{bootstraps_experimental}{SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
 \item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in. database}
 
@@ -47,9 +49,11 @@ sigstory(
 
 \item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database for SBS96}
 
-\item{catalogue2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps2}{DBS78 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps2}{DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
+
+\item{bootstraps_experimental2}{DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
 \item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in. database}
 
@@ -59,9 +63,11 @@ sigstory(
 
 \item{dimensionality_reduction2}{the dimensionality reduction .csv file of the samples in the database for DBS78}
 
-\item{catalogue3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
+\item{exposures3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 
-\item{bootstraps3}{ID83 .bootstraps file path which contains the optimal bootstrap statistics for each signature}
+\item{bootstraps3}{ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
+
+\item{bootstraps_experimental3}{ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
 \item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in. database}
 
