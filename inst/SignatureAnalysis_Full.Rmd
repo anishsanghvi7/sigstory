@@ -1647,9 +1647,14 @@ create_similar_cards <- function(sample_id, cosine) {
 }
 
 string_col <- paste0("cosine_similarity_", sig_type)
-pairwise_sim_top <- pairwise_sim |>
-  head(5) |>
-  filter_at(vars(all_of(string_col)), all_vars(. != 0))
+
+if (nrow(pairwise_sim) != 0) {
+  pairwise_sim_top <- pairwise_sim |>
+    head(5) |>
+    filter_at(vars(all_of(string_col)), all_vars(. != 0))
+} else {
+  pairwise_sim_top <- pairwise_sim
+}
 
 if (nrow(pairwise_sim_top) != 0) {
   similar_cards <- map(1:nrow(pairwise_sim_top), function(i) {
