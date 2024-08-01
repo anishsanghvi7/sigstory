@@ -178,7 +178,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset the COSMIC signature dataset being used for SBS96
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database for SBS96
-#' @param paruqet_path the path to a paruqet database for SBS96
+#' @param parquet_path the path to a parquet database for SBS96
 #' @param exposures2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental2 DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
@@ -186,7 +186,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
 #' @param dimensionality_reduction2 the dimensionality reduction .csv file of the samples in the database for DBS78
-#' @param paruqet_path2 the path to a paruqet database for DBS78
+#' @param parquet_path2 the path to a parquet database for DBS78
 #' @param exposures3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental3 ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
@@ -194,7 +194,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param dimensionality_reduction3 the dimensionality reduction .csv file of the samples in the database for ID83
-#' @param paruqet_path3 the path to a paruqet database for ID83
+#' @param parquet_path3 the path to a parquet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
 #' @returns full signature html reports

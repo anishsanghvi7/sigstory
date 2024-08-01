@@ -1152,7 +1152,7 @@ tsne_frontend
 tech_spec_text <- paste("**Signature Databases**", "\n", "\n", "\t\t",
                         "- **SBS96:**",  sig_description_sbs, "\n", "\n", "\t\t",
                         "- **DBS78:**",  sig_description_dbs, "\n", "\n", "\t\t",
-                        "- **ID83:**",  sig_description_id, "\n", "\n",
+                        "- **ID83:**",  sig_description_id, "\n",
   "**Fitting Method**", "\n", "\n", "Sigminer", fitting_method,
   sep = "\n"
 )

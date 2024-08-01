@@ -49,6 +49,8 @@ sigstory(
 
 \item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database for SBS96}
 
+\item{parquet_path}{the path to a parquet database for SBS96}
+
 \item{exposures2}{DBS78 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps2}{DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
@@ -62,6 +64,8 @@ sigstory(
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
 \item{dimensionality_reduction2}{the dimensionality reduction .csv file of the samples in the database for DBS78}
+
+\item{parquet_path2}{the path to a parquet database for DBS78}
 
 \item{exposures3}{ID83 .expo file path which contains the optimal contributions of signatures in the sample}
 
@@ -77,17 +81,13 @@ sigstory(
 
 \item{dimensionality_reduction3}{the dimensionality reduction .csv file of the samples in the database for ID83}
 
+\item{parquet_path3}{the path to a parquet database for ID83}
+
 \item{sample_information}{a .metadata.tsv. file which contains sample information}
 
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of the samples in the database across all types}
 
 \item{outdir}{the output directory you want to save reports in}
-
-\item{paruqet_path}{the path to a paruqet database for SBS96}
-
-\item{paruqet_path2}{the path to a paruqet database for DBS78}
-
-\item{paruqet_path3}{the path to a paruqet database for ID83}
 }
 \value{
 full signature html reports
