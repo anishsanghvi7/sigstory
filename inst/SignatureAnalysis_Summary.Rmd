@@ -864,7 +864,46 @@ create_tsne <- function() {
   sample_of_interest_matrix <- subset(tsne_plot, is_sample_of_interest == 1)
   other_samples <- subset(tsne_plot, is_sample_of_interest == 0)
   
-  tsne_plotly <- plot_ly() %>%
+  check_disease <- other_samples |>
+    select(disease) |>
+    pull()
+  
+  if (length(check_disease) == 0) {
+    tsne_plotly <- plot_ly() %>%
+    add_trace(data = other_samples,
+            x = ~dim1,
+            y = ~dim2,
+            text = ~paste(sample, "-", disease),
+            hoverinfo = "text",
+            type = "scatter",
+            mode = "markers",
+            marker = list(color = "black")
+    ) %>%
+    add_trace(data = sample_of_interest_matrix,
+              x = ~dim1,
+              y = ~dim2,
+              text = ~paste(sample, "-", disease),
+              hoverinfo = "text",
+              type = "scatter",
+              mode = "markers",
+              marker = list(color = "red"),
+              name = paste("This Sample",
+                           sample_of_interest_matrix$sample, sep="\n")
+    ) %>%
+    layout(xaxis = list(title = "X"),
+           yaxis = list(title = "Y"),
+           showlegend = TRUE,
+           legend = list(
+             x = 1.02,
+             y = 0.5,
+             xanchor = "left",
+             yanchor = "middle",
+             font = list(size = 8)
+           )
+    ) %>%
+    config(displayModeBar = FALSE)
+  } else {
+    tsne_plotly <- plot_ly() %>%
     add_trace(data = other_samples,
               x = ~dim1,
               y = ~dim2,
@@ -898,6 +937,7 @@ create_tsne <- function() {
            )
     ) %>%
     config(displayModeBar = FALSE)
+  }
 
   return(tsne_plotly)
 }
