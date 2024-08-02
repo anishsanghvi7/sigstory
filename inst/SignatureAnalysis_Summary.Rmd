@@ -841,7 +841,21 @@ generate_distinct_colors <- function(num_colors) {
 ### Create TSNE Plot ###
 ########################
 create_tsne <- function() {
-  if (nrow(sample_info) == 0) {
+  if(nrow(tnse_df) == 0) {
+    message_plot <- plot_ly(
+      type = "scatter",
+      mode = "text",
+      text = "Dimensionality Reduction File Not Found/Provided",
+      textposition = "middle center",
+      hoverinfo = "none"
+    ) %>%
+      layout(
+        xaxis = list(visible = FALSE),
+        yaxis = list(visible = FALSE),
+        showlegend = FALSE
+      )
+    return(message_plot)
+  } else if (nrow(sample_info) == 0) {
     tsne_plot <- tnse_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
     
