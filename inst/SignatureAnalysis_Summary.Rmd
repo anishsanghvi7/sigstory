@@ -1198,7 +1198,7 @@ if(is.null(dimensionality_reduction)) {
     card_header("T-SNE Plot - Sample Similarity"),
     tsne_plotly
   )
-}s
+}
 
 tsne_frontend
 ```
