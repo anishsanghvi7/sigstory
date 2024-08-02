@@ -1128,7 +1128,7 @@ summary_cards <- map(mutation_types, function(i) {
 ```
 
 ```{r sample_information, echo=FALSE}
-string_info_sample <- paste('**Sample:** ', "\n", "\n", sample_of_interest,
+string_info_sample <- paste('**Sample** ', "\n", "\n", sample_of_interest,
   sep = "\n"
 )
 
@@ -1139,7 +1139,7 @@ dbs_muts <- get_total_no_mutations(decomp_dbs78)
 id_muts <- get_total_no_mutations(decomp_id83)
 
 total_mutations_all <- get_total_no_mutations_all_types(sbs_muts, dbs_muts, id_muts)
-total_muts_text <- paste("**Total Number of mutations Across all Types**", 
+total_muts_text <- paste("**Total Number of Mutations Across All Mutation Types**", 
                          "\n", "\n", total_mutations_all,
                           sep = "\n"
                         )
