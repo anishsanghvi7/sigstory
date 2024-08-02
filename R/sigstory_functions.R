@@ -243,8 +243,8 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, sim
   #######################
   ### Report Creation ###
   #######################
-  if (is.null(exposures2) || is.null(bootstraps2) || is.null(tally2) || is.null(dataset2) ||
-      is.null(exposures3) || is.null(bootstraps3) || is.null(tally3) || is.null(dataset3)) {
+  if (is.null(exposures2) || is.null(bootstraps2) || is.null(bootstraps_experimental2) || is.null(similarity2) || is.null(tally2) || is.null(dimensionality_reduction2) || is.null(dataset2) ||
+      is.null(exposures3) || is.null(bootstraps3) || is.null(bootstraps_experimental3) || is.null(similarity3) || is.null(tally3) || is.null(dimensionality_reduction3) || is.null(dataset3)) {
     # Generate Single Report
     expo_file <- exposures
     bootstrap_file <- bootstraps
@@ -254,8 +254,8 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, sim
 
     generate_single_report(outdir, expo_file, bootstrap_file, bootstraps_experimental_file, similarity, tally_file, dataset, dimensionality_reduction, parquet_path, sample_file)
 
-  } else if (!is.null(exposures2) && !is.null(bootstraps2) && !is.null(tally2) && !is.null(dataset2) &&
-              !is.null(exposures3) && !is.null(bootstraps3) && !is.null(tally3) && !is.null(dataset3)) {
+  } else if (!is.null(exposures2) && !is.null(bootstraps2) && !is.null(bootstraps_experimental2) && !is.null(similarity2) && !is.null(tally2) && !is.null(dimensionality_reduction2) && !is.null(dataset2) &&
+             !is.null(exposures3) && !is.null(bootstraps3) && !is.null(bootstraps_experimental3) && !is.null(similarity3) && !is.null(tally3) && !is.null(dimensionality_reduction3) && !is.null(dataset3)) {
     sample_file <- sample_information
 
     # Create The Individual Reports
