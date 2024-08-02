@@ -877,7 +877,8 @@ create_tsne <- function() {
             hoverinfo = "text",
             type = "scatter",
             mode = "markers",
-            marker = list(color = "black")
+            color = ~disease,
+            colors = "black"
     ) %>%
     add_trace(data = sample_of_interest_matrix,
               x = ~dim1,
