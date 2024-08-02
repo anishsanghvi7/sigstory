@@ -1029,8 +1029,6 @@ create_summary_card <- function(decomp, exposure, sig_type) {
   cos_sim <- round(cos_sim_temp, 9)
   total_mutations <- get_total_no_mutations(decomp)
   total_muts_box <- get_total_mutations_val_box(total_mutations, sig_type)
-  
-  # cos_sim <- get_cosine_similarity(sample_of_interest, sig_type)
   cos_box <- cosine_sim_thresh_check(good_sigs, total_mutations, cos_sim)
 
   summary_observed <- generate_observed(sig_type, decomp)
@@ -1129,6 +1127,30 @@ summary_cards <- map(mutation_types, function(i) {
 })
 ```
 
+```{r sample_information, echo=FALSE}
+string_info_sample <- paste('**Sample:** ', "\n", "\n", sample_of_interest,
+  sep = "\n"
+)
+
+sample_id_card <- card(markdown(string_info_sample))
+
+sbs_muts <- get_total_no_mutations(decomp_sbs96)
+dbs_muts <- get_total_no_mutations(decomp_dbs78)
+id_muts <- get_total_no_mutations(decomp_id83)
+
+total_mutations_all <- get_total_no_mutations_all_types(sbs_muts, dbs_muts, id_muts)
+total_muts_text <- paste("**Total Number of mutations Across all Types**", 
+                         "\n", "\n", total_mutations_all,
+                          sep = "\n"
+                        )
+total_muts_card <- card(markdown(total_muts_text))
+
+layout_column_wrap(
+  sample_id_card,
+  total_muts_card
+)
+```
+
 ```{r summary_layer_cards, echo=FALSE}
 layout_column_wrap(
   width = 1,
@@ -1157,14 +1179,9 @@ tech_spec_text <- paste("**Signature Databases**", "\n", "\n", "\t\t",
   sep = "\n"
 )
 
-string_info_sample <- paste('**Sample:** ', "\n", "\n", sample_of_interest,
-  sep = "\n"
-)
-
 card(
   card_header("Technical Details of Signature Analysis Methods"),
   card_body(
-    markdown(string_info_sample),
     markdown(tech_spec_text)
   )
 )
