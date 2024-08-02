@@ -777,7 +777,7 @@ create_box_and_heatmap <- function() {
   if (dim(exposure_boot)[1] == 0) {
     bad_sample_box <- value_box(
         title = "Error",
-        value = "No optimal model contributions for the sample of interest",
+        value = "No optimal model contributions for the sample",
         theme = "danger",
         showcase = bs_icon("exclamation-triangle-fill"),
         style = "width: 80%; height: 160px;"
