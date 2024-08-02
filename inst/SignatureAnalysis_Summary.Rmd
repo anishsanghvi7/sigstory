@@ -841,7 +841,7 @@ generate_distinct_colors <- function(num_colors) {
 ### Create TSNE Plot ###
 ########################
 create_tsne <- function() {
-  if(!is.null(dimensionality_reduction) || nrow(tnse_df) == 0) {
+  if(is.null(dimensionality_reduction)) {
     message_plot <- plot_ly(
       type = "scatter",
       mode = "text",
