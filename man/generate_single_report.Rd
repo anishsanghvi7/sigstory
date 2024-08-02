@@ -42,5 +42,5 @@ generate_single_report(
 full signature html report
 }
 \description{
-This function auto-generates the signature report.
+This function auto-generates a full mutational signature report.
 }

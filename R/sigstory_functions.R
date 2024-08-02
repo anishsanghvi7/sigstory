@@ -1,6 +1,6 @@
 #' Generate Single Report
 #'
-#' This function auto-generates the signature report.
+#' This function auto-generates a full mutational signature report.
 #'
 #' @param outdir the output directory you want to save reports in
 #' @param exposures .expo file path which contains the optimal contributions of signatures in the sample
