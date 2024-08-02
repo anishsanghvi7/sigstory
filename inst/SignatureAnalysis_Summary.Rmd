@@ -845,7 +845,7 @@ create_tsne <- function() {
     tsne_plot <- tnse_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
     
-    tsne_plotly <- plot_ly(data = data) %>%
+    tsne_plotly <- plot_ly(data = tsne_plot) %>%
     add_trace(
       x = ~dim1,
       y = ~dim2,

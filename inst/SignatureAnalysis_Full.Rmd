@@ -924,6 +924,32 @@ generate_distinct_colors <- function(num_colors) {
 ### Create TSNE Plot ###
 ########################
 create_tsne <- function() {
+  if (nrow(sample_info) == 0) {
+    tsne_plot <- tnse_df |>
+      mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
+    
+    tsne_plotly <- plot_ly(data = tsne_plot) %>%
+    add_trace(
+      x = ~dim1,
+      y = ~dim2,
+      text = ~paste("Sample:", sample),
+      hoverinfo = "text",
+      type = "scatter",
+      mode = "markers",
+      marker = list(
+        color = ~ifelse(is_sample_of_interest == 1, "red", "black")
+      )
+    ) %>%
+    layout(
+      xaxis = list(title = "X"),
+      yaxis = list(title = "Y"),
+      showlegend = FALSE
+    ) %>%
+    config(displayModeBar = FALSE)
+    
+    return(tsne_plotly)
+  }
+  
   tsne_df_temp <- tnse_df |>
     inner_join(sample_info, by = join_by(sample)) |>
     select(sample, dim1, dim2, disease)
@@ -2248,3 +2274,4 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
+
