@@ -26,6 +26,8 @@ generate_single_report(
 
 \item{bootstraps_experimental}{.expo_bootstraps file path which contain the experimental bootstrap statistics for each signature}
 
+\item{similarity}{.similarity file path which contains cosine similarity to other samples in. database}
+
 \item{tally}{.tally file path which contain the decomposition of mutations in the sample}
 
 \item{dataset}{the COSMIC signature dataset being used}

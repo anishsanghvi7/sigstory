@@ -94,7 +94,11 @@ full signature html reports
 }
 \description{
 This function auto-generates signature reports and a summary layer. Note: Please input
-the files in this order: (SBS96.expo file, SBS96.bootstrap file, SBS96.tally file, SBS96.dataset, SBS96 parquet path,
-DBS78.expo file, DBS78.bootstrap file, DBS78.tally file, DBS78.dataset, DBS78 parquet path, ID83.expo file,
-ID83.bootstrap file, ID83.tally file, ID83.dataset, ID83 parquet path).
+the files in this order:
+}
+\details{
+(outidr (outdirectory path), SBS96.expo file, SBS96.bootstrap_summary file, SBS96 .expo_bootstrap file, SBS96 .tally file, SBS96 .similarity file, SBS96.dataset, SBS96 dimensionality reduction .csv file, SBS96 parquet path,
+DBS78.expo file, DBS78.bootstrap file, DBS78 .expo_bootstrap file, DBS78.tally file, DBS78 .similarity file, DBS78.dataset, DBS78 dimensionality reduction .csv file, DBS78 parquet path,
+ID83.expo file, ID83.bootstrap file, ID83 .expo_bootstrap file, ID83.tally file, ID83 .similarity file, ID83.dataset, ID83 dimensionality reduction .csv file, ID83 parquet path,
+sample_information .csv file, dimensionality reduction .csv file for all mutation types).
 }
