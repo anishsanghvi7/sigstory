@@ -842,19 +842,8 @@ generate_distinct_colors <- function(num_colors) {
 ########################
 create_tsne <- function() {
   if(is.null(dimensionality_reduction)) {
-    message_plot <- plot_ly(
-      type = "scatter",
-      mode = "text",
-      text = "Dimensionality Reduction File Not Found/Provided",
-      textposition = "middle center",
-      hoverinfo = "none"
-    ) %>%
-      layout(
-        xaxis = list(visible = FALSE),
-        yaxis = list(visible = FALSE),
-        showlegend = FALSE
-      )
-    return(message_plot)
+    error_string <- "**Dimensionality Reduction File Not Found/Provided**"
+    return(markdown(error_string))
   } else if (nrow(sample_info) == 0) {
     tsne_plot <- tnse_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
@@ -1198,11 +1187,18 @@ layout_column_wrap(
 )
 
 tsne_plotly <- create_tsne()
-
-tsne_frontend <- card(
-  card_header("T-SNE Plot - Sample Similarity"),
-  tsne_plotly
-)
+if(is.null(dimensionality_reduction)) {
+  tsne_frontend <- card(
+    max_height = 100,
+    card_header("T-SNE Plot - Sample Similarity"),
+    tsne_plotly
+  )
+} else {
+  tsne_frontend <- card(
+    card_header("T-SNE Plot - Sample Similarity"),
+    tsne_plotly
+  )
+}s
 
 tsne_frontend
 ```
