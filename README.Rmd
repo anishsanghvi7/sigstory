@@ -2,7 +2,9 @@
 output: github_document
 ---
 
-```
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -19,16 +21,14 @@ knitr::opts_chunk$set(
 
 You can install the development version of sigstory like so:
 
-```{r}         
-if (!require("devtools", quietly = TRUE))
-    install.packages("devtools")
-
+``` r
+# install.packages("devtools")
 devtools::install_github("anishsanghvi7/sigstory")
 ```
 
 ## Quick Start
 
-```{r}        
+```{r example}        
 library(sigstory)
 
 # Assign variables to files
@@ -68,7 +68,4 @@ sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarit
          exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
          exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
          sample_information, dimensionality_reduction_overall)
-
-# Generate only the Single Report
-generate_single_report(outdir, exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3)
 ```
