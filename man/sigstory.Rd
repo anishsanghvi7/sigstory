@@ -90,7 +90,7 @@ sigstory(
 \item{outdir}{the output directory you want to save reports in}
 }
 \value{
-full signature html reports
+Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 }
 \description{
 This function auto-generates signature reports and a summary layer. Note: Please input

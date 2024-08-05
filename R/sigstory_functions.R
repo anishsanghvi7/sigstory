@@ -12,7 +12,7 @@
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
 #' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
-#' @returns full signature html report
+#' @returns Mutational Signature Report (HTML File)
 #' @export
 generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_experimental, similarity, tally, dataset, dimensionality_reduction, parquet_path = NULL, sample_information = NULL) {
   expo_file <- exposures
@@ -104,7 +104,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of all samples in the database across all mutation types
-#' @returns full signature html reports
+#' @returns Mutational Signature Summary Layer for all mutation types (HTML File)
 #' @export
 generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset,
                      exposures2, bootstraps2, tally2, dataset2,
@@ -200,7 +200,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param parquet_path3 the path to a parquet database for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
-#' @returns full signature html reports
+#' @returns Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 #' @export
 sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, similarity, tally, dataset, dimensionality_reduction, parquet_path = NULL,
                      exposures2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, similarity2 = NULL, tally2 = NULL, dataset2 = NULL, dimensionality_reduction2 = NULL, parquet_path2 = NULL,

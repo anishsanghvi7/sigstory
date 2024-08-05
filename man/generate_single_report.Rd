@@ -39,7 +39,7 @@ generate_single_report(
 \item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
 }
 \value{
-full signature html report
+Mutational Signature Report (HTML File)
 }
 \description{
 This function auto-generates a full mutational signature report.

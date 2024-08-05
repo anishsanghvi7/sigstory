@@ -54,7 +54,7 @@ generate_summary_layer(
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of all samples in the database across all mutation types}
 }
 \value{
-full signature html reports
+Mutational Signature Summary Layer for all mutation types (HTML File)
 }
 \description{
 This function auto-generates a summary layer. Note: Please input
