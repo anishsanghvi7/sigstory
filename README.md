@@ -55,8 +55,9 @@ dimensionality_reduction3 <- system.file("tsne_metadata_ID83.csv", package = "si
 parquet_path3 <- system.file("class=ID83", package = "sigstory")
 
 # To produce: 3 Full Mutational Signature Reports, 1 Summary Layer
-sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path,
-          exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
-          exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
-          sample_information, dimensionality_reduction_overall)
+sigstory(outdir,
+    exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path,
+    exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
+    exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
+    sample_information, dimensionality_reduction_overall)
 ```
