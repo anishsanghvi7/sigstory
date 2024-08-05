@@ -1,4 +1,4 @@
-# SigStory
+# sigstory
 sigstory creates HTML Reports which visualise mutational signature profiles in samples.
 
 ## Installation
