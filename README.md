@@ -1,17 +1,23 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # sigstory
-sigstory creates HTML Reports which visualise mutational signature profiles in samples.
+
+**sigstory** creates HTML Reports which visualise mutational signature
+profiles in samples.
 
 ## Installation
-You can install the development version of sigstory like so:
-```
-if (!require("devtools", quietly = TRUE))
-    install.packages("devtools")
 
+You can install the development version of sigstory like so:
+
+``` r
+# install.packages("devtools")
 devtools::install_github("anishsanghvi7/sigstory")
 ```
 
 ## Quick Start
-```
+
+``` r
 library(sigstory)
 
 # Assign variables to files
@@ -48,11 +54,7 @@ parquet_path3 <- system.file("class=ID83", package = "sigstory")
 
 # To produce: 3 Full Mutational Signature Reports, 1 Summary Layer
 sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path,
-         exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
-         exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
-         sample_information, dimensionality_reduction_overall)
-
-# Generate only the Single Report
-generate_single_report(outdir, exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3)
-
+          exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
+          exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
+          sample_information, dimensionality_reduction_overall)
 ```
