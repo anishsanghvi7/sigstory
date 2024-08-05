@@ -18,8 +18,8 @@ generate_summary_layer(
   bootstraps3,
   tally3,
   dataset3,
-  sample_information,
-  dimensionality_reduction_overall
+  sample_information = NULL,
+  dimensionality_reduction_overall = NULL
 )
 }
 \arguments{
@@ -49,7 +49,7 @@ generate_summary_layer(
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
-\item{sample_information}{a .metadata.tsv. file which contains sample information (optional parameter)}
+\item{sample_information}{a .metadata.tsv. file which contains sample information}
 
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of all samples in the database across all mutation types}
 }
@@ -58,8 +58,20 @@ Mutational Signature Summary Layer for all mutation types (HTML File)
 }
 \description{
 This function auto-generates a summary layer. Note: Please input
-the files in this order: (outdir (outdirectory path), SBS96.expo file, SBS96.bootstrap file, SBS96.tally file, SBS96.dataset,
-DBS78.expo file, DBS78.bootstrap file, DBS78.tally file, DBS78.dataset,
-ID83.expo file, ID83.bootstrap file, ID83.tally file, ID83.dataset,
-sample information .csv file, dimensionality reduction .csv file across all mutation types).
+the files in this order:
+* outidr (outdirectory path)
+* SBS96 .expo file
+* SBS96 .bootstrap_summary file
+* SBS96 .tally file
+* SBS96 COSMIC dataset
+* DBS78 .expo file
+* DBS78 .bootstrap file
+* DBS78 .tally file
+* DBS78 COSMIC dataset
+* ID83 .expo file
+* ID83 .bootstrap file
+* ID83 .tally file
+* ID83  COSMIC dataset
+* sample_information .csv file (optional)
+* dimensionality reduction .csv file for all mutation types (optional)
 }

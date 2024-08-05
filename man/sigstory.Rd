@@ -9,24 +9,24 @@ sigstory(
   exposures,
   bootstraps,
   bootstraps_experimental,
-  similarity,
   tally,
+  similarity,
   dataset,
   dimensionality_reduction,
   parquet_path = NULL,
   exposures2 = NULL,
   bootstraps2 = NULL,
   bootstraps_experimental2 = NULL,
-  similarity2 = NULL,
   tally2 = NULL,
+  similarity2 = NULL,
   dataset2 = NULL,
   dimensionality_reduction2 = NULL,
   parquet_path2 = NULL,
   exposures3 = NULL,
   bootstraps3 = NULL,
   bootstraps_experimental3 = NULL,
-  similarity3 = NULL,
   tally3 = NULL,
+  similarity3 = NULL,
   dataset3 = NULL,
   dimensionality_reduction3 = NULL,
   parquet_path3 = NULL,
@@ -41,9 +41,9 @@ sigstory(
 
 \item{bootstraps_experimental}{SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in. database}
-
 \item{tally}{SBS96 .tally file path which contain the decompositions of the mutations}
+
+\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in. database}
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
@@ -57,9 +57,9 @@ sigstory(
 
 \item{bootstraps_experimental2}{DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in. database}
-
 \item{tally2}{DBS78 .tally file path which contain the decompositions of the mutations}
+
+\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in. database}
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
@@ -73,9 +73,9 @@ sigstory(
 
 \item{bootstraps_experimental3}{ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in. database}
-
 \item{tally3}{ID83 .tally file path which contain the decompositions of the mutations}
+
+\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in. database}
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
@@ -94,8 +94,55 @@ Mutational Signature Report (If NULL values exist for files) or Mutational Signa
 }
 \description{
 This function auto-generates signature reports and a summary layer. Note: Please input
-the files in this order: (outidr (outdirectory path), SBS96.expo file, SBS96.bootstrap_summary file, SBS96 .expo_bootstrap file, SBS96 .tally file, SBS96 .similarity file, SBS96.dataset, SBS96 dimensionality reduction .csv file, SBS96 parquet path,
-DBS78.expo file, DBS78.bootstrap file, DBS78 .expo_bootstrap file, DBS78.tally file, DBS78 .similarity file, DBS78.dataset, DBS78 dimensionality reduction .csv file, DBS78 parquet path,
-ID83.expo file, ID83.bootstrap file, ID83 .expo_bootstrap file, ID83.tally file, ID83 .similarity file, ID83.dataset, ID83 dimensionality reduction .csv file, ID83 parquet path,
-sample_information .csv file, dimensionality reduction .csv file for all mutation types).
+the files in this order:
+\itemize{
+\item outidr (outdirectory path)
+\item SBS96 .expo file
+\item SBS96 .bootstrap_summary file
+\item SBS96 .expo_bootstrap file
+\item SBS96 .tally file
+\item SBS96 .similarity file
+\item SBS96 COSMIC dataset
+\item SBS96 dimensionality reduction .csv file
+\item SBS96 parquet path (optional)
+\item DBS78 .expo file
+\item DBS78 .bootstrap file
+\item DBS78 .expo_bootstrap file
+\item DBS78 .tally file
+\item DBS78 .similarity file
+\item DBS78 COSMIC dataset
+\item DBS78 dimensionality reduction .csv file
+\item DBS78 parquet path (optional)
+\item ID83 .expo file
+\item ID83 .bootstrap file
+\item ID83 .expo_bootstrap file
+\item ID83 .tally file
+\item ID83 .similarity file
+\item ID83  COSMIC dataset
+\item ID83 dimensionality reduction .csv file
+\item ID83 parquet path  (optional)
+\item sample_information .csv file (optional)
+\item dimensionality reduction .csv file for all mutation types (optional)
+}
+}
+\details{
+This function expects an outdirectory name, at least 1 of:
+\itemize{
+\item .expo file
+\item .bootstraps_summary file
+\item .expo_bootstraps file
+\item .similiarity file
+\item .tally file
+\item COSMIC Dataset
+\item dimensionality reduction .csv file
+}
+
+If only one of the above is provided then only a single HTML report will be created. This function will also only
+produce a singular HTML report if a NULL is enetered for any of the above files (if more than one are inputted). To produce
+a summary layer, all files must be produced (from above) and for additional information in the reports you may want to add a:
+\itemize{
+\item parquet path
+\item overall sample information .csv file
+\item overall dimensionality reduction .csv file
+}
 }
