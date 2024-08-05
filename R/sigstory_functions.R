@@ -49,8 +49,8 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
     split_boot <- tail(unlist(strsplit(bootstraps, "/")), 1)
     sample_of_interest_boot <- unlist(strsplit(split_boot, "\\."))[2]
 
-    split_tally <- tail(unlist(strsplit(tally_file, "/")), 1)
-    sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
+    split_tally <- tail(unlist(strsplit(tally, "/")), 1)
+    sample_of_interest_tally <- unlist(strsplit(split_tally, "\\."))[2]
 
     if (sample_of_interest_cat != sample_of_interest_boot ||
         sample_of_interest_cat != sample_of_interest_tally ||
@@ -58,7 +58,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
       stop("Input files do not come from the same sample")
     }
 
-    sample_of_interest <- sample_of_interest_cat
+    sample_of_interest <- sample_of_interest_tally
     pattern_type <- c("SBS96", "DBS78", "ID83")
     if (grepl(pattern_type[1], expo_file) ||
         grepl(pattern_type[1], bootstrap_file) ||
@@ -159,8 +159,8 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   split_boot <- tail(unlist(strsplit(bootstraps, "/")), 1)
   sample_of_interest_boot <- unlist(strsplit(split_boot, "\\."))[2]
 
-  split_tally <- tail(unlist(strsplit(tally_file, "/")), 1)
-  sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
+  split_tally <- tail(unlist(strsplit(tally, "/")), 1)
+  sample_of_interest_tally <- unlist(strsplit(split_tally, "\\."))[2]
 
   if (sample_of_interest_cat != sample_of_interest_boot ||
       sample_of_interest_cat != sample_of_interest_tally ||
@@ -168,7 +168,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
     stop("Input files do not come from the same sample")
   }
 
-  sample_of_interest <- sample_of_interest_cat
+  sample_of_interest <- sample_of_interest_tally
 
   path_file = system.file("SignatureAnalysis_Summary.rmd", package = "sigstory")
 
