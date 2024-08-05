@@ -62,7 +62,7 @@ dataset3 <- 'COSMIC_v3.4_ID_GRCh37'
 dimensionality_reduction3 <- system.file("tsne_metadata_ID83.csv", package = "sigstory")
 parquet_path3 <- system.file("class=ID83", package = "sigstory")
 
-# To produce: 3 Full Mutational Signature Reports, 1 Summary Layer
+# To produce: 3 Full Mutational Signature Reports & 1 Summary Layer
 sigstory(outdir,
     exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path,
     exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
