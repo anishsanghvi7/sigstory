@@ -8,7 +8,7 @@ profiles in samples.
 
 ## Installation
 
-You can install the development version of sigstory like so:
+You can install the development version of **sigstory** like so:
 
 ``` r
 if (!require("devtools", quietly = TRUE)) {
