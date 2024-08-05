@@ -32,14 +32,10 @@ outdir <- 'results'
 sample_information <- system.file("sample_metadata.csv", package = "sigstory")
 dimensionality_reduction_overall <- system.file("tsne_metadata_overall.csv", package = "sigstory")
 
-exposure <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo.csv",
-                        package = "sigstory")
-bootstraps <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.bootstrap_summary.csv",
-                          package = "sigstory")
-bootstraps_experimental <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo_bootstraps.csv",
-                                        package = "sigstory")
-tally <- system.file("SBS96_catalogue.TCGA-CA-6717-01.hg19.tally.csv"
-                      package = "sigstory")
+exposure <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo.csv", package = "sigstory")
+bootstraps <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.bootstrap_summary.csv", package = "sigstory")
+bootstraps_experimental <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo_bootstraps.csv", package = "sigstory")
+tally <- system.file("SBS96_catalogue.TCGA-CA-6717-01.hg19.tally.csv", package = "sigstory")
 similarity <- system.file("SBS96_comparison.TCGA-CA-6717-01.hg19.similarity.csv", package = "sigstory")
 dataset <- 'COSMIC_v3.4_SBS_GRCh38'
 dimensionality_reduction <- system.file("tsne_metadata_SBS96.csv", package = "sigstory")
