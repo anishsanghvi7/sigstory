@@ -23,43 +23,76 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
   parquet_folder <- parquet_path
   sample_info_file <- sample_information
 
-  split_exposures <- stringr::str_split(exposures, "\\.")[[1]]
-  if (grepl("/", split_exposures[2])) {
-    sample_of_interest_cat <- split_exposures[3]
-  } else {
-    sample_of_interest_cat <- split_exposures[2]
-  }
+  value <- suppressMessages(readr::read_csv(tally_file)) |>
+    select(count) |>
+    sum()
 
-  split_bootstraps <- stringr::str_split(bootstraps, "\\.")[[1]]
-  if (grepl("/", split_exposures[2])) {
-    sample_of_interest_boot <- split_bootstraps[3]
-  } else {
-    sample_of_interest_boot <- split_bootstraps[2]
-  }
+  if (value == 0) {
+    split_tally <- stringr::str_split(tally, "\\.")[[1]]
+    if (grepl("/", split_tally[2])) {
+      sample_of_interest <- split_tally[3]
+    } else {
+      sample_of_interest <- split_tally[2]
+    }
 
-  split_tally <- stringr::str_split(tally, "\\.")[[1]]
-  if (grepl("/", split_tally[2])) {
-    sample_of_interest_tally <- split_bootstraps[3]
+    pattern_type <- c("SBS96", "DBS78", "ID83")
+    if (grepl(pattern_type[1], tally_file)) {
+      sig_type <- "SBS96"
+    } else if (grepl(pattern_type[2], tally_file))  {
+      sig_type <- "DBS78"
+    } else if (grepl(pattern_type[3], tally_file))  {
+      sig_type <- "ID83"
+    } else {
+      stop("No signature type found.")
+    }
   } else {
-    sample_of_interest_tally <- split_bootstraps[2]
-  }
+    split_exposures <- stringr::str_split(exposures, "\\.")[[1]]
+    if (grepl("/", split_exposures[2])) {
+      sample_of_interest_cat <- split_exposures[3]
+    } else {
+      sample_of_interest_cat <- split_exposures[2]
+    }
 
-  if (sample_of_interest_cat != sample_of_interest_boot ||
-      sample_of_interest_cat != sample_of_interest_tally ||
-      sample_of_interest_boot != sample_of_interest_tally) {
-    stop("Input files do not come from the same sample")
-  }
+    split_bootstraps <- stringr::str_split(bootstraps, "\\.")[[1]]
+    if (grepl("/", split_exposures[2])) {
+      sample_of_interest_boot <- split_bootstraps[3]
+    } else {
+      sample_of_interest_boot <- split_bootstraps[2]
+    }
 
-  sample_of_interest <- sample_of_interest_cat
-  pattern_type <- c("SBS96", "DBS78", "ID83")
-  if (grepl(pattern_type[1], expo_file)) {
-    sig_type <- "SBS96"
-  } else if (grepl(pattern_type[2], expo_file)) {
-    sig_type <- "DBS78"
-  } else if (grepl(pattern_type[3], expo_file)) {
-    sig_type <- "ID83"
-  } else {
-    stop("Input files do not have a mutation type in the filename")
+    split_tally <- stringr::str_split(tally, "\\.")[[1]]
+    if (grepl("/", split_tally[2])) {
+      sample_of_interest_tally <- split_tally[3]
+    } else {
+      sample_of_interest_tally <- split_tally[2]
+    }
+
+    if (sample_of_interest_cat != sample_of_interest_boot ||
+        sample_of_interest_cat != sample_of_interest_tally ||
+        sample_of_interest_boot != sample_of_interest_tally) {
+      stop("Input files do not come from the same sample")
+    }
+
+    sample_of_interest <- sample_of_interest_cat
+    pattern_type <- c("SBS96", "DBS78", "ID83")
+    if (grepl(pattern_type[1], expo_file) ||
+        grepl(pattern_type[1], bootstrap_file) ||
+        grepl(pattern_type[1], bootstraps_experimental_file) ||
+        grepl(pattern_type[1], tally_file)) {
+      sig_type <- "SBS96"
+    } else if (grepl(pattern_type[2], expo_file) ||
+               grepl(pattern_type[2], bootstrap_file) ||
+               grepl(pattern_type[2], bootstraps_experimental_file) ||
+               grepl(pattern_type[2], tally_file))  {
+      sig_type <- "DBS78"
+    } else if (grepl(pattern_type[2], expo_file) ||
+               grepl(pattern_type[2], bootstrap_file) ||
+               grepl(pattern_type[2], bootstraps_experimental_file) ||
+               grepl(pattern_type[2], tally_file))  {
+      sig_type <- "ID83"
+    } else {
+      stop("Input files do not have a mutation type in the filename")
+    }
   }
 
   path_file = system.file("SignatureAnalysis_Full.rmd", package = "sigstory")
