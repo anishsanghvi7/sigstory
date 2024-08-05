@@ -57,21 +57,25 @@ generate_summary_layer(
 Mutational Signature Summary Layer for all mutation types (HTML File)
 }
 \description{
-This function auto-generates a summary layer. Note: Please input
-the files in this order:
-* outidr (outdirectory path)
-* SBS96 .expo file
-* SBS96 .bootstrap_summary file
-* SBS96 .tally file
-* SBS96 COSMIC dataset
-* DBS78 .expo file
-* DBS78 .bootstrap file
-* DBS78 .tally file
-* DBS78 COSMIC dataset
-* ID83 .expo file
-* ID83 .bootstrap file
-* ID83 .tally file
-* ID83  COSMIC dataset
-* sample_information .csv file (optional)
-* dimensionality reduction .csv file for all mutation types (optional)
+Generate Summary Layer
+}
+\details{
+This function auto-generates a summary layer. Note: Please input the files in this order:
+\itemize{
+\item outidr (outdirectory path)
+\item SBS96 .expo file
+\item SBS96 .bootstrap_summary file
+\item SBS96 .tally file
+\item SBS96 COSMIC dataset
+\item DBS78 .expo file
+\item DBS78 .bootstrap file
+\item DBS78 .tally file
+\item DBS78 COSMIC dataset
+\item ID83 .expo file
+\item ID83 .bootstrap file
+\item ID83 .tally file
+\item ID83  COSMIC dataset
+\item sample_information .csv file (optional)
+\item dimensionality reduction .csv file for all mutation types (optional)
+}
 }

@@ -83,8 +83,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 
 #' Generate Summary Layer
 #'
-#' This function auto-generates a summary layer. Note: Please input
-#' the files in this order:
+#' @details This function auto-generates a summary layer. Note: Please input the files in this order:
 #' * outidr (outdirectory path)
 #' * SBS96 .expo file
 #' * SBS96 .bootstrap_summary file
@@ -100,6 +99,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' * ID83  COSMIC dataset
 #' * sample_information .csv file (optional)
 #' * dimensionality reduction .csv file for all mutation types (optional)
+#' @md
 #'
 #' @param outdir the output directory you want to save reports in
 #' @param exposures SBS96 .expo file path which contains the optimal contributions of signatures in the sample
