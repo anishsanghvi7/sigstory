@@ -29,12 +29,8 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
     sum()
 
   if (value == 0) {
-    split_tally <- stringr::str_split(tally, "\\.")[[1]]
-    if (grepl("/", split_tally[2])) {
-      sample_of_interest <- split_tally[3]
-    } else {
-      sample_of_interest <- split_tally[2]
-    }
+    split_tally <- tail(unlist(strsplit(tally, "/")), 1)
+    sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
 
     pattern_type <- c("SBS96", "DBS78", "ID83")
     if (grepl(pattern_type[1], tally_file)) {
@@ -47,26 +43,14 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
       stop("No signature type found.")
     }
   } else {
-    split_exposures <- stringr::str_split(exposures, "\\.")[[1]]
-    if (grepl("/", split_exposures[2])) {
-      sample_of_interest_cat <- split_exposures[3]
-    } else {
-      sample_of_interest_cat <- split_exposures[2]
-    }
+    split_expo <- tail(unlist(strsplit(exposures, "/")), 1)
+    sample_of_interest_cat <- unlist(strsplit(split_expo, "\\."))[2]
 
-    split_bootstraps <- stringr::str_split(bootstraps, "\\.")[[1]]
-    if (grepl("/", split_exposures[2])) {
-      sample_of_interest_boot <- split_bootstraps[3]
-    } else {
-      sample_of_interest_boot <- split_bootstraps[2]
-    }
+    split_boot <- tail(unlist(strsplit(bootstraps, "/")), 1)
+    sample_of_interest_boot <- unlist(strsplit(split_boot, "\\."))[2]
 
-    split_tally <- stringr::str_split(tally, "\\.")[[1]]
-    if (grepl("/", split_tally[2])) {
-      sample_of_interest_tally <- split_tally[3]
-    } else {
-      sample_of_interest_tally <- split_tally[2]
-    }
+    split_tally <- tail(unlist(strsplit(tally_file, "/")), 1)
+    sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
 
     if (sample_of_interest_cat != sample_of_interest_boot ||
         sample_of_interest_cat != sample_of_interest_tally ||
@@ -169,26 +153,14 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
                      exposures3, bootstraps3, tally3, dataset3,
                      sample_information = NULL, dimensionality_reduction_overall = NULL) {
 
-  split_exposures <- stringr::str_split(exposures, "\\.")[[1]]
-  if (grepl("/", split_exposures[2])) {
-    sample_of_interest_cat <- split_exposures[3]
-  } else {
-    sample_of_interest_cat <- split_exposures[2]
-  }
+  split_expo <- tail(unlist(strsplit(exposures, "/")), 1)
+  sample_of_interest_cat <- unlist(strsplit(split_expo, "\\."))[2]
 
-  split_bootstraps <- stringr::str_split(bootstraps, "\\.")[[1]]
-  if (grepl("/", split_exposures[2])) {
-    sample_of_interest_boot <- split_bootstraps[3]
-  } else {
-    sample_of_interest_boot <- split_bootstraps[2]
-  }
+  split_boot <- tail(unlist(strsplit(bootstraps, "/")), 1)
+  sample_of_interest_boot <- unlist(strsplit(split_boot, "\\."))[2]
 
-  split_tally <- stringr::str_split(tally, "\\.")[[1]]
-  if (grepl("/", split_tally[2])) {
-    sample_of_interest_tally <- split_bootstraps[3]
-  } else {
-    sample_of_interest_tally <- split_bootstraps[2]
-  }
+  split_tally <- tail(unlist(strsplit(tally_file, "/")), 1)
+  sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
 
   if (sample_of_interest_cat != sample_of_interest_boot ||
       sample_of_interest_cat != sample_of_interest_tally ||
