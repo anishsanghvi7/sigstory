@@ -32,6 +32,7 @@ outdir <- 'results'
 sample_information <- system.file("sample_metadata.csv", package = "sigstory")
 dimensionality_reduction_overall <- system.file("tsne_metadata_overall.csv", package = "sigstory")
 
+# SBS96
 exposure <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo.csv", package = "sigstory")
 bootstraps <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.bootstrap_summary.csv", package = "sigstory")
 bootstraps_experimental <- system.file("SBS96_fit.TCGA-CA-6717-01.hg19.expo_bootstraps.csv", package = "sigstory")
@@ -41,6 +42,7 @@ dataset <- 'COSMIC_v3.4_SBS_GRCh38'
 dimensionality_reduction <- system.file("tsne_metadata_SBS96.csv", package = "sigstory")
 parquet_path <- system.file("class=SBS96", package = "sigstory")
 
+# DBS78
 exposure2 <- system.file("DBS78_fit.TCGA-CA-6717-01.hg19.expo.csv", package = "sigstory")
 bootstraps2 <- system.file("DBS78_fit.TCGA-CA-6717-01.hg19.bootstrap_summary.csv", package = "sigstory")
 bootstraps_experimental2 <- system.file("DBS78_fit.TCGA-CA-6717-01.hg19.expo_bootstraps.csv", package = "sigstory")
@@ -50,6 +52,7 @@ dataset2 <- 'COSMIC_v3.4_DBS_GRCh38'
 dimensionality_reduction2 <- system.file("tsne_metadata_DBS78.csv", package = "sigstory")
 parquet_path2 <- system.file("class=DBS78", package = "sigstory")
 
+# ID83
 exposure3 <- system.file("ID83_fit.TCGA-CA-6717-01.hg19.expo.csv", package = "sigstory")
 bootstraps3 <- system.file("ID83_fit.TCGA-CA-6717-01.hg19.bootstrap_summary.csv", package = "sigstory")
 bootstraps_experimental3 <- system.file("ID83_fit.TCGA-CA-6717-01.hg19.expo_bootstraps.csv", package = "sigstory")
