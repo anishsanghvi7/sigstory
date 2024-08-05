@@ -57,9 +57,6 @@ generate_summary_layer(
 Mutational Signature Summary Layer for all mutation types (HTML File)
 }
 \description{
-Generate Summary Layer
-}
-\details{
 This function auto-generates a summary layer. Note: Please input the files in this order:
 \itemize{
 \item outidr (outdirectory path)
