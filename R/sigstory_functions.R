@@ -24,13 +24,25 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
   sample_info_file <- sample_information
 
   split_exposures <- stringr::str_split(exposures, "\\.")[[1]]
-  sample_of_interest_cat <- split_exposures[2]
+  if (grepl("/", split_exposures[2])) {
+    sample_of_interest_cat <- split_exposures[3]
+  } else {
+    sample_of_interest_cat <- split_exposures[2]
+  }
 
   split_bootstraps <- stringr::str_split(bootstraps, "\\.")[[1]]
-  sample_of_interest_boot <- split_exposures[2]
+  if (grepl("/", split_exposures[2])) {
+    sample_of_interest_boot <- split_bootstraps[3]
+  } else {
+    sample_of_interest_boot <- split_bootstraps[2]
+  }
 
   split_tally <- stringr::str_split(tally, "\\.")[[1]]
-  sample_of_interest_tally <- split_exposures[2]
+  if (grepl("/", split_tally[2])) {
+    sample_of_interest_tally <- split_bootstraps[3]
+  } else {
+    sample_of_interest_tally <- split_bootstraps[2]
+  }
 
   if (sample_of_interest_cat != sample_of_interest_boot ||
       sample_of_interest_cat != sample_of_interest_tally ||
