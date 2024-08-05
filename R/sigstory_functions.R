@@ -25,7 +25,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 
   value_temp <- suppressMessages(readr::read_csv(tally_file))
   value <- value_temp |>
-    select(count) |>
+    dplyr::select(count) |>
     sum()
 
   if (value == 0) {
