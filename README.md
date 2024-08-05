@@ -15,7 +15,7 @@ devtools::install_github("anishsanghvi7/sigstory")
 library(sigstory)
 
 # Assign variables to files
-outdir <- '/Users/asanghvi/Desktop/Signature Reports/results'
+outdir <- 'results'
 sample_information <- system.file("sample_metadata.csv", package = "sigstory")
 dimensionality_reduction_overall <- system.file("tsne_metadata_overall.csv", package = "sigstory")
 
