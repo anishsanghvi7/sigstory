@@ -25,8 +25,9 @@ library(sigstory)
 ###############################
 ## Assign variables to files ##
 ###############################
-# Note: change outdir to any value starting from the base directory of your system (e.g. /Users/...) otherwise
-# it will create a 'results' folder in the R-Package Library folder.
+# Note: change outdir to any value starting from the base directory of your system
+# (e.g. /Users/...) otherwise it will create a 'results' folder in the R-Package
+# Library folder.
 outdir <- 'results'
 sample_information <- system.file("sample_metadata.csv", package = "sigstory")
 dimensionality_reduction_overall <- system.file("tsne_metadata_overall.csv", package = "sigstory")
