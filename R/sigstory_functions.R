@@ -23,7 +23,8 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
   parquet_folder <- parquet_path
   sample_info_file <- sample_information
 
-  value <- suppressMessages(readr::read_csv(tally_file)) |>
+  value_temp <- suppressMessages(readr::read_csv(tally_file))
+  value <- value_temp |>
     select(count) |>
     sum()
 
@@ -397,6 +398,5 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
     stop("No files were created, ensure no NULL values are being passed in")
   }
 }
-
 
 
