@@ -70,6 +70,6 @@ sigstory(outdir,
     sample_information, dimensionality_reduction_overall)
 
 # To run with the least amount of file inputs (This will produce a single HTML report, which is essentially the same as
-# running the generate_single_report function with the same inputs)
+# running the generate_single_report() function with the same inputs)
 sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction)
 ```
