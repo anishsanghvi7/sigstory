@@ -5,8 +5,8 @@
 #' @param outdir the output directory you want to save reports in
 #' @param exposures .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps .bootstrap_summary file path which contains the optimal bootstrap statistics for each signature
-#' @param bootstraps_experimental .expo_bootstraps file path which contain the experimental bootstrap statistics for each signature
-#' @param tally .tally file path which contain the decomposition of mutations in the sample
+#' @param bootstraps_experimental .expo_bootstraps file path which contains the experimental bootstrap statistics for each signature
+#' @param tally .tally file path which contains the decomposition of mutations in the sample
 #' @param similarity .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset the COSMIC signature dataset being used
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
@@ -143,15 +143,15 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' @param outdir the output directory you want to save reports in
 #' @param exposures SBS96 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
-#' @param tally SBS96 .tally file path which contain the decompositions of the mutations
+#' @param tally SBS96 .tally file path which contains the decompositions of the mutations
 #' @param dataset the COSMIC signature dataset being used for SBS96
 #' @param exposures2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
-#' @param tally2 DBS78 .tally file path which contain the decompositions of the mutations
+#' @param tally2 DBS78 .tally file path which contains the decompositions of the mutations
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
 #' @param exposures3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
-#' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
+#' @param tally3 ID83 .tally file path which contains the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param sample_information a .metadata.tsv. file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of all samples in the database across all mutation types
@@ -271,7 +271,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param exposures SBS96 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
-#' @param tally SBS96 .tally file path which contain the decompositions of the mutations
+#' @param tally SBS96 .tally file path which contains the decompositions of the mutations
 #' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset the COSMIC signature dataset being used for SBS96
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database for SBS96
@@ -279,7 +279,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param exposures2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental2 DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
-#' @param tally2 DBS78 .tally file path which contain the decompositions of the mutations
+#' @param tally2 DBS78 .tally file path which contains the decompositions of the mutations
 #' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
 #' @param dimensionality_reduction2 the dimensionality reduction .csv file of the samples in the database for DBS78
@@ -287,7 +287,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param exposures3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental3 ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
-#' @param tally3 ID83 .tally file path which contain the decompositions of the mutations
+#' @param tally3 ID83 .tally file path which contains the decompositions of the mutations
 #' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in. database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param dimensionality_reduction3 the dimensionality reduction .csv file of the samples in the database for ID83

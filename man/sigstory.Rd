@@ -41,7 +41,7 @@ sigstory(
 
 \item{bootstraps_experimental}{SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally}{SBS96 .tally file path which contain the decompositions of the mutations}
+\item{tally}{SBS96 .tally file path which contains the decompositions of the mutations}
 
 \item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in. database}
 
@@ -57,7 +57,7 @@ sigstory(
 
 \item{bootstraps_experimental2}{DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally2}{DBS78 .tally file path which contain the decompositions of the mutations}
+\item{tally2}{DBS78 .tally file path which contains the decompositions of the mutations}
 
 \item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in. database}
 
@@ -73,7 +73,7 @@ sigstory(
 
 \item{bootstraps_experimental3}{ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally3}{ID83 .tally file path which contain the decompositions of the mutations}
+\item{tally3}{ID83 .tally file path which contains the decompositions of the mutations}
 
 \item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in. database}
 

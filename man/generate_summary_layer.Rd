@@ -29,7 +29,7 @@ generate_summary_layer(
 
 \item{bootstraps}{SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally}{SBS96 .tally file path which contain the decompositions of the mutations}
+\item{tally}{SBS96 .tally file path which contains the decompositions of the mutations}
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
@@ -37,7 +37,7 @@ generate_summary_layer(
 
 \item{bootstraps2}{DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally2}{DBS78 .tally file path which contain the decompositions of the mutations}
+\item{tally2}{DBS78 .tally file path which contains the decompositions of the mutations}
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
@@ -45,7 +45,7 @@ generate_summary_layer(
 
 \item{bootstraps3}{ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
 
-\item{tally3}{ID83 .tally file path which contain the decompositions of the mutations}
+\item{tally3}{ID83 .tally file path which contains the decompositions of the mutations}
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 

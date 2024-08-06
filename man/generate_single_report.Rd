@@ -24,9 +24,9 @@ generate_single_report(
 
 \item{bootstraps}{.bootstrap_summary file path which contains the optimal bootstrap statistics for each signature}
 
-\item{bootstraps_experimental}{.expo_bootstraps file path which contain the experimental bootstrap statistics for each signature}
+\item{bootstraps_experimental}{.expo_bootstraps file path which contains the experimental bootstrap statistics for each signature}
 
-\item{tally}{.tally file path which contain the decomposition of mutations in the sample}
+\item{tally}{.tally file path which contains the decomposition of mutations in the sample}
 
 \item{similarity}{.similarity file path which contains cosine similarity to other samples in. database}
 
