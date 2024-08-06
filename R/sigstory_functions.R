@@ -77,10 +77,10 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
                grepl(pattern_type[2], bootstraps_experimental_file) ||
                grepl(pattern_type[2], tally_file))  {
       sig_type <- "DBS78"
-    } else if (grepl(pattern_type[2], expo_file) ||
-               grepl(pattern_type[2], bootstrap_file) ||
-               grepl(pattern_type[2], bootstraps_experimental_file) ||
-               grepl(pattern_type[2], tally_file))  {
+    } else if (grepl(pattern_type[3], expo_file) ||
+               grepl(pattern_type[3], bootstrap_file) ||
+               grepl(pattern_type[3], bootstraps_experimental_file) ||
+               grepl(pattern_type[3], tally_file))  {
       sig_type <- "ID83"
     } else {
       stop("Input files do not have a mutation type in the filename")
