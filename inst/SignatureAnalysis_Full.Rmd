@@ -274,6 +274,9 @@ if (sig_type == 'SBS96') {
 cosmic_signatures <- sigstash::sig_load(sig_description)
 channel_order_df <- data.frame(channel_orders = channel_order, 
                                total_reconstructed = 0)
+
+# Full Report Documentation Link
+documentation_link <- glue('<a href="https://github.com/anishsanghvi7/sigstory?tab=readme-ov-file\\#full-report-generation" target="_blank">Full Report Generation Documentation</a>')
 ```
 
 ```{r reading_csv_file_inputs, include=FALSE}
@@ -335,6 +338,12 @@ string_col <- glue('cosine_similarity_', sig_type)
 if (!is.null(pairwise_sim_param) && file.exists(pairwise_sim_param)) {
   pairwise_sim <- readr::read_csv(pairwise_sim_param)
 } else {
+  if (is.null(pairwise_sim_param))  {
+    similarity_link <- markdown(glue("No similar samples found as no similarity file was inputted. Please refer to ",
+                                     documentation_link))
+  } else if (!file.exists(pairwise_sim_param)) {
+    similarity_link <- markdown(glue("No similar samples found")
+  }
   pairwise_sim <- data.frame(sample = character(),
                    string_col = numeric(),
                    stringsAsFactors = FALSE)
@@ -2158,7 +2167,7 @@ if (nrow(pairwise_sim_top) != 0) {
 } else {
   card(
     card_header("Top 5 Similar Samples"),
-    card_body("No similar samples found")
+    card_body(similarity_link)
   )
 }
 
@@ -2190,9 +2199,6 @@ if (total_mutations != 0) {
 }
 
 contrib_headers
-
-document_link <- glue('<a href="https://github.com/anishsanghvi7/sigstory?tab=readme-ov-file\\#full-report-generation" target="_blank">Full Report Generation Documentation</a>')
-
 
 if (total_mutations > 0 && length(good_sigs) != 0) {
     if (nrow(parquet_db) != 0) {
@@ -2236,7 +2242,7 @@ if (total_mutations > 0 && length(good_sigs) != 0) {
             class = "d-flex justify-content-center",
             supplementary_details$heatmap
         ),
-        markdown(glue("NOTE: Parquet Path not inputted. To pass through a parquet database refer to the ", document_link))
+        markdown(glue("NOTE: Parquet Path not inputted. To pass through a parquet database refer to the ", documentation_link))
       )
     }
 } else if (total_mutations > 0 && length(good_sigs) == 0) {
