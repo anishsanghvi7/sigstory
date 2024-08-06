@@ -72,6 +72,5 @@ sigstory(outdir,
 
 # To run with the least amount of file inputs (This will produce a single HTML report,
 # which is essentially the same as running generate_single_report() with the same inputs)
-sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity,
-         dataset, dimensionality_reduction)
+sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction)
 ```
