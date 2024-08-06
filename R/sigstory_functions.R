@@ -250,7 +250,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' * sample_information .csv file (optional)
 #' * dimensionality reduction .csv file for all mutation types (optional)
 #'
-#' @details This function expects an outdirectory name, at least 1 of:
+#' @details This function expects an outdirectory name and at least 1 of each:
 #' * .expo file
 #' * .bootstraps_summary file
 #' * .expo_bootstraps file
@@ -260,7 +260,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' * dimensionality reduction .csv file
 #'
 #' If only one of the above is provided then only a single HTML report will be created. This function will also only
-#' produce a singular HTML report if a NULL is enetered for any of the above files (if more than one are inputted). To produce
+#' produce a singular HTML report if a NULL is entered for any of the above files (if more than one are inputted). To produce
 #' a summary layer, all files must be produced (from above) and for additional information in the reports you may want to add a:
 #' * parquet path
 #' * overall sample information .csv file

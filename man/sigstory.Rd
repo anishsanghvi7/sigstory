@@ -126,7 +126,7 @@ Note: Please input the files in this order:
 }
 }
 \details{
-This function expects an outdirectory name, at least 1 of:
+This function expects an outdirectory name and at least 1 of each:
 \itemize{
 \item .expo file
 \item .bootstraps_summary file
@@ -138,7 +138,7 @@ This function expects an outdirectory name, at least 1 of:
 }
 
 If only one of the above is provided then only a single HTML report will be created. This function will also only
-produce a singular HTML report if a NULL is enetered for any of the above files (if more than one are inputted). To produce
+produce a singular HTML report if a NULL is entered for any of the above files (if more than one are inputted). To produce
 a summary layer, all files must be produced (from above) and for additional information in the reports you may want to add a:
 \itemize{
 \item parquet path
