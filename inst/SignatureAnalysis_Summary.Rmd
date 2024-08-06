@@ -131,6 +131,9 @@ threshold_num_mutations_ID83 <- 2
 output_dir <- params$outdir
 dimensionality_reduction <- params$dimensionality_reduction
 sample_info_param <- params$sample_information
+
+# Full Report Documentation Link
+documentation_link <- glue('<a href="https://github.com/anishsanghvi7/sigstory?tab=readme-ov-file\\#full-report-generation" target="_blank">Full Report Generation Documentation</a>')
 ```
 
 ```{r read_csv_file, include=FALSE}
@@ -291,6 +294,12 @@ if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
 if (!is.null(dimensionality_reduction) && file.exists(dimensionality_reduction)) {
   tnse_df <- readr::read_csv(dimensionality_reduction)
 } else {
+  if (is.null(dimensionality_reduction))  {
+    tsne_link <- markdown(glue("No T-SNE plot can be displayed as no dimensionality_reduction .csv file was inputted. Please refer to ",
+                                     documentation_link))
+  } else if (!file.exists(dimensionality_reduction)) {
+    tsne_link <- glue("No T-SNE plot can be displayed as file does not exist")
+  }
   tsne_df <- data.frame(sample = character(),
                         dim1 = numeric(),
                         dim2 = numeric())
@@ -841,9 +850,8 @@ generate_distinct_colors <- function(num_colors) {
 ### Create TSNE Plot ###
 ########################
 create_tsne <- function() {
-  if(is.null(dimensionality_reduction)) {
-    error_string <- "**Dimensionality Reduction File Not Found/Provided**"
-    return(markdown(error_string))
+  if (is.null(dimensionality_reduction)) {
+    return(tsne_link)
   } else if (nrow(sample_info) == 0) {
     tsne_plot <- tnse_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
