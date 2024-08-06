@@ -162,6 +162,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
                      exposures3, bootstraps3, tally3, dataset3,
                      sample_information = NULL, dimensionality_reduction_overall = NULL) {
 
+  # First set of files
   split_expo <- tail(unlist(strsplit(exposures, "/")), 1)
   sample_of_interest_cat <- unlist(strsplit(split_expo, "\\."))[2]
 
@@ -174,7 +175,39 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   if (sample_of_interest_cat != sample_of_interest_boot ||
       sample_of_interest_cat != sample_of_interest_tally ||
       sample_of_interest_boot != sample_of_interest_tally) {
-    stop("Input files do not come from the same sample")
+    stop("Input files do not come from the same sample (From exposure onwards)")
+  }
+
+  # Second Set of Files
+  split_expo2 <- tail(unlist(strsplit(exposures2, "/")), 1)
+  sample_of_interest_cat2 <- unlist(strsplit(split_expo2, "\\."))[2]
+
+  split_boot2 <- tail(unlist(strsplit(bootstraps2, "/")), 1)
+  sample_of_interest_boot2 <- unlist(strsplit(split_boot2, "\\."))[2]
+
+  split_tally2 <- tail(unlist(strsplit(tally2, "/")), 1)
+  sample_of_interest_tally2 <- unlist(strsplit(split_tally2, "\\."))[2]
+
+  if (sample_of_interest_cat2 != sample_of_interest_boot2 ||
+      sample_of_interest_cat2 != sample_of_interest_tally2 ||
+      sample_of_interest_boot2 != sample_of_interest_tally2) {
+    stop("Input files do not come from the same sample (From exposure2 onwards)")
+  }
+
+  # Third Set of Files
+  split_expo3 <- tail(unlist(strsplit(exposures3, "/")), 1)
+  sample_of_interest_cat3 <- unlist(strsplit(split_expo3, "\\."))[2]
+
+  split_boot3 <- tail(unlist(strsplit(bootstraps3, "/")), 1)
+  sample_of_interest_boot3 <- unlist(strsplit(split_boot3, "\\."))[2]
+
+  split_tally3 <- tail(unlist(strsplit(tally3, "/")), 1)
+  sample_of_interest_tally3 <- unlist(strsplit(split_tally3, "\\."))[2]
+
+  if (sample_of_interest_cat3 != sample_of_interest_boot3 ||
+      sample_of_interest_cat3 != sample_of_interest_tally3 ||
+      sample_of_interest_boot3 != sample_of_interest_tally3) {
+    stop("Input files do not come from the same sample  (From exposure3 onwards)")
   }
 
   sample_of_interest <- sample_of_interest_tally
