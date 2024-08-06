@@ -123,7 +123,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' Generate Summary Layer
 #'
 #' @description This function auto-generates a summary layer. Note: Please input the files in this order:
-#' * outidr (outdirectory path)
+#' * outdir (outdirectory path)
 #' * SBS96 .expo file
 #' * SBS96 .bootstrap_summary file
 #' * SBS96 .tally file
@@ -222,7 +222,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #'
 #' This function auto-generates signature reports and a summary layer.
 #' Note: Please input the files in this order:
-#' * outidr (outdirectory path)
+#' * outdir (outdirectory path)
 #' * SBS96 .expo file
 #' * SBS96 .bootstrap_summary file
 #' * SBS96 .expo_bootstrap file

@@ -93,10 +93,10 @@ sigstory(
 Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 }
 \description{
-This function auto-generates signature reports and a summary layer. Note: Please input
-the files in this order:
+This function auto-generates signature reports and a summary layer.
+Note: Please input the files in this order:
 \itemize{
-\item outidr (outdirectory path)
+\item outdir (outdirectory path)
 \item SBS96 .expo file
 \item SBS96 .bootstrap_summary file
 \item SBS96 .expo_bootstrap file

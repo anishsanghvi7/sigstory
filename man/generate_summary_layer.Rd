@@ -59,7 +59,7 @@ Mutational Signature Summary Layer for all mutation types (HTML File)
 \description{
 This function auto-generates a summary layer. Note: Please input the files in this order:
 \itemize{
-\item outidr (outdirectory path)
+\item outdir (outdirectory path)
 \item SBS96 .expo file
 \item SBS96 .bootstrap_summary file
 \item SBS96 .tally file
