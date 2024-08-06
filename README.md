@@ -78,7 +78,7 @@ To create reports for all mutation types (SBS96, DBS78, ID83) and a summary laye
 are not ```NULL``` values. If these values are ```NULL``` then only a single report will be generated. If you do not have all the available files for other parameters (like similarity, dimensiionality_reduction and 
 parquet_path) simply insert a ```NULL``` value in place of them.
 
-```
+```r
 sigstory(outdir,
     exposure, bootstraps, bootstraps_experimental, tally, dataset, similarity, dimensionality_reduction, parquet_path,
     exposure2, bootstraps2, bootstraps_experimental2, tally2, dataset2, similarity2, dimensionality_reduction2, parquet_path2,
@@ -91,6 +91,6 @@ sigstory(outdir,
 Using the least amount of parameters in sigstory you can make one report. By running this function with these parameters, it will
 be the same as running the ```generate_single_report()``` function with the same parameters.
 
-```
+```r
 sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, dataset)
 ```
