@@ -62,10 +62,14 @@ dataset3 <- 'COSMIC_v3.4_ID_GRCh37'
 dimensionality_reduction3 <- system.file("tsne_metadata_ID83.csv", package = "sigstory")
 parquet_path3 <- system.file("class=ID83", package = "sigstory")
 
-# To produce: 3 Full Mutational Signature Reports & 1 Summary Layer
+# To produce the 3 Full Mutational Signature Reports (for SBS96, DBS78, ID83) + 1 Summary Layer
 sigstory(outdir,
     exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path,
     exposure2, bootstraps2, bootstraps_experimental2, tally2, similarity2, dataset2, dimensionality_reduction2, parquet_path2,
     exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
     sample_information, dimensionality_reduction_overall)
+
+# To run with the least amount of file inputs (This will produce a single HTML report, which is essentially the same as
+# running the generate_single_report function with the same inputs)
+sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction)
 ```
