@@ -65,6 +65,15 @@ dimensionality_reduction3 <- system.file("tsne_metadata_ID83.csv", package = "si
 parquet_path3 <- system.file("class=ID83", package = "sigstory")
 ```
 
+### Minimal Report Generation
+
+Using the least amount of parameters in sigstory you can make one report. By running this function with these parameters, it will
+be the same as running the ```generate_single_report()``` function with the same parameters.
+
+```r
+sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, dataset)
+```
+
 ### Full Report Generation 
 
 To create reports for all mutation types (SBS96, DBS78, ID83) and a summary layer, ensure that the values for:
@@ -84,13 +93,4 @@ sigstory(outdir,
     exposure2, bootstraps2, bootstraps_experimental2, tally2, dataset2, similarity2, dimensionality_reduction2, parquet_path2,
     exposure3, bootstraps3, bootstraps_experimental3, tally3, dataset3, similarity3, dimensionality_reduction3, parquet_path3,
     sample_information, dimensionality_reduction_overall)
-```
-
-### Minimal Report Generation
-
-Using the least amount of parameters in sigstory you can make one report. By running this function with these parameters, it will
-be the same as running the ```generate_single_report()``` function with the same parameters.
-
-```r
-sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, dataset)
 ```
