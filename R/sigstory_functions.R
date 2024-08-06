@@ -378,7 +378,7 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
                            sample_information, dimensionality_reduction_overall)
 
   } else {
-    stop("No files were created, ensure no NULL values are being passed in")
+    stop("No files were created, ensure no NULL values are being passed in for exposure, bootstraps, bootstraps_experimental, similarity, tally, dimensionality_reduction or dataset")
   }
 }
 
