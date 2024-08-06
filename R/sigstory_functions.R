@@ -172,10 +172,10 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   split_tally <- tail(unlist(strsplit(tally, "/")), 1)
   sample_of_interest_tally <- unlist(strsplit(split_tally, "\\."))[2]
 
-  if (sample_of_interest_cat != sample_of_interest_boot ||
-      sample_of_interest_cat != sample_of_interest_tally ||
-      sample_of_interest_boot != sample_of_interest_tally) {
-    stop("Input files do not come from the same sample (From exposure onwards)")
+  if ((!is.null(exposures) && !is.null(tally) && !is.null(exposures)) && (sample_of_interest_cat != sample_of_interest_boot ||
+                                                                             sample_of_interest_cat != sample_of_interest_tally ||
+                                                                             sample_of_interest_boot != sample_of_interest_tally)) {
+    stop("Input files do not come from the same sample  (From exposure3 onwards)")
   }
 
   # Second Set of Files
@@ -188,10 +188,10 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   split_tally2 <- tail(unlist(strsplit(tally2, "/")), 1)
   sample_of_interest_tally2 <- unlist(strsplit(split_tally2, "\\."))[2]
 
-  if (sample_of_interest_cat2 != sample_of_interest_boot2 ||
-      sample_of_interest_cat2 != sample_of_interest_tally2 ||
-      sample_of_interest_boot2 != sample_of_interest_tally2) {
-    stop("Input files do not come from the same sample (From exposure2 onwards)")
+  if ((!is.null(exposures2) && !is.null(tally2) && !is.null(exposures2)) && (sample_of_interest_cat2 != sample_of_interest_boot2 ||
+                                                                             sample_of_interest_cat2 != sample_of_interest_tally2 ||
+                                                                             sample_of_interest_boot2 != sample_of_interest_tally2)) {
+    stop("Input files do not come from the same sample  (From exposure2 onwards)")
   }
 
   # Third Set of Files
@@ -204,9 +204,9 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   split_tally3 <- tail(unlist(strsplit(tally3, "/")), 1)
   sample_of_interest_tally3 <- unlist(strsplit(split_tally3, "\\."))[2]
 
-  if (sample_of_interest_cat3 != sample_of_interest_boot3 ||
-      sample_of_interest_cat3 != sample_of_interest_tally3 ||
-      sample_of_interest_boot3 != sample_of_interest_tally3) {
+  if ((!is.null(exposures3) && !is.null(tally3) && !is.null(exposures3)) && (sample_of_interest_cat3 != sample_of_interest_boot3 ||
+                                                                             sample_of_interest_cat3 != sample_of_interest_tally3 ||
+                                                                             sample_of_interest_boot3 != sample_of_interest_tally3)) {
     stop("Input files do not come from the same sample  (From exposure3 onwards)")
   }
 
