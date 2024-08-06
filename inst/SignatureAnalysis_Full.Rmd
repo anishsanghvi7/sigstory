@@ -2252,7 +2252,7 @@ if (total_mutations > 0 && length(good_sigs) != 0) {
             class = "d-flex justify-content-center",
             supplementary_details$heatmap
         ),
-        markdown(glue("NOTE: Parquet Path not inputted. To pass through a parquet database refer to the ", documentation_link))
+        markdown(glue("Cohort Contribution plots can not be displayed as parquet path not found/inputted. Please refer to ", documentation_link))
       )
     }
 } else if (total_mutations > 0 && length(good_sigs) == 0) {
