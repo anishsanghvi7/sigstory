@@ -69,7 +69,7 @@ sigstory(outdir,
     exposure3, bootstraps3, bootstraps_experimental3, tally3, similarity3, dataset3, dimensionality_reduction3, parquet_path3,
     sample_information, dimensionality_reduction_overall)
 
-# To run with the least amount of file inputs (This will produce a single HTML report, which is essentially the same as
-# running the generate_single_report() function with the same inputs)
+# To run with the least amount of file inputs (This will produce a single HTML report,
+# which is essentially the same as running generate_single_report() with the same inputs)
 sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction)
 ```
