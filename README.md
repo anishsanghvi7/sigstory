@@ -19,6 +19,8 @@ devtools::install_github("anishsanghvi7/sigstory")
 
 ## Quick Start
 
+### Storing Variables
+
 ``` r
 library(sigstory)
 
@@ -61,16 +63,34 @@ similarity3 <- system.file("ID83_comparison.TCGA-CA-6717-01.hg19.similarity.csv"
 dataset3 <- 'COSMIC_v3.4_ID_GRCh37'
 dimensionality_reduction3 <- system.file("tsne_metadata_ID83.csv", package = "sigstory")
 parquet_path3 <- system.file("class=ID83", package = "sigstory")
+```
 
-# To produce the 3 Full Mutational Signature Reports (for SBS96, DBS78, ID83)
-# + 1 Summary Layer
+### Full Report Generation 
+
+To create reports for all mutation types (SBS96, DBS78, ID83) and a summary layer, ensure that the values for:
+
+- exposure, exposure2, exposure3
+- bootstraps, bootstraps2, bootstraps3
+- bootstraps_experimental, bootstraps_experimental2, bootstraps_experimental3
+- tally, tally2, tally3
+- dataset, dataset2, dataset3
+
+are not ```NULL``` values. If you do not have all the available files for other parameters (like similarity, dimensiionality_reduction and 
+parquet_path) simply insert a ```NULL``` value in place of them.
+
+```
 sigstory(outdir,
     exposure, bootstraps, bootstraps_experimental, tally, dataset, similarity, dimensionality_reduction, parquet_path,
     exposure2, bootstraps2, bootstraps_experimental2, tally2, dataset2, similarity2, dimensionality_reduction2, parquet_path2,
     exposure3, bootstraps3, bootstraps_experimental3, tally3, dataset3, similarity3, dimensionality_reduction3, parquet_path3,
     sample_information, dimensionality_reduction_overall)
+```
 
-# To run with the least amount of file inputs (This will produce a single HTML report,
-# which is essentially the same as running generate_single_report() with the same inputs)
+### Minimal Report Generation
+
+Using the least amount of parameters in sigstory you can make one report. By running this function with these parameters, it will
+be the same as running the ```generate_single_report()``` function with the same parameters.
+
+```
 sigstory(outdir, exposure, bootstraps, bootstraps_experimental, tally, dataset)
 ```
