@@ -339,7 +339,7 @@ if (!is.null(pairwise_sim_param) && file.exists(pairwise_sim_param)) {
   pairwise_sim <- readr::read_csv(pairwise_sim_param)
 } else {
   if (is.null(pairwise_sim_param))  {
-    similarity_link <- markdown(glue("No similar samples found as no similarity file was inputted. Please refer to ",
+    similarity_link <- markdown(glue("No similar samples found as no similarity .csv file was inputted. Please refer to ",
                                      documentation_link))
   } else if (!file.exists(pairwise_sim_param)) {
     similarity_link <- glue("No similar samples found")
@@ -377,6 +377,12 @@ if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
 if (!is.null(dimensionality_reduction) && file.exists(dimensionality_reduction)) {
   tsne_df <- readr::read_csv(dimensionality_reduction)
 } else {
+  if (is.null(dimensionality_reduction))  {
+    tsne_link <- markdown(glue("No T-SNE plot can be displayed as no dimensionality_reduction .csv file was inputted. Please refer to ",
+                                     documentation_link))
+  } else if (!file.exists(dimensionality_reduction)) {
+    tsne_link <- glue("No T-SNE plot can be displayed as file does not exist")
+  }
   tsne_df <- data.frame(sample = character(),
                         dim1 = numeric(),
                         dim2 = numeric())
@@ -934,6 +940,10 @@ generate_distinct_colors <- function(num_colors) {
 ### Create TSNE Plot ###
 ########################
 create_tsne <- function() {
+  if (nrow(tsne_df) == 0) {
+    return(tsne_link)
+  }
+  
   if (nrow(sample_info) == 0) {
     tsne_plot <- tsne_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
