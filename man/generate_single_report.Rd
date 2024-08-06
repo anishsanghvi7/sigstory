@@ -10,9 +10,9 @@ generate_single_report(
   bootstraps,
   bootstraps_experimental,
   tally,
-  similarity,
   dataset,
-  dimensionality_reduction,
+  similarity = NULL,
+  dimensionality_reduction = NULL,
   parquet_path = NULL,
   sample_information = NULL
 )
@@ -28,11 +28,11 @@ generate_single_report(
 
 \item{tally}{.tally file path which contains the decomposition of mutations in the sample}
 
-\item{similarity}{.similarity file path which contains cosine similarity to other samples in the database}
-
 \item{dataset}{the COSMIC signature dataset being used}
 
-\item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database}
+\item{similarity}{.similarity file path which contains cosine similarity to other samples in the database (optional parameter)}
+
+\item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database (optional parameter)}
 
 \item{parquet_path}{a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)}
 

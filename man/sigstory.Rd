@@ -10,24 +10,24 @@ sigstory(
   bootstraps,
   bootstraps_experimental,
   tally,
-  similarity,
   dataset,
-  dimensionality_reduction,
+  similarity = NULL,
+  dimensionality_reduction = NULL,
   parquet_path = NULL,
   exposures2 = NULL,
   bootstraps2 = NULL,
   bootstraps_experimental2 = NULL,
   tally2 = NULL,
-  similarity2 = NULL,
   dataset2 = NULL,
+  similarity2 = NULL,
   dimensionality_reduction2 = NULL,
   parquet_path2 = NULL,
   exposures3 = NULL,
   bootstraps3 = NULL,
   bootstraps_experimental3 = NULL,
   tally3 = NULL,
-  similarity3 = NULL,
   dataset3 = NULL,
+  similarity3 = NULL,
   dimensionality_reduction3 = NULL,
   parquet_path3 = NULL,
   sample_information = NULL,
@@ -43,9 +43,9 @@ sigstory(
 
 \item{tally}{SBS96 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in the database}
-
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
+
+\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dimensionality_reduction}{the dimensionality reduction .csv file of the samples in the database for SBS96}
 
@@ -59,9 +59,9 @@ sigstory(
 
 \item{tally2}{DBS78 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in the database}
-
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
+
+\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dimensionality_reduction2}{the dimensionality reduction .csv file of the samples in the database for DBS78}
 
@@ -75,9 +75,9 @@ sigstory(
 
 \item{tally3}{ID83 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in the database}
-
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
+
+\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dimensionality_reduction3}{the dimensionality reduction .csv file of the samples in the database for ID83}
 

@@ -7,14 +7,14 @@
 #' @param bootstraps .bootstrap_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental .expo_bootstraps file path which contains the experimental bootstrap statistics for each signature
 #' @param tally .tally file path which contains the decomposition of mutations in the sample
-#' @param similarity .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset the COSMIC signature dataset being used
-#' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
+#' @param similarity .similarity file path which contains cosine similarity to other samples in the database (optional parameter)
+#' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database (optional parameter)
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
 #' @param sample_information a .metadata.tsv file which contains sample information (optional parameter)
 #' @returns Mutational Signature Report (HTML File)
 #' @export
-generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path = NULL, sample_information = NULL) {
+generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_experimental, tally, dataset, similarity = NULL, dimensionality_reduction = NULL, parquet_path = NULL, sample_information = NULL) {
   expo_file <- exposures
   bootstrap_file <- bootstraps
   bootstraps_experimental_file <- bootstraps_experimental
@@ -272,33 +272,33 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param bootstraps SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally SBS96 .tally file path which contains the decompositions of the mutations
-#' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset the COSMIC signature dataset being used for SBS96
+#' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in the database
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database for SBS96
 #' @param parquet_path the path to a parquet database for SBS96
 #' @param exposures2 DBS78 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps2 DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental2 DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally2 DBS78 .tally file path which contains the decompositions of the mutations
-#' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
+#' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dimensionality_reduction2 the dimensionality reduction .csv file of the samples in the database for DBS78
 #' @param parquet_path2 the path to a parquet database for DBS78
 #' @param exposures3 ID83 .expo file path which contains the optimal contributions of signatures in the sample
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental3 ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contains the decompositions of the mutations
-#' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
+#' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dimensionality_reduction3 the dimensionality reduction .csv file of the samples in the database for ID83
 #' @param parquet_path3 the path to a parquet database for ID83
 #' @param sample_information a .metadata.tsv file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
 #' @returns Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 #' @export
-sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path = NULL,
-                     exposures2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, tally2 = NULL, similarity2 = NULL, dataset2 = NULL, dimensionality_reduction2 = NULL, parquet_path2 = NULL,
-                     exposures3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, tally3 = NULL, similarity3 = NULL, dataset3 = NULL, dimensionality_reduction3 = NULL, parquet_path3 = NULL,
+sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tally, dataset, similarity = NULL, dimensionality_reduction  = NULL, parquet_path = NULL,
+                     exposures2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, tally2 = NULL, dataset2 = NULL, similarity2 = NULL, dimensionality_reduction2 = NULL, parquet_path2 = NULL,
+                     exposures3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, tally3 = NULL, dataset3 = NULL, similarity3 = NULL, dimensionality_reduction3 = NULL, parquet_path3 = NULL,
                      sample_information = NULL, dimensionality_reduction_overall = NULL) {
 
   ######################
@@ -322,9 +322,9 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
     stop("Input experimental bootstrap files are the same")
   }
 
-  if (!is.null(similarity2) && (similarity == similarity2 ||
-                           (!is.null(similarity3) && similarity2 == similarity3) ||
-                           (!is.null(similarity3) && similarity == similarity3))) {
+  if (!is.null(tally2) && (tally == tally2 ||
+                           (!is.null(tally3) && tally2 == tally3) ||
+                           (!is.null(tally3) && tally == tally3))) {
     stop("Input tally files are the same")
   }
 
@@ -346,7 +346,7 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
     tally_file <- tally
     sample_file <- sample_information
 
-    generate_single_report(outdir, expo_file, bootstrap_file, bootstraps_experimental_file, tally_file, similarity, dataset, dimensionality_reduction, parquet_path, sample_file)
+    generate_single_report(outdir, expo_file, bootstrap_file, bootstraps_experimental_file, tally_file, dataset, similarity, dimensionality_reduction, parquet_path, sample_file)
 
   } else if (!is.null(exposures2) && !is.null(bootstraps2) && !is.null(bootstraps_experimental2) && !is.null(similarity2) && !is.null(tally2) && !is.null(dimensionality_reduction2) && !is.null(dataset2) &&
              !is.null(exposures3) && !is.null(bootstraps3) && !is.null(bootstraps_experimental3) && !is.null(similarity3) && !is.null(tally3) && !is.null(dimensionality_reduction3) && !is.null(dataset3)) {
@@ -357,19 +357,19 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
     bootstrap_file <- bootstraps
     bootstraps_experimental_file <- bootstraps_experimental
     tally_file <- tally
-    generate_single_report(outdir, expo_file, bootstrap_file, bootstraps_experimental_file, tally_file, similarity, dataset, dimensionality_reduction, parquet_path, sample_file)
+    generate_single_report(outdir, expo_file, bootstrap_file, bootstraps_experimental_file, tally_file, dataset, similarity, dimensionality_reduction, parquet_path, sample_file)
 
     expo_file2 <- exposures2
     bootstrap_file2 <- bootstraps2
     bootstraps_experimental_file2 <- bootstraps_experimental2
     tally_file2 <- tally2
-    generate_single_report(outdir, expo_file2, bootstrap_file2, bootstraps_experimental_file2, tally_file2, similarity2, dataset2, dimensionality_reduction2, parquet_path2, sample_file)
+    generate_single_report(outdir, expo_file2, bootstrap_file2, bootstraps_experimental_file2, tally_file2, dataset2, similarity2, dimensionality_reduction2, parquet_path2, sample_file)
 
     expo_file3 <- exposures3
     bootstrap_file3 <- bootstraps3
     bootstraps_experimental_file3 <- bootstraps_experimental3
     tally_file3 <- tally3
-    generate_single_report(outdir, expo_file3, bootstrap_file3, bootstraps_experimental_file3, tally_file3, similarity3, dataset3, dimensionality_reduction3, parquet_path3, sample_file)
+    generate_single_report(outdir, expo_file3, bootstrap_file3, bootstraps_experimental_file3, tally_file3, dataset3, similarity3, dimensionality_reduction3, parquet_path3, sample_file)
 
     # Summary Layer
     generate_summary_layer(outdir, exposures, bootstraps, tally, dataset,
