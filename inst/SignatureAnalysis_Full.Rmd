@@ -342,7 +342,7 @@ if (!is.null(pairwise_sim_param) && file.exists(pairwise_sim_param)) {
     similarity_link <- markdown(glue("No similar samples found as no similarity file was inputted. Please refer to ",
                                      documentation_link))
   } else if (!file.exists(pairwise_sim_param)) {
-    similarity_link <- markdown(glue("No similar samples found")
+    similarity_link <- glue("No similar samples found")
   }
   pairwise_sim <- data.frame(sample = character(),
                    string_col = numeric(),
