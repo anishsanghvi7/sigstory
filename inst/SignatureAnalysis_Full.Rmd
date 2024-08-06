@@ -2174,7 +2174,14 @@ if (nrow(parquet_db) != 0) {
 ```{r similar_sample_output, echo=FALSE}
 if (nrow(pairwise_sim_top) != 0) {
   top5
+} else if (nrow(pairwise_sim) == 0) {
+  card(
+    card_header("Top 5 Similar Samples"),
+    card_body(similarity_link)
+  )
 } else {
+  similarity_link <- glue("No similar samples found")
+  
   card(
     card_header("Top 5 Similar Samples"),
     card_body(similarity_link)
@@ -2295,3 +2302,4 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
+
