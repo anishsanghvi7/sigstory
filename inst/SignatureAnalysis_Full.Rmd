@@ -2191,6 +2191,8 @@ if (total_mutations != 0) {
 
 contrib_headers
 
+document_link <- glue('<a href="{https://github.com/anishsanghvi7/sigstory?tab=readme-ov-file#full-report-generation}" target="_blank">Full Report Generation Documentation</a>')
+
 if (total_mutations > 0 && length(good_sigs) != 0) {
     if (nrow(parquet_db) != 0) {
       card(
@@ -2232,7 +2234,8 @@ if (total_mutations > 0 && length(good_sigs) != 0) {
         div(
             class = "d-flex justify-content-center",
             supplementary_details$heatmap
-        )
+        ),
+        glue("NOTE: Parquet Path not inputted. To pass through a parquet database refer to the ", document_link)
       )
     }
 } else if (total_mutations > 0 && length(good_sigs) == 0) {
