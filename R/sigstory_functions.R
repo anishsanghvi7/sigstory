@@ -69,17 +69,17 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
     pattern_type <- c("SBS96", "DBS78", "ID83")
     if (grepl(pattern_type[1], expo_file) ||
         grepl(pattern_type[1], bootstrap_file) ||
-        grepl(pattern_type[1], bootstraps_experimental_file) &&
+        grepl(pattern_type[1], bootstraps_experimental_file) ||
         grepl(pattern_type[1], tally_file)) {
       sig_type <- "SBS96"
     } else if (grepl(pattern_type[2], expo_file) ||
                grepl(pattern_type[2], bootstrap_file) ||
-               grepl(pattern_type[2], bootstraps_experimental_file) &&
+               grepl(pattern_type[2], bootstraps_experimental_file) ||
                grepl(pattern_type[2], tally_file))  {
       sig_type <- "DBS78"
     } else if (grepl(pattern_type[2], expo_file) ||
                grepl(pattern_type[2], bootstrap_file) ||
-               grepl(pattern_type[2], bootstraps_experimental_file) &&
+               grepl(pattern_type[2], bootstraps_experimental_file) ||
                grepl(pattern_type[2], tally_file))  {
       sig_type <- "ID83"
     } else {
