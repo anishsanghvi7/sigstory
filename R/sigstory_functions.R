@@ -28,6 +28,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
     dplyr::select(count) |>
     sum()
 
+  # If no mutations found then there may be no other files created
   if (value == 0) {
     split_tally <- tail(unlist(strsplit(tally, "/")), 1)
     sample_of_interest <- unlist(strsplit(split_tally, "\\."))[2]
@@ -60,19 +61,19 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 
     sample_of_interest <- sample_of_interest_tally
     pattern_type <- c("SBS96", "DBS78", "ID83")
-    if (grepl(pattern_type[1], expo_file) ||
-        grepl(pattern_type[1], bootstrap_file) ||
-        grepl(pattern_type[1], bootstraps_experimental_file) ||
+    if (grepl(pattern_type[1], expo_file) &&
+        grepl(pattern_type[1], bootstrap_file) &&
+        grepl(pattern_type[1], bootstraps_experimental_file) &&
         grepl(pattern_type[1], tally_file)) {
       sig_type <- "SBS96"
-    } else if (grepl(pattern_type[2], expo_file) ||
-               grepl(pattern_type[2], bootstrap_file) ||
-               grepl(pattern_type[2], bootstraps_experimental_file) ||
+    } else if (grepl(pattern_type[2], expo_file) &&
+               grepl(pattern_type[2], bootstrap_file) &&
+               grepl(pattern_type[2], bootstraps_experimental_file) &&
                grepl(pattern_type[2], tally_file))  {
       sig_type <- "DBS78"
-    } else if (grepl(pattern_type[2], expo_file) ||
-               grepl(pattern_type[2], bootstrap_file) ||
-               grepl(pattern_type[2], bootstraps_experimental_file) ||
+    } else if (grepl(pattern_type[2], expo_file) &&
+               grepl(pattern_type[2], bootstrap_file) &&
+               grepl(pattern_type[2], bootstraps_experimental_file) &&
                grepl(pattern_type[2], tally_file))  {
       sig_type <- "ID83"
     } else {
@@ -88,7 +89,9 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
   }
 
   output_directory <- suppressMessages(normalizePath(output_directory))
-  output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_', sig_type, '.html'))
+  output_file <- file.path(output_directory,
+                           paste0('MutationalSignatureAnalysis_',
+                                  sample_of_interest, '_', sig_type, '.html'))
   output_file <-  suppressMessages(normalizePath(output_file))
 
   rmarkdown::render(
@@ -171,14 +174,16 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
   sample_of_interest <- sample_of_interest_tally
 
   path_file = system.file("SignatureAnalysis_Summary.rmd", package = "sigstory")
-
   output_directory <- file.path(outdir, sample_of_interest)
   if (!dir.exists(output_directory)) {
     fs::dir_create(output_directory,  recurse = TRUE)
   }
 
   output_directory <- suppressMessages(normalizePath(output_directory))
-  output_file <- file.path(output_directory, paste0('MutationalSignatureAnalysis_', sample_of_interest, '_Summary.html'))
+  output_file <- file.path(output_directory,
+                           paste0('MutationalSignatureAnalysis_',
+                                  sample_of_interest,
+                                  '_Summary.html'))
   output_file <-  suppressMessages(normalizePath(output_file))
 
   rmarkdown::render(
@@ -209,8 +214,8 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 
 #' Sigstory
 #'
-#' This function auto-generates signature reports and a summary layer. Note: Please input
-#' the files in this order:
+#' This function auto-generates signature reports and a summary layer.
+#' Note: Please input the files in this order:
 #' * outidr (outdirectory path)
 #' * SBS96 .expo file
 #' * SBS96 .bootstrap_summary file
