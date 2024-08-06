@@ -382,4 +382,5 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
   }
 }
 
+# File for similarity should be optional and dim reduction
 
