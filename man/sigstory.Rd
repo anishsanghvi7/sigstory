@@ -5,7 +5,7 @@
 \title{Sigstory}
 \usage{
 sigstory(
-  outidr,
+  outdir,
   exposures,
   bootstraps,
   bootstraps_experimental,
@@ -35,6 +35,8 @@ sigstory(
 )
 }
 \arguments{
+\item{outdir}{the output directory you want to save reports in}
+
 \item{exposures}{SBS96 .expo file path which contains the optimal contributions of signatures in the sample}
 
 \item{bootstraps}{SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature}
@@ -86,8 +88,6 @@ sigstory(
 \item{sample_information}{a .metadata.tsv file which contains sample information}
 
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of the samples in the database across all types}
-
-\item{outdir}{the output directory you want to save reports in}
 }
 \value{
 Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)

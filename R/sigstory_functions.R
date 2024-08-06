@@ -296,7 +296,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
 #' @returns Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 #' @export
-sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tally, dataset, similarity = NULL, dimensionality_reduction  = NULL, parquet_path = NULL,
+sigstory <- function(outdir, exposures, bootstraps, bootstraps_experimental, tally, dataset, similarity = NULL, dimensionality_reduction  = NULL, parquet_path = NULL,
                      exposures2 = NULL, bootstraps2 = NULL, bootstraps_experimental2 = NULL, tally2 = NULL, dataset2 = NULL, similarity2 = NULL, dimensionality_reduction2 = NULL, parquet_path2 = NULL,
                      exposures3 = NULL, bootstraps3 = NULL, bootstraps_experimental3 = NULL, tally3 = NULL, dataset3 = NULL, similarity3 = NULL, dimensionality_reduction3 = NULL, parquet_path3 = NULL,
                      sample_information = NULL, dimensionality_reduction_overall = NULL) {
