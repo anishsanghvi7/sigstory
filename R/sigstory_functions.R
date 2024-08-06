@@ -53,6 +53,12 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
     split_tally <- tail(unlist(strsplit(tally, "/")), 1)
     sample_of_interest_tally <- unlist(strsplit(split_tally, "\\."))[2]
 
+    if  (length(sample_of_interest_cat) == 0 ||
+         length(sample_of_interest_boot) == 0 ||
+         length(sample_of_interest_tally) == 0) {
+      stop("Input files do not exist")
+    }
+
     if (sample_of_interest_cat != sample_of_interest_boot ||
         sample_of_interest_cat != sample_of_interest_tally ||
         sample_of_interest_boot != sample_of_interest_tally) {
