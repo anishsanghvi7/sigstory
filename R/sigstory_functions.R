@@ -381,6 +381,3 @@ sigstory <- function(outidr, exposures, bootstraps, bootstraps_experimental, tal
     stop("No files were created, ensure no NULL values are being passed in for exposure, bootstraps, bootstraps_experimental, similarity, tally, dimensionality_reduction or dataset")
   }
 }
-
-# File for similarity should be optional and dim reduction
-

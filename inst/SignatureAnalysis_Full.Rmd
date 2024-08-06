@@ -366,7 +366,7 @@ if (!is.null(sample_info_param) && file.exists(sample_info_param)) {
 
 # TSNE Dimensionality Reduction
 if (!is.null(dimensionality_reduction) && file.exists(dimensionality_reduction)) {
-  tnse_df <- readr::read_csv(dimensionality_reduction)
+  tsne_df <- readr::read_csv(dimensionality_reduction)
 } else {
   tsne_df <- data.frame(sample = character(),
                         dim1 = numeric(),
@@ -926,7 +926,7 @@ generate_distinct_colors <- function(num_colors) {
 ########################
 create_tsne <- function() {
   if (nrow(sample_info) == 0) {
-    tsne_plot <- tnse_df |>
+    tsne_plot <- tsne_df |>
       mutate(is_sample_of_interest = ifelse(sample_of_interest == sample, 1, 0))
     
     tsne_plotly <- plot_ly(data = tsne_plot) %>%
@@ -951,7 +951,7 @@ create_tsne <- function() {
     return(tsne_plotly)
   }
   
-  tsne_df_temp <- tnse_df |>
+  tsne_df_temp <- tsne_df |>
     inner_join(sample_info, by = join_by(sample)) |>
     select(sample, dim1, dim2, disease)
   
@@ -2275,4 +2275,3 @@ card(
 ```{=html}
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
 ```
-
