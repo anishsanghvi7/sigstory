@@ -11,7 +11,7 @@
 #' @param dataset the COSMIC signature dataset being used
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
-#' @param sample_information a .metadata.tsv. file which contains sample information (optional parameter)
+#' @param sample_information a .metadata.tsv file which contains sample information (optional parameter)
 #' @returns Mutational Signature Report (HTML File)
 #' @export
 generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_experimental, tally, similarity, dataset, dimensionality_reduction, parquet_path = NULL, sample_information = NULL) {
