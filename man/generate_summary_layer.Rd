@@ -49,7 +49,7 @@ generate_summary_layer(
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
-\item{sample_information}{a .metadata.tsv. file which contains sample information}
+\item{sample_information}{a .metadata.tsv file which contains sample information}
 
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of all samples in the database across all mutation types}
 }

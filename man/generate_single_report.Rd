@@ -28,7 +28,7 @@ generate_single_report(
 
 \item{tally}{.tally file path which contains the decomposition of mutations in the sample}
 
-\item{similarity}{.similarity file path which contains cosine similarity to other samples in. database}
+\item{similarity}{.similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dataset}{the COSMIC signature dataset being used}
 

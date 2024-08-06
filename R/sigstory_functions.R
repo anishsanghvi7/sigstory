@@ -7,7 +7,7 @@
 #' @param bootstraps .bootstrap_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental .expo_bootstraps file path which contains the experimental bootstrap statistics for each signature
 #' @param tally .tally file path which contains the decomposition of mutations in the sample
-#' @param similarity .similarity file path which contains cosine similarity to other samples in. database
+#' @param similarity .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset the COSMIC signature dataset being used
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database
 #' @param parquet_path a path to the folder of a parquet file which describes the signature models fitted to each sample in the database (optional parameter)
@@ -153,7 +153,7 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contains the decompositions of the mutations
 #' @param dataset3 the COSMIC signature dataset being used for ID83
-#' @param sample_information a .metadata.tsv. file which contains sample information
+#' @param sample_information a .metadata.tsv file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of all samples in the database across all mutation types
 #' @returns Mutational Signature Summary Layer for all mutation types (HTML File)
 #' @export
@@ -272,7 +272,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param bootstraps SBS96 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental SBS96 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally SBS96 .tally file path which contains the decompositions of the mutations
-#' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in. database
+#' @param similarity SBS96 similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset the COSMIC signature dataset being used for SBS96
 #' @param dimensionality_reduction the dimensionality reduction .csv file of the samples in the database for SBS96
 #' @param parquet_path the path to a parquet database for SBS96
@@ -280,7 +280,7 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param bootstraps2 DBS78 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental2 DBS78 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally2 DBS78 .tally file path which contains the decompositions of the mutations
-#' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in. database
+#' @param similarity2 DBS78 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset2 the COSMIC signature dataset being used for DBS78
 #' @param dimensionality_reduction2 the dimensionality reduction .csv file of the samples in the database for DBS78
 #' @param parquet_path2 the path to a parquet database for DBS78
@@ -288,11 +288,11 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' @param bootstraps3 ID83 .bootstraps_summary file path which contains the optimal bootstrap statistics for each signature
 #' @param bootstraps_experimental3 ID83 .expo_bootstraps file path which contains the optimal bootstrap statistics for each signature
 #' @param tally3 ID83 .tally file path which contains the decompositions of the mutations
-#' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in. database
+#' @param similarity3 ID83 .similarity file path which contains cosine similarity to other samples in the database
 #' @param dataset3 the COSMIC signature dataset being used for ID83
 #' @param dimensionality_reduction3 the dimensionality reduction .csv file of the samples in the database for ID83
 #' @param parquet_path3 the path to a parquet database for ID83
-#' @param sample_information a .metadata.tsv. file which contains sample information
+#' @param sample_information a .metadata.tsv file which contains sample information
 #' @param dimensionality_reduction_overall the dimensionality reduction .csv file of the samples in the database across all types
 #' @returns Mutational Signature Report (If NULL values exist for files) or Mutational Signature Reports for each mutation type + Mutational Signature Summary Layer (HTML Reports)
 #' @export

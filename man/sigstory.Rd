@@ -43,7 +43,7 @@ sigstory(
 
 \item{tally}{SBS96 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in. database}
+\item{similarity}{SBS96 similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dataset}{the COSMIC signature dataset being used for SBS96}
 
@@ -59,7 +59,7 @@ sigstory(
 
 \item{tally2}{DBS78 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in. database}
+\item{similarity2}{DBS78 .similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dataset2}{the COSMIC signature dataset being used for DBS78}
 
@@ -75,7 +75,7 @@ sigstory(
 
 \item{tally3}{ID83 .tally file path which contains the decompositions of the mutations}
 
-\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in. database}
+\item{similarity3}{ID83 .similarity file path which contains cosine similarity to other samples in the database}
 
 \item{dataset3}{the COSMIC signature dataset being used for ID83}
 
@@ -83,7 +83,7 @@ sigstory(
 
 \item{parquet_path3}{the path to a parquet database for ID83}
 
-\item{sample_information}{a .metadata.tsv. file which contains sample information}
+\item{sample_information}{a .metadata.tsv file which contains sample information}
 
 \item{dimensionality_reduction_overall}{the dimensionality reduction .csv file of the samples in the database across all types}
 
