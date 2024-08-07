@@ -43,4 +43,5 @@ Mutational Signature Report (HTML File)
 }
 \description{
 This function auto-generates a full mutational signature report.
+Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 }

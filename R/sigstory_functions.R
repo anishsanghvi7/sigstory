@@ -1,6 +1,7 @@
 #' Generate Single Report
 #'
 #' This function auto-generates a full mutational signature report.
+#' Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 #'
 #' @param outdir the output directory you want to save reports in
 #' @param exposures .expo file path which contains the optimal contributions of signatures in the sample
@@ -138,6 +139,8 @@ generate_single_report <- function(outdir, exposures, bootstraps, bootstraps_exp
 #' * ID83  COSMIC dataset
 #' * sample_information .csv file (optional)
 #' * dimensionality reduction .csv file for all mutation types (optional)
+#'
+#' Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 #' @md
 #'
 #' @param outdir the output directory you want to save reports in
@@ -304,6 +307,8 @@ generate_summary_layer <- function(outdir, exposures, bootstraps, tally, dataset
 #' * parquet path
 #' * overall sample information .csv file
 #' * overall dimensionality reduction .csv file
+#'
+#' Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 #' @md
 #'
 #' @param outdir the output directory you want to save reports in

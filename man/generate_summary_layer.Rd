@@ -75,4 +75,6 @@ This function auto-generates a summary layer. Note: Please input the files in th
 \item sample_information .csv file (optional)
 \item dimensionality reduction .csv file for all mutation types (optional)
 }
+
+Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 }

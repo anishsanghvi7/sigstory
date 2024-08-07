@@ -145,4 +145,6 @@ a summary layer, all files must be produced (from above) and for additional info
 \item overall sample information .csv file
 \item overall dimensionality reduction .csv file
 }
+
+Available datasets can be found here: https://cancer.sanger.ac.uk/signatures/
 }
