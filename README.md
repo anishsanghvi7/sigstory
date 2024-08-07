@@ -82,7 +82,7 @@ To create reports for all mutation types (SBS96, DBS78, ID83) and a summary laye
 - bootstraps, bootstraps2, bootstraps3
 - bootstraps_experimental, bootstraps_experimental2, bootstraps_experimental3
 - tally, tally2, tally3
-- dataset, dataset2, dataset3 (available datasetscan be found here: https://cancer.sanger.ac.uk/signatures/)
+- dataset, dataset2, dataset3 (available datasets can be found here: https://cancer.sanger.ac.uk/signatures/)
 
 are not ```NULL``` values. If these values are ```NULL``` then only a single report will be generated. If you do not have all the available files for other parameters (like similarity, dimensiionality_reduction and 
 parquet_path) simply insert a ```NULL``` value in place of them.
