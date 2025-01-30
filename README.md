@@ -6,6 +6,26 @@
 **sigstory** creates HTML Reports which visualise mutational signature
 profiles in samples.
 
+The genomes of cancer samples bear characteristic scars which accrue over time, reflecting tumour history, the
+mechanisms that drove its formation and each encounter with genotoxic therapies. Over the last decade the study of
+these mutational signatures has advanced rapidly, progressing far beyond the identification of mutagenic processes
+based exclusively on the patterns of single base substitutions (SBS). We now leverage doublets, indels, copy number
+changes and structural rearrangements to gain deeper insights into cancer mutagenesis than ever possible using SBS
+alone. 
+
+These advancements bring considerable challenges. A modern mutational signature analysis describes at least
+5 different classes of mutational signatures per sample which need to be integrated and concisely presented for
+efficient review. There is a notable lack of tools capable of performing this integration effectively. Additionally, as
+mutational signature analyses become a standard component of translational research programs, the high false
+positive rates of conventional approaches used in pure-research applications become increasingly problematic. 
+
+To address these challenges, we present SigStory, a tool for streamlining the interpretation of modern mutational
+signature analysis. SigStory summarises comprehensive signature analyses in convenient HTML reports that include
+interactive visualisations of a sample‚ the sample's mutation catalogue, signature contributions and similarity to other
+reference cancer samples. These reports concisely describe the contributions of all 5 common signature classes and
+provide clear warnings when signature models fall below quality control thresholds. SigStory bridges the gap between
+complex mutational data and clear, concise insights, fostering quicker and more accurate discoveries.
+
 ## Installation
 
 You can install the development version of **sigstory** like so:
