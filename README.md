@@ -26,7 +26,7 @@ reference cancer samples. These reports concisely describe the contributions of 
 provide clear warnings when signature models fall below quality control thresholds. SigStory bridges the gap between
 complex mutational data and clear, concise insights, fostering quicker and more accurate discoveries.
 
-[View Summary](https://github.com/anishsanghvi7/sigstory/blob/main/inst/MutationalSignatureAnalysis_TCGA-CA-6717-01_Summary.html)
+[Download Sample Summary File](https://github.com/anishsanghvi7/sigstory/raw/main/inst/MutationalSignatureAnalysis_TCGA-CA-6717-01_Summary.html)
 
 
 ## Installation
