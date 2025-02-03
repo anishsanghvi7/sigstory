@@ -26,6 +26,9 @@ reference cancer samples. These reports concisely describe the contributions of 
 provide clear warnings when signature models fall below quality control thresholds. SigStory bridges the gap between
 complex mutational data and clear, concise insights, fostering quicker and more accurate discoveries.
 
+View project poster <a href='https://www.canva.com/design/DAGTNplV6Gk/RukOJ56pAp4sHLs8JTubEA/edit?utm_content=DAGTNplV6Gk&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton' target='_blank'>here</a>
+
+
 ## Installation
 
 You can install the development version of **sigstory** like so:
